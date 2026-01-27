@@ -67,3 +67,8 @@
 
 ## Critical Bug Fix (User Reported)
 - [x] Fix quiz answer verification - correct answers still marked as wrong despite previous fix (root cause: incorrect correct_option_id values in database, now fixed for all 34 questions)
+
+## User Reported Issues (Critical)
+- [x] Verify quiz question "كيف يمكن أن تعمل الـ EPF والـ CPF معاً" - check if correct answer is truly correct (Answer B is correct: EPF first for data collection, then CPF)
+- [x] Generate visual diagrams for ALL lessons (22 professional technical diagrams created and added to lessons)
+- [x] Systematically add English scientific terminology to ALL lesson content (35 lessons updated with 34 critical technical terms)
