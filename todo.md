@@ -96,3 +96,9 @@
 - [x] Verify each visual description has a corresponding image (Systematic manual browser inspection + database analysis completed)
 - [x] Generate any remaining missing diagrams with zero tolerance (13 professional technical diagrams created across 3 review cycles)
 - [x] Ensure 100% completion - no visual placeholders remain (Verified through comprehensive review of lessons 1.1-5.2 and all previous audits)
+
+## Critical Issue - Missing Images with Text Captions (User Reported)
+- [x] Find all lessons where text captions exist but actual image markdown is missing (Root cause discovered: images were saved to /public instead of /client/public)
+- [x] Generate and insert missing images for identified captions (Copied 20 lesson images from /public to /client/public)
+- [x] Systematic review of all 35 lessons to catch similar caption-without-image issues (Fixed markdown space issue: '](/ lesson-' → '](/lesson-')
+- [x] Ensure every text caption has a corresponding image markdown above it (Verified lessons 2.1-2.2 now display images correctly)

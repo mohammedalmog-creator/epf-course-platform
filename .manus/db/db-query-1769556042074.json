@@ -1,0 +1,28 @@
+{
+  "query": "SELECT SUBSTRING(content_markdown, LOCATE('مخطط الأطوار', content_markdown) - 100, 300) AS snippet\nFROM lessons \nWHERE id = 6;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT SUBSTRING(content_markdown, LOCATE('مخطط الأطوار', content_markdown) - 100, 300) AS snippet\nFROM lessons \nWHERE id = 6;",
+  "rows": [
+    {
+      "snippet": "*   التعرف على الخصائص الفيزيائية الرئيسية للنفط الخام، Gas (الغاز) الطبيعي، والماء."
+    },
+    {
+      "snippet": "*   فهم مفهوم مخطط الأطوار (Phase Diagram) وكيفية استخدامه."
+    },
+    {
+      "snippet": "*   التمييز بين أنواع Oil (النفط) المختلفة (الخفيف، الثقيل، الحلو، الحامضي)."
+    },
+    {
+      "snippet": "---"
+    },
+    {
+      "snippet": "### 1. الشرح: من هم اللاعبون الرئيسيون؟"
+    },
+    {
+      "snippet": "في أي منشأة إنتاج، نحن نتعامل "
+    }
+  ],
+  "messages": [],
+  "stdout": "snippet\n\n*   التعرف على الخصائص الفيزيائية الرئيسية للنفط الخام، Gas (الغاز) الطبيعي، والماء.\n*   فهم مفهوم مخطط الأطوار (Phase Diagram) وكيفية استخدامه.\n*   التمييز بين أنواع Oil (النفط) المختلفة (الخفيف، الثقيل، الحلو، الحامضي).\n\n---\n\n### 1. الشرح: من هم اللاعبون الرئيسيون؟\n\nفي أي منشأة إنتاج، نحن نتعامل \n",
+  "stderr": "",
+  "execution_time_ms": 52
+}
