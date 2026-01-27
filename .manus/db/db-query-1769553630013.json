@@ -1,0 +1,58 @@
+{
+  "query": "\nSELECT \n  id,\n  module_id,\n  lesson_number,\n  title_ar\nFROM lessons\nWHERE id > 11\n  AND (\n    content_markdown LIKE '%وصف بصري%' \n    OR content_markdown LIKE '%سيتم إدراج%' \n    OR content_markdown LIKE '%يُدرج هنا%'\n  )\nORDER BY id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT \n  id,\n  module_id,\n  lesson_number,\n  title_ar\nFROM lessons\nWHERE id > 11\n  AND (\n    content_markdown LIKE '%وصف بصري%' \n    OR content_markdown LIKE '%سيتم إدراج%' \n    OR content_markdown LIKE '%يُدرج هنا%'\n  )\nORDER BY id;\n",
+  "rows": [
+    {
+      "id": "12",
+      "module_id": "3",
+      "lesson_number": "2",
+      "title_ar": "الدرس 3.2: تثبيت النفط والتحكم في ضغط البخار (Oil Stabilization & RVP Control)"
+    },
+    {
+      "id": "14",
+      "module_id": "4",
+      "lesson_number": "1",
+      "title_ar": "الدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول"
+    },
+    {
+      "id": "15",
+      "module_id": "4",
+      "lesson_number": "2",
+      "title_ar": "الدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية"
+    },
+    {
+      "id": "16",
+      "module_id": "4",
+      "lesson_number": "3",
+      "title_ar": "الدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)"
+    },
+    {
+      "id": "17",
+      "module_id": "4",
+      "lesson_number": "4",
+      "title_ar": "الدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)"
+    },
+    {
+      "id": "18",
+      "module_id": "5",
+      "lesson_number": "1",
+      "title_ar": "الدرس 5.1: أنظمة التدفئة والتبريد"
+    },
+    {
+      "id": "22",
+      "module_id": "6",
+      "lesson_number": "1",
+      "title_ar": "الدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)"
+    },
+    {
+      "id": "24",
+      "module_id": "6",
+      "lesson_number": "3",
+      "title_ar": "الدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmodule_id\tlesson_number\ttitle_ar\n12\t3\t2\tالدرس 3.2: تثبيت النفط والتحكم في ضغط البخار (Oil Stabilization & RVP Control)\n14\t4\t1\tالدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول\n15\t4\t2\tالدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية\n16\t4\t3\tالدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)\n17\t4\t4\tالدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)\n18\t5\t1\tالدرس 5.1: أنظمة التدفئة والتبريد\n22\t6\t1\tالدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)\n24\t6\t3\tالدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

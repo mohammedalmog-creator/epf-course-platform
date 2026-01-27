@@ -1,0 +1,75 @@
+{
+  "query": "\nSELECT \n  id,\n  title_ar as title,\n  CHAR_LENGTH(content_markdown) as content_length\nFROM lessons\nWHERE content_markdown LIKE '%وصف بصري%' \n   OR content_markdown LIKE '%سيتم إدراج%' \n   OR content_markdown LIKE '%يُدرج هنا%'\nORDER BY id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT \n  id,\n  title_ar as title,\n  CHAR_LENGTH(content_markdown) as content_length\nFROM lessons\nWHERE content_markdown LIKE '%وصف بصري%' \n   OR content_markdown LIKE '%سيتم إدراج%' \n   OR content_markdown LIKE '%يُدرج هنا%'\nORDER BY id;\n",
+  "rows": [
+    {
+      "id": "6",
+      "title": "الدرس 2.1: خصائص الموائع وسلوك الأطوار",
+      "content_length": "3699"
+    },
+    {
+      "id": "7",
+      "title": "الدرس 2.2: مبادئ الفصل بالجاذبية وزمن المكوث",
+      "content_length": "3753"
+    },
+    {
+      "id": "8",
+      "title": "الدرس 2.3: فاصلات ثنائية وثلاثية الأطوار (Two- and Three-Phase Separators)",
+      "content_length": "4385"
+    },
+    {
+      "id": "9",
+      "title": "الدرس 2.4: المكونات الداخلية للفاصلات (Internal Components)",
+      "content_length": "3456"
+    },
+    {
+      "id": "11",
+      "title": "الدرس 3.1: تجفيف وإزالة ملوحة النفط الخام (Dehydration & Desalting)",
+      "content_length": "3517"
+    },
+    {
+      "id": "12",
+      "title": "الدرس 3.2: تثبيت النفط والتحكم في ضغط البخار (Oil Stabilization & RVP Control)",
+      "content_length": "3767"
+    },
+    {
+      "id": "14",
+      "title": "الدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول",
+      "content_length": "3986"
+    },
+    {
+      "id": "15",
+      "title": "الدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية",
+      "content_length": "3608"
+    },
+    {
+      "id": "16",
+      "title": "الدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)",
+      "content_length": "3445"
+    },
+    {
+      "id": "17",
+      "title": "الدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)",
+      "content_length": "3873"
+    },
+    {
+      "id": "18",
+      "title": "الدرس 5.1: أنظمة التدفئة والتبريد",
+      "content_length": "3343"
+    },
+    {
+      "id": "22",
+      "title": "الدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)",
+      "content_length": "3275"
+    },
+    {
+      "id": "24",
+      "title": "الدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)",
+      "content_length": "3008"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\tcontent_length\n6\tالدرس 2.1: خصائص الموائع وسلوك الأطوار\t3699\n7\tالدرس 2.2: مبادئ الفصل بالجاذبية وزمن المكوث\t3753\n8\tالدرس 2.3: فاصلات ثنائية وثلاثية الأطوار (Two- and Three-Phase Separators)\t4385\n9\tالدرس 2.4: المكونات الداخلية للفاصلات (Internal Components)\t3456\n11\tالدرس 3.1: تجفيف وإزالة ملوحة النفط الخام (Dehydration & Desalting)\t3517\n12\tالدرس 3.2: تثبيت النفط والتحكم في ضغط البخار (Oil Stabilization & RVP Control)\t3767\n14\tالدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول\t3986\n15\tالدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية\t3608\n16\tالدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)\t3445\n17\tالدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)\t3873\n18\tالدرس 5.1: أنظمة التدفئة والتبريد\t3343\n22\tالدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)\t3275\n24\tالدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)\t3008\n",
+  "stderr": "",
+  "execution_time_ms": 70
+}

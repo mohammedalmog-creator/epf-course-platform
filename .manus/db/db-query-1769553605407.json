@@ -1,0 +1,9 @@
+{
+  "query": "\nUPDATE lessons \nSET content_markdown = REPLACE(\n  content_markdown,\n  '**[وصف بصري 6: سيتم إدراج مخطط أطوار نموذجي لمزيج هيدروكربوني هنا، مع توضيح منطقة السائل، منطقة Gas (الغاز)، ومنطقة الطورين، بالإضافة إلى النقطة الحرجة (Critical Point) ونقطة التكور (Cricondentherm).]**',\n  '![مخطط الأطوار](/ lesson-2-1-phase-diagram.png)\\n\\n*مخطط أطوار نموذجي لمزيج هيدروكربوني يوضح منطقة السائل، منطقة الغاز، ومنطقة الطورين*'\n)\nWHERE id = 6;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nUPDATE lessons \nSET content_markdown = REPLACE(\n  content_markdown,\n  '**[وصف بصري 6: سيتم إدراج مخطط أطوار نموذجي لمزيج هيدروكربوني هنا، مع توضيح منطقة السائل، منطقة Gas (الغاز)، ومنطقة الطورين، بالإضافة إلى النقطة الحرجة (Critical Point) ونقطة التكور (Cricondentherm).]**',\n  '![مخطط الأطوار](/ lesson-2-1-phase-diagram.png)\\n\\n*مخطط أطوار نموذجي لمزيج هيدروكربوني يوضح منطقة السائل، منطقة الغاز، ومنطقة الطورين*'\n)\nWHERE id = 6;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 58
+}

@@ -1,0 +1,37 @@
+{
+  "query": "\nSELECT \n  id,\n  title_ar,\n  SUBSTRING(content_markdown, 1, 1500) as content_preview\nFROM lessons\nWHERE id IN (19, 22, 26, 29, 32)\nORDER BY id\nLIMIT 1;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT \n  id,\n  title_ar,\n  SUBSTRING(content_markdown, 1, 1500) as content_preview\nFROM lessons\nWHERE id IN (19, 22, 26, 29, 32)\nORDER BY id\nLIMIT 1;\n",
+  "rows": [
+    {
+      "id": "19",
+      "title_ar": "الدرس 5.2: أنظمة ضغط الغاز (Gas Compression)",
+      "content_preview": "_**مرحباً بك مجدداً!** بعد أن تعلمنا كيف نتحكم في Temperature (درجة الحرارة)، حان الوقت لتعلم كيف نتحكم في Pressure (الضغط) - وهو المتغير الثاني الأكثر أهمية._"
+    }
+  ],
+  "messages": [
+    "---",
+    "# الدرس 5.2: أنظمة ضغط الغاز (Gas Compression)",
+    "![رسم توضيحي](https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/ajRyZYHEnGrdKmjt.png)",
+    "**الزمن التقديري:** 45 دقيقة",
+    "**المخرجات التعليمية:**",
+    "*   فهم الحاجة إلى ضغط Gas (الغاز) في منشآت الإنتاج.",
+    "*   التعرف على الأنواع الرئيسية للضواغط.",
+    "*   إدراك التحديات Operation (التشغيل)ية لضغط Gas (الغاز).",
+    "---",
+    "### 1. الشرح: لماذا نضغط Gas (الغاز)؟",
+    "![نظام ضغط الغاز متعدد المراحل (Multi-Stage Gas Compression System)](https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/VhILsHmnvVkdgbkQ.png)",
+    "*نظام ضغط الغاز متعدد المراحل (Multi-Stage Gas Compression System)*",
+    "Gas (الغاز) الخارج من Separator (الفاصل) قد يكون عند ضغط منخفض نسبياً. ولكن لعدة أسباب، قد نحتاج إلى رفع ضغطه:",
+    "1.  **النقل عبر خطوط Piping (الأنابيب):** خطوط أنابيب Gas (الغاز) تتطلب ضغطاً عالياً لدفع الغاز لمسافات طويلة.",
+    "2.  **تلبية مواصفات نظام Gas (الغاز):** قد يكون نظام الغاز المركزي في الحقل يعمل عند ضغط أعلى.",
+    "3.  **استخدامه كوقود:** بعض المعدات (مثل التوربينات Gas (الغاز)ية) تتطلب غاز وقود عند ضغط معين.",
+    "4.  **إعادة حقن Gas (الغاز):** في بعض الحقول، يتم إعادة حقن الغاز في المكمن للحفاظ على Pressure (الضغط)، وهذا يتطلب ضغطاً عالياً جداً.",
+    "---",
+    "### 2. أنواع الضواغط",
+    "**أ) الضواغط الترددية (Reciprocating Compressors):**",
+    "*   **كيف يعمل؟** مثل محرك السيارة، ولكن ب"
+  ],
+  "stdout": "id\ttitle_ar\tcontent_preview\n19\tالدرس 5.2: أنظمة ضغط الغاز (Gas Compression)\t_**مرحباً بك مجدداً!** بعد أن تعلمنا كيف نتحكم في Temperature (درجة الحرارة)، حان الوقت لتعلم كيف نتحكم في Pressure (الضغط) - وهو المتغير الثاني الأكثر أهمية._\n\n---\n\n# الدرس 5.2: أنظمة ضغط الغاز (Gas Compression)\n\n![رسم توضيحي](https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/ajRyZYHEnGrdKmjt.png)\n\n\n**الزمن التقديري:** 45 دقيقة\n\n**المخرجات التعليمية:**\n*   فهم الحاجة إلى ضغط Gas (الغاز) في منشآت الإنتاج.\n*   التعرف على الأنواع الرئيسية للضواغط.\n*   إدراك التحديات Operation (التشغيل)ية لضغط Gas (الغاز).\n\n---\n\n### 1. الشرح: لماذا نضغط Gas (الغاز)؟\n\n![نظام ضغط الغاز متعدد المراحل (Multi-Stage Gas Compression System)](https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/VhILsHmnvVkdgbkQ.png)\n*نظام ضغط الغاز متعدد المراحل (Multi-Stage Gas Compression System)*\n\n\n\nGas (الغاز) الخارج من Separator (الفاصل) قد يكون عند ضغط منخفض نسبياً. ولكن لعدة أسباب، قد نحتاج إلى رفع ضغطه:\n\n1.  **النقل عبر خطوط Piping (الأنابيب):** خطوط أنابيب Gas (الغاز) تتطلب ضغطاً عالياً لدفع الغاز لمسافات طويلة.\n2.  **تلبية مواصفات نظام Gas (الغاز):** قد يكون نظام الغاز المركزي في الحقل يعمل عند ضغط أعلى.\n3.  **استخدامه كوقود:** بعض المعدات (مثل التوربينات Gas (الغاز)ية) تتطلب غاز وقود عند ضغط معين.\n4.  **إعادة حقن Gas (الغاز):** في بعض الحقول، يتم إعادة حقن الغاز في المكمن للحفاظ على Pressure (الضغط)، وهذا يتطلب ضغطاً عالياً جداً.\n\n---\n\n### 2. أنواع الضواغط\n\n**أ) الضواغط الترددية (Reciprocating Compressors):**\n*   **كيف يعمل؟** مثل محرك السيارة، ولكن ب\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}
