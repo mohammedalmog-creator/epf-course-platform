@@ -145,21 +145,45 @@ export async function upsertLessonProgress(userId: number, lessonId: number, dat
   const db = await getDb();
   if (!db) return;
   
-  await db.insert(lessonProgress).values({
-    userId,
-    lessonId,
-    completed: data.completed ?? false,
-    timeSpentMinutes: data.timeSpentMinutes ?? 0,
-    lastAccessedAt: new Date(),
-    completedAt: data.completedAt,
-  }).onDuplicateKeyUpdate({
-    set: {
-      completed: data.completed,
-      timeSpentMinutes: data.timeSpentMinutes,
+  // Check if record exists
+  const existing = await getUserLessonProgress(userId, lessonId);
+  
+  if (existing) {
+    // Update existing record - only update fields that are explicitly provided
+    const updateFields: any = {
+      lastAccessedAt: new Date(),
+    };
+    
+    if (data.completed !== undefined) {
+      updateFields.completed = data.completed;
+      if (data.completed) {
+        updateFields.completedAt = new Date();
+      }
+    }
+    
+    if (data.timeSpentMinutes !== undefined && data.timeSpentMinutes !== null) {
+      // Add to existing time instead of replacing
+      updateFields.timeSpentMinutes = (existing.timeSpentMinutes || 0) + data.timeSpentMinutes;
+    }
+    
+    if (data.completedAt !== undefined) {
+      updateFields.completedAt = data.completedAt;
+    }
+    
+    await db.update(lessonProgress)
+      .set(updateFields)
+      .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, lessonId)));
+  } else {
+    // Insert new record
+    await db.insert(lessonProgress).values({
+      userId,
+      lessonId,
+      completed: data.completed ?? false,
+      timeSpentMinutes: data.timeSpentMinutes ?? 0,
       lastAccessedAt: new Date(),
       completedAt: data.completedAt,
-    }
-  });
+    });
+  }
 }
 
 export async function getUserModuleProgress(userId: number, moduleId: number): Promise<ModuleProgress | undefined> {

@@ -1,0 +1,22 @@
+{
+  "query": "SELECT * FROM quiz_questions WHERE question_text_ar LIKE '%كيف يمكن أن تعمل%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT * FROM quiz_questions WHERE question_text_ar LIKE '%كيف يمكن أن تعمل%' LIMIT 5;",
+  "rows": [
+    {
+      "id": "48",
+      "module_id": "1",
+      "question_text_ar": "كيف يمكن أن تعمل الـ EPF والـ CPF معاً في استراتيجية تطوير متكاملة؟",
+      "question_text_en": "NULL",
+      "options_json": "[{\"id\": \"a\", \"textAr\": \"يتم بناء الـ CPF أولاً ثم يتم إضافة الـ EPF كمساعد.\"}, {\"id\": \"b\", \"textAr\": \"يتم استخدام الـ EPF لبدء الإنتاج وجمع البيانات، ثم يتم بناء الـ CPF بناءً على هذه البيانات.\"}, {\"id\": \"c\", \"textAr\": \"لا يمكن أن يعملا معاً على الإطلاق.\"}, {\"id\": \"d\", \"textAr\": \"يتم استخدامهما في حقول مختلفة دائماً.\"}]",
+      "correct_option_id": "b",
+      "explanation_ar": "NULL",
+      "explanation_en": "NULL",
+      "order": "6",
+      "created_at": "2026-01-27 21:51:11"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmodule_id\tquestion_text_ar\tquestion_text_en\toptions_json\tcorrect_option_id\texplanation_ar\texplanation_en\torder\tcreated_at\n48\t1\tكيف يمكن أن تعمل الـ EPF والـ CPF معاً في استراتيجية تطوير متكاملة؟\tNULL\t[{\"id\": \"a\", \"textAr\": \"يتم بناء الـ CPF أولاً ثم يتم إضافة الـ EPF كمساعد.\"}, {\"id\": \"b\", \"textAr\": \"يتم استخدام الـ EPF لبدء الإنتاج وجمع البيانات، ثم يتم بناء الـ CPF بناءً على هذه البيانات.\"}, {\"id\": \"c\", \"textAr\": \"لا يمكن أن يعملا معاً على الإطلاق.\"}, {\"id\": \"d\", \"textAr\": \"يتم استخدامهما في حقول مختلفة دائماً.\"}]\tb\tNULL\tNULL\t6\t2026-01-27 21:51:11\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

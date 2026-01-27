@@ -1,24 +1,23 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const connection = await mysql.createConnection(process.env.DATABASE_URL);
-const [questions] = await connection.execute(
-  "SELECT id, module_id, question_text_ar, options_json, correct_option_id FROM quiz_questions WHERE question_text_ar LIKE '%EPF%CPF%معاً%'"
+
+const [questions] = await connection.query(
+  'SELECT * FROM quiz_questions WHERE question_text_ar LIKE ? LIMIT 1',
+  ['%كيف يمكن أن تعمل الـ EPF والـ CPF معاً%']
 );
 
-console.log('\n=== Found Question ===\n');
-questions.forEach((q) => {
-  console.log(`Module: ${q.module_id}`);
-  console.log(`Question: ${q.question_text_ar}`);
-  console.log(`Correct Option ID: "${q.correct_option_id}"`);
-  
-  const options = q.options_json;
-  console.log(`\nOptions:`);
-  options.forEach(opt => {
-    const marker = opt.id === q.correct_option_id ? '✓ CORRECT' : '';
-    console.log(`  ${opt.id}) ${opt.textAr} ${marker}`);
-  });
-});
+if (questions.length > 0) {
+  const q = questions[0];
+  console.log('Question found:');
+  console.log('ID:', q.id);
+  console.log('Module:', q.module_id);
+  console.log('Question:', q.question_text_ar);
+  console.log('\nOptions:', JSON.stringify(JSON.parse(q.options_json), null, 2));
+  console.log('\nCorrect Option ID:', q.correct_option_id);
+  console.log('\nExplanation:', q.explanation_ar);
+} else {
+  console.log('Question not found');
+}
 
 await connection.end();

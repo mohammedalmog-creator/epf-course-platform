@@ -39,6 +39,7 @@ export default function LessonView() {
       if (lesson && isAuthenticated) {
         const timeSpent = Math.round((Date.now() - startTime) / 60000); // Convert to minutes
         if (timeSpent > 0) {
+          // Don't send completed field to avoid overwriting user's completion status
           updateLessonProgress.mutate({
             lessonId: lesson.id,
             timeSpentMinutes: timeSpent,

@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, module_id, question_text_ar, correct_option_id, explanation_ar FROM quiz_questions WHERE id = 48;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT id, module_id, question_text_ar, correct_option_id, explanation_ar FROM quiz_questions WHERE id = 48;",
+  "rows": [
+    {
+      "id": "48",
+      "module_id": "1",
+      "question_text_ar": "كيف يمكن أن تعمل الـ EPF والـ CPF معاً في استراتيجية تطوير متكاملة؟",
+      "correct_option_id": "b",
+      "explanation_ar": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmodule_id\tquestion_text_ar\tcorrect_option_id\texplanation_ar\n48\t1\tكيف يمكن أن تعمل الـ EPF والـ CPF معاً في استراتيجية تطوير متكاملة؟\tb\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

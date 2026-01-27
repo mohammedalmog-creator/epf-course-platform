@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE lessons \nSET content_markdown = REPLACE(\n    content_markdown,\n    '**[وصف بصري 2: سيتم إدراج رسم بياني هنا يوضح المراحل الخمس لدورة حياة الحقل على شكل خط زمني.]**',\n    '![دورة حياة الحقل النفطي](/lesson-1-2-visual.png)\\n*المراحل الخمس لدورة حياة الحقل (Oilfield Lifecycle Phases)*'\n)\nWHERE id = 2;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute UPDATE lessons \nSET content_markdown = REPLACE(\n    content_markdown,\n    '**[وصف بصري 2: سيتم إدراج رسم بياني هنا يوضح المراحل الخمس لدورة حياة الحقل على شكل خط زمني.]**',\n    '![دورة حياة الحقل النفطي](/lesson-1-2-visual.png)\\n*المراحل الخمس لدورة حياة الحقل (Oilfield Lifecycle Phases)*'\n)\nWHERE id = 2;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 69
+}

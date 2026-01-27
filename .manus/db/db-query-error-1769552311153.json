@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, titleAr, contentMarkdown FROM lessons WHERE contentMarkdown LIKE '%[وصف بصري%' OR contentMarkdown LIKE '%سيتم إدراج%' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT id, titleAr, contentMarkdown FROM lessons WHERE contentMarkdown LIKE '%[وصف بصري%' OR contentMarkdown LIKE '%سيتم إدراج%' ORDER BY id;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'contentmarkdown' in 'where clause'"
+  ]
+}
