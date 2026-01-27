@@ -119,6 +119,104 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    direction: rtl;
+  }
+  
+  /* RTL-specific adjustments */
+  [dir="rtl"] {
+    text-align: right;
+  }
+  
+  /* Markdown content styling */
+  .markdown-content {
+    @apply text-foreground;
+  }
+  
+  .markdown-content h1 {
+    @apply text-3xl font-bold mb-4 mt-6;
+  }
+  
+  .markdown-content h2 {
+    @apply text-2xl font-bold mb-3 mt-5;
+  }
+  
+  .markdown-content h3 {
+    @apply text-xl font-semibold mb-2 mt-4;
+  }
+  
+  .markdown-content p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .markdown-content ul, .markdown-content ol {
+    @apply mr-6 mb-4;
+  }
+  
+  .markdown-content li {
+    @apply mb-2;
+  }
+  
+  .markdown-content code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+  
+  .markdown-content pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto mb-4;
+  }
+  
+  .markdown-content pre code {
+    @apply bg-transparent p-0;
+  }
+  
+  .markdown-content blockquote {
+    @apply border-r-4 border-primary pr-4 mr-4 italic text-muted-foreground mb-4;
+  }
+  
+  .markdown-content table {
+    @apply w-full border-collapse mb-4;
+  }
+  
+  .markdown-content th, .markdown-content td {
+    @apply border border-border px-4 py-2;
+  }
+  
+  .markdown-content th {
+    @apply bg-muted font-semibold;
+  }
+  
+  .markdown-content img {
+    @apply max-w-full h-auto rounded-lg my-4;
+  }
+  
+  .markdown-content a {
+    @apply text-primary hover:underline;
+  }
+  
+  .markdown-content strong {
+    @apply font-bold;
+  }
+  
+  .markdown-content em {
+    @apply italic;
+  }
+  
+  /* Custom scrollbar for RTL */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

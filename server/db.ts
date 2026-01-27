@@ -1,11 +1,14 @@
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { 
+  InsertUser, users, modules, lessons, quizQuestions, 
+  lessonProgress, moduleProgress, quizAttempts, certificates, projectSubmissions,
+  Module, Lesson, QuizQuestion, LessonProgress, ModuleProgress, QuizAttempt, Certificate, ProjectSubmission
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -89,4 +92,190 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Course content queries
+export async function getAllModules(): Promise<Module[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(modules).orderBy(modules.order);
+}
+
+export async function getModuleById(moduleId: number): Promise<Module | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(modules).where(eq(modules.id, moduleId)).limit(1);
+  return result[0];
+}
+
+export async function getLessonsByModuleId(moduleId: number): Promise<Lesson[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(lessons).where(eq(lessons.moduleId, moduleId)).orderBy(lessons.order);
+}
+
+export async function getLessonById(lessonId: number): Promise<Lesson | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(lessons).where(eq(lessons.id, lessonId)).limit(1);
+  return result[0];
+}
+
+export async function getQuizQuestionsByModuleId(moduleId: number): Promise<QuizQuestion[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(quizQuestions).where(eq(quizQuestions.moduleId, moduleId)).orderBy(quizQuestions.order);
+}
+
+// Progress tracking queries
+export async function getUserLessonProgress(userId: number, lessonId: number): Promise<LessonProgress | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(lessonProgress)
+    .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, lessonId)))
+    .limit(1);
+  return result[0];
+}
+
+export async function upsertLessonProgress(userId: number, lessonId: number, data: Partial<LessonProgress>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(lessonProgress).values({
+    userId,
+    lessonId,
+    completed: data.completed ?? false,
+    timeSpentMinutes: data.timeSpentMinutes ?? 0,
+    lastAccessedAt: new Date(),
+    completedAt: data.completedAt,
+  }).onDuplicateKeyUpdate({
+    set: {
+      completed: data.completed,
+      timeSpentMinutes: data.timeSpentMinutes,
+      lastAccessedAt: new Date(),
+      completedAt: data.completedAt,
+    }
+  });
+}
+
+export async function getUserModuleProgress(userId: number, moduleId: number): Promise<ModuleProgress | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(moduleProgress)
+    .where(and(eq(moduleProgress.userId, userId), eq(moduleProgress.moduleId, moduleId)))
+    .limit(1);
+  return result[0];
+}
+
+export async function upsertModuleProgress(userId: number, moduleId: number, data: Partial<ModuleProgress>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(moduleProgress).values({
+    userId,
+    moduleId,
+    completed: data.completed ?? false,
+    completionPercentage: data.completionPercentage ?? 0,
+    timeSpentMinutes: data.timeSpentMinutes ?? 0,
+    lastAccessedAt: new Date(),
+    completedAt: data.completedAt,
+  }).onDuplicateKeyUpdate({
+    set: {
+      completed: data.completed,
+      completionPercentage: data.completionPercentage,
+      timeSpentMinutes: data.timeSpentMinutes,
+      lastAccessedAt: new Date(),
+      completedAt: data.completedAt,
+    }
+  });
+}
+
+export async function getAllUserProgress(userId: number) {
+  const db = await getDb();
+  if (!db) return { modules: [], lessons: [] };
+  
+  const moduleProgressData = await db.select().from(moduleProgress).where(eq(moduleProgress.userId, userId));
+  const lessonProgressData = await db.select().from(lessonProgress).where(eq(lessonProgress.userId, userId));
+  
+  return { modules: moduleProgressData, lessons: lessonProgressData };
+}
+
+// Quiz queries
+export async function saveQuizAttempt(userId: number, moduleId: number, score: number, totalQuestions: number, answers: any[]): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(quizAttempts).values({
+    userId,
+    moduleId,
+    score,
+    totalQuestions,
+    answersJson: answers,
+    completedAt: new Date(),
+  });
+}
+
+export async function getUserQuizAttempts(userId: number, moduleId?: number): Promise<QuizAttempt[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  if (moduleId) {
+    return await db.select().from(quizAttempts)
+      .where(and(eq(quizAttempts.userId, userId), eq(quizAttempts.moduleId, moduleId)))
+      .orderBy(desc(quizAttempts.completedAt));
+  }
+  
+  return await db.select().from(quizAttempts)
+    .where(eq(quizAttempts.userId, userId))
+    .orderBy(desc(quizAttempts.completedAt));
+}
+
+// Certificate queries
+export async function saveCertificate(userId: number, moduleId: number, certificateUrl: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(certificates).values({
+    userId,
+    moduleId,
+    certificateUrl,
+    issuedAt: new Date(),
+  });
+}
+
+export async function getUserCertificates(userId: number): Promise<Certificate[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(certificates)
+    .where(eq(certificates.userId, userId))
+    .orderBy(desc(certificates.issuedAt));
+}
+
+// Project submission queries
+export async function saveProjectSubmission(userId: number, reportFileUrl: string, reportFileName: string, notes?: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.insert(projectSubmissions).values({
+    userId,
+    reportFileUrl,
+    reportFileName,
+    notes,
+    submittedAt: new Date(),
+  });
+}
+
+export async function getUserProjectSubmissions(userId: number): Promise<ProjectSubmission[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(projectSubmissions)
+    .where(eq(projectSubmissions.userId, userId))
+    .orderBy(desc(projectSubmissions.submittedAt));
+}
