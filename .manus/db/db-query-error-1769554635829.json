@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, title, content INTO OUTFILE '/tmp/all_lessons.csv' \nFIELDS TERMINATED BY '|~|' \nENCLOSED BY '\"' \nLINES TERMINATED BY '\\n' \nFROM lessons \nORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT id, title, content INTO OUTFILE '/tmp/all_lessons.csv' \nFIELDS TERMINATED BY '|~|' \nENCLOSED BY '\"' \nLINES TERMINATED BY '\\n' \nFROM lessons \nORDER BY id;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 5 column 5 near \"FROM lessons ",
+    "ORDER BY id\""
+  ]
+}

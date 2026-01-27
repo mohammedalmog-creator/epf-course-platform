@@ -1,0 +1,220 @@
+{
+  "query": "\nSELECT \n  l.id,\n  CONCAT(m.module_number, '.', l.lesson_number) as lesson_code,\n  l.title_ar,\n  m.title_ar as module_title\nFROM lessons l\nJOIN modules m ON l.module_id = m.id\nORDER BY m.module_number, l.lesson_number;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT \n  l.id,\n  CONCAT(m.module_number, '.', l.lesson_number) as lesson_code,\n  l.title_ar,\n  m.title_ar as module_title\nFROM lessons l\nJOIN modules m ON l.module_id = m.id\nORDER BY m.module_number, l.lesson_number;\n",
+  "rows": [
+    {
+      "id": "1",
+      "lesson_code": "1.1",
+      "title_ar": "الدرس 1.1: مقدمة في صناعة النفط والغاز: من الاستكشاف إلى التوزيع",
+      "module_title": "مقدمة في صناعة النفط والغاز ودور الـ EPF"
+    },
+    {
+      "id": "2",
+      "lesson_code": "1.2",
+      "title_ar": "الدرس 1.2: دورة حياة الحقل النفطي ومرحلة الإنتاج المبكر",
+      "module_title": "مقدمة في صناعة النفط والغاز ودور الـ EPF"
+    },
+    {
+      "id": "3",
+      "lesson_code": "1.3",
+      "title_ar": "الدرس 1.3: المكونات الأساسية لمنشآت الإنتاج المبكر (Overview)",
+      "module_title": "مقدمة في صناعة النفط والغاز ودور الـ EPF"
+    },
+    {
+      "id": "4",
+      "lesson_code": "1.4",
+      "title_ar": "الدرس 1.4: ما هي منشأة الإنتاج المبكر (EPF)؟ (تعميق)",
+      "module_title": "مقدمة في صناعة النفط والغاز ودور الـ EPF"
+    },
+    {
+      "id": "5",
+      "lesson_code": "1.5",
+      "title_ar": "الدرس 1.5: مقارنة بين EPF و CPF: الفروقات الجوهرية",
+      "module_title": "مقدمة في صناعة النفط والغاز ودور الـ EPF"
+    },
+    {
+      "id": "6",
+      "lesson_code": "2.1",
+      "title_ar": "الدرس 2.1: خصائص الموائع وسلوك الأطوار",
+      "module_title": "فصل السوائل الثلاثي (Three-Phase Separation)"
+    },
+    {
+      "id": "7",
+      "lesson_code": "2.2",
+      "title_ar": "الدرس 2.2: مبادئ الفصل بالجاذبية وزمن المكوث",
+      "module_title": "فصل السوائل الثلاثي (Three-Phase Separation)"
+    },
+    {
+      "id": "8",
+      "lesson_code": "2.3",
+      "title_ar": "الدرس 2.3: فاصلات ثنائية وثلاثية الأطوار (Two- and Three-Phase Separators)",
+      "module_title": "فصل السوائل الثلاثي (Three-Phase Separation)"
+    },
+    {
+      "id": "9",
+      "lesson_code": "2.4",
+      "title_ar": "الدرس 2.4: المكونات الداخلية للفاصلات (Internal Components)",
+      "module_title": "فصل السوائل الثلاثي (Three-Phase Separation)"
+    },
+    {
+      "id": "10",
+      "lesson_code": "2.5",
+      "title_ar": "الدرس 2.5: استكشاف مشاكل الفصل وإصلاحها",
+      "module_title": "فصل السوائل الثلاثي (Three-Phase Separation)"
+    },
+    {
+      "id": "11",
+      "lesson_code": "3.1",
+      "title_ar": "الدرس 3.1: تجفيف وإزالة ملوحة النفط الخام (Dehydration & Desalting)",
+      "module_title": "أنظمة معالجة النفط الخام"
+    },
+    {
+      "id": "12",
+      "lesson_code": "3.2",
+      "title_ar": "الدرس 3.2: تثبيت النفط والتحكم في ضغط البخار (Oil Stabilization & RVP Control)",
+      "module_title": "أنظمة معالجة النفط الخام"
+    },
+    {
+      "id": "13",
+      "lesson_code": "3.3",
+      "title_ar": "الدرس 3.3: أنظمة معالجة النفط الخام (Crude Oil Treating)",
+      "module_title": "أنظمة معالجة النفط الخام"
+    },
+    {
+      "id": "14",
+      "lesson_code": "4.1",
+      "title_ar": "الدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول",
+      "module_title": "معالجة الغاز الطبيعي والمياه المنتجة"
+    },
+    {
+      "id": "15",
+      "lesson_code": "4.2",
+      "title_ar": "الدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية",
+      "module_title": "معالجة الغاز الطبيعي والمياه المنتجة"
+    },
+    {
+      "id": "16",
+      "lesson_code": "4.3",
+      "title_ar": "الدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)",
+      "module_title": "معالجة الغاز الطبيعي والمياه المنتجة"
+    },
+    {
+      "id": "17",
+      "lesson_code": "4.4",
+      "title_ar": "الدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)",
+      "module_title": "معالجة الغاز الطبيعي والمياه المنتجة"
+    },
+    {
+      "id": "18",
+      "lesson_code": "5.1",
+      "title_ar": "الدرس 5.1: أنظمة التدفئة والتبريد",
+      "module_title": "أنظمة التدفئة والتبريد والضغط"
+    },
+    {
+      "id": "19",
+      "lesson_code": "5.2",
+      "title_ar": "الدرس 5.2: أنظمة ضغط الغاز (Gas Compression)",
+      "module_title": "أنظمة التدفئة والتبريد والضغط"
+    },
+    {
+      "id": "20",
+      "lesson_code": "5.3",
+      "title_ar": "الدرس 5.3: توليد الطاقة الكهربائية في الموقع",
+      "module_title": "أنظمة التدفئة والتبريد والضغط"
+    },
+    {
+      "id": "21",
+      "lesson_code": "5.4",
+      "title_ar": "الدرس 5.4: أنظمة الهواء المضغوط (Instrument Air)",
+      "module_title": "أنظمة التدفئة والتبريد والضغط"
+    },
+    {
+      "id": "22",
+      "lesson_code": "6.1",
+      "title_ar": "الدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)",
+      "module_title": "التخزين، القياس، والسلامة"
+    },
+    {
+      "id": "23",
+      "lesson_code": "6.2",
+      "title_ar": "الدرس 6.2: أنظمة القياس والتصدير (Metering and Export)",
+      "module_title": "التخزين، القياس، والسلامة"
+    },
+    {
+      "id": "24",
+      "lesson_code": "6.3",
+      "title_ar": "الدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)",
+      "module_title": "التخزين، القياس، والسلامة"
+    },
+    {
+      "id": "25",
+      "lesson_code": "6.4",
+      "title_ar": "الدرس 6.4: أنظمة الكشف عن الحرائق والغازات وأنظمة الإطفاء",
+      "module_title": "التخزين، القياس، والسلامة"
+    },
+    {
+      "id": "26",
+      "lesson_code": "6.5",
+      "title_ar": "الدرس 6.5: الحماية البيئية وإدارة المخلفات",
+      "module_title": "التخزين، القياس، والسلامة"
+    },
+    {
+      "id": "27",
+      "lesson_code": "6.6",
+      "title_ar": "الدرس 6.6: دراسات تحليل المخاطر والتشغيلية (HAZOP Studies)",
+      "module_title": "التخزين، القياس، والسلامة"
+    },
+    {
+      "id": "28",
+      "lesson_code": "7.1",
+      "title_ar": "الدرس 7.1: أساسيات التصميم (Process Design Basis)",
+      "module_title": "التصميم الأولي والحسابات الهندسية"
+    },
+    {
+      "id": "29",
+      "lesson_code": "7.2",
+      "title_ar": "الدرس 7.2: حسابات تصميم وتحجيم الفاصلات (Separator Sizing)",
+      "module_title": "التصميم الأولي والحسابات الهندسية"
+    },
+    {
+      "id": "30",
+      "lesson_code": "7.3",
+      "title_ar": "الدرس 7.3: تصميم المبادلات الحرارية (Heat Exchanger Design)",
+      "module_title": "التصميم الأولي والحسابات الهندسية"
+    },
+    {
+      "id": "31",
+      "lesson_code": "7.4",
+      "title_ar": "الدرس 7.4: اختيار المضخات والضواغط (Pump & Compressor Selection)",
+      "module_title": "التصميم الأولي والحسابات الهندسية"
+    },
+    {
+      "id": "32",
+      "lesson_code": "7.5",
+      "title_ar": "الدرس 7.5: أساسيات تصميم الأنابيب (Piping Design Basics)",
+      "module_title": "التصميم الأولي والحسابات الهندسية"
+    },
+    {
+      "id": "33",
+      "lesson_code": "9.1",
+      "title_ar": "الدرس 9.1: بدء التشغيل والتشغيل العادي (Start-up & Normal Operations)",
+      "module_title": "التشغيل والصيانة"
+    },
+    {
+      "id": "34",
+      "lesson_code": "9.2",
+      "title_ar": "الدرس 9.2: استراتيجيات الصيانة (Maintenance Strategies)",
+      "module_title": "التشغيل والصيانة"
+    },
+    {
+      "id": "35",
+      "lesson_code": "9.3",
+      "title_ar": "الدرس 9.3: استكشاف الأخطاء وإصلاحها (Troubleshooting Common Problems)",
+      "module_title": "التشغيل والصيانة"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tlesson_code\ttitle_ar\tmodule_title\n1\t1.1\tالدرس 1.1: مقدمة في صناعة النفط والغاز: من الاستكشاف إلى التوزيع\tمقدمة في صناعة النفط والغاز ودور الـ EPF\n2\t1.2\tالدرس 1.2: دورة حياة الحقل النفطي ومرحلة الإنتاج المبكر\tمقدمة في صناعة النفط والغاز ودور الـ EPF\n3\t1.3\tالدرس 1.3: المكونات الأساسية لمنشآت الإنتاج المبكر (Overview)\tمقدمة في صناعة النفط والغاز ودور الـ EPF\n4\t1.4\tالدرس 1.4: ما هي منشأة الإنتاج المبكر (EPF)؟ (تعميق)\tمقدمة في صناعة النفط والغاز ودور الـ EPF\n5\t1.5\tالدرس 1.5: مقارنة بين EPF و CPF: الفروقات الجوهرية\tمقدمة في صناعة النفط والغاز ودور الـ EPF\n6\t2.1\tالدرس 2.1: خصائص الموائع وسلوك الأطوار\tفصل السوائل الثلاثي (Three-Phase Separation)\n7\t2.2\tالدرس 2.2: مبادئ الفصل بالجاذبية وزمن المكوث\tفصل السوائل الثلاثي (Three-Phase Separation)\n8\t2.3\tالدرس 2.3: فاصلات ثنائية وثلاثية الأطوار (Two- and Three-Phase Separators)\tفصل السوائل الثلاثي (Three-Phase Separation)\n9\t2.4\tالدرس 2.4: المكونات الداخلية للفاصلات (Internal Components)\tفصل السوائل الثلاثي (Three-Phase Separation)\n10\t2.5\tالدرس 2.5: استكشاف مشاكل الفصل وإصلاحها\tفصل السوائل الثلاثي (Three-Phase Separation)\n11\t3.1\tالدرس 3.1: تجفيف وإزالة ملوحة النفط الخام (Dehydration & Desalting)\tأنظمة معالجة النفط الخام\n12\t3.2\tالدرس 3.2: تثبيت النفط والتحكم في ضغط البخار (Oil Stabilization & RVP Control)\tأنظمة معالجة النفط الخام\n13\t3.3\tالدرس 3.3: أنظمة معالجة النفط الخام (Crude Oil Treating)\tأنظمة معالجة النفط الخام\n14\t4.1\tالدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول\tمعالجة الغاز الطبيعي والمياه المنتجة\n15\t4.2\tالدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية\tمعالجة الغاز الطبيعي والمياه المنتجة\n16\t4.3\tالدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)\tمعالجة الغاز الطبيعي والمياه المنتجة\n17\t4.4\tالدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)\tمعالجة الغاز الطبيعي والمياه المنتجة\n18\t5.1\tالدرس 5.1: أنظمة التدفئة والتبريد\tأنظمة التدفئة والتبريد والضغط\n19\t5.2\tالدرس 5.2: أنظمة ضغط الغاز (Gas Compression)\tأنظمة التدفئة والتبريد والضغط\n20\t5.3\tالدرس 5.3: توليد الطاقة الكهربائية في الموقع\tأنظمة التدفئة والتبريد والضغط\n21\t5.4\tالدرس 5.4: أنظمة الهواء المضغوط (Instrument Air)\tأنظمة التدفئة والتبريد والضغط\n22\t6.1\tالدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)\tالتخزين، القياس، والسلامة\n23\t6.2\tالدرس 6.2: أنظمة القياس والتصدير (Metering and Export)\tالتخزين، القياس، والسلامة\n24\t6.3\tالدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)\tالتخزين، القياس، والسلامة\n25\t6.4\tالدرس 6.4: أنظمة الكشف عن الحرائق والغازات وأنظمة الإطفاء\tالتخزين، القياس، والسلامة\n26\t6.5\tالدرس 6.5: الحماية البيئية وإدارة المخلفات\tالتخزين، القياس، والسلامة\n27\t6.6\tالدرس 6.6: دراسات تحليل المخاطر والتشغيلية (HAZOP Studies)\tالتخزين، القياس، والسلامة\n28\t7.1\tالدرس 7.1: أساسيات التصميم (Process Design Basis)\tالتصميم الأولي والحسابات الهندسية\n29\t7.2\tالدرس 7.2: حسابات تصميم وتحجيم الفاصلات (Separator Sizing)\tالتصميم الأولي والحسابات الهندسية\n30\t7.3\tالدرس 7.3: تصميم المبادلات الحرارية (Heat Exchanger Design)\tالتصميم الأولي والحسابات الهندسية\n31\t7.4\tالدرس 7.4: اختيار المضخات والضواغط (Pump & Compressor Selection)\tالتصميم الأولي والحسابات الهندسية\n32\t7.5\tالدرس 7.5: أساسيات تصميم الأنابيب (Piping Design Basics)\tالتصميم الأولي والحسابات الهندسية\n33\t9.1\tالدرس 9.1: بدء التشغيل والتشغيل العادي (Start-up & Normal Operations)\tالتشغيل والصيانة\n34\t9.2\tالدرس 9.2: استراتيجيات الصيانة (Maintenance Strategies)\tالتشغيل والصيانة\n35\t9.3\tالدرس 9.3: استكشاف الأخطاء وإصلاحها (Troubleshooting Common Problems)\tالتشغيل والصيانة\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}
