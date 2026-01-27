@@ -261,7 +261,7 @@ export default function Quiz() {
                     }`}
                   >
                     <RadioGroupItem value={option.id} id={option.id} />
-                    <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base">
+                    <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base text-right">
                       {option.textAr}
                     </Label>
                     {showExplanation && option.id === currentQuestion.correctOptionId && (

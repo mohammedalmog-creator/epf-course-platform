@@ -77,3 +77,6 @@
 - [x] Fix lesson completion button - clicking "مكتمل" on Lesson 1.3 does not mark it as completed (Root cause: time tracking useEffect overwrites completed status - FIXED by preserving completed status in time tracking updates)
 - [x] Fix quiz answer verification - user's correct answer still marked as wrong (Verified: system working correctly, no issue found)
 - [x] Review all lessons and add missing visual diagrams where placeholder text exists (7 professional diagrams generated and added to lessons 1.1-1.5)
+
+## UI/UX Improvements (User Requested)
+- [x] Fix quiz answer options alignment - make all answer text right-aligned (RTL)
