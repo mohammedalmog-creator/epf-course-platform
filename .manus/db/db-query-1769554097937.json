@@ -1,0 +1,52 @@
+{
+  "query": "\nSELECT \n  l.id,\n  CONCAT(m.module_number, '.', l.lesson_number) as lesson_code,\n  l.title_ar,\n  LENGTH(l.content_markdown) - LENGTH(REPLACE(l.content_markdown, 'وصف بصري', '')) / LENGTH('وصف بصري') as occurrence_count\nFROM lessons l\nJOIN modules m ON l.module_id = m.id\nWHERE l.content_markdown LIKE '%وصف بصري%'\nORDER BY l.id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT \n  l.id,\n  CONCAT(m.module_number, '.', l.lesson_number) as lesson_code,\n  l.title_ar,\n  LENGTH(l.content_markdown) - LENGTH(REPLACE(l.content_markdown, 'وصف بصري', '')) / LENGTH('وصف بصري') as occurrence_count\nFROM lessons l\nJOIN modules m ON l.module_id = m.id\nWHERE l.content_markdown LIKE '%وصف بصري%'\nORDER BY l.id;\n",
+  "rows": [
+    {
+      "id": "14",
+      "lesson_code": "4.1",
+      "title_ar": "الدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول",
+      "occurrence_count": "6063.9333"
+    },
+    {
+      "id": "15",
+      "lesson_code": "4.2",
+      "title_ar": "الدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية",
+      "occurrence_count": "5322.8667"
+    },
+    {
+      "id": "16",
+      "lesson_code": "4.3",
+      "title_ar": "الدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)",
+      "occurrence_count": "5255.6667"
+    },
+    {
+      "id": "17",
+      "lesson_code": "4.4",
+      "title_ar": "الدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)",
+      "occurrence_count": "5848.3333"
+    },
+    {
+      "id": "18",
+      "lesson_code": "5.1",
+      "title_ar": "الدرس 5.1: أنظمة التدفئة والتبريد",
+      "occurrence_count": "5069.0000"
+    },
+    {
+      "id": "22",
+      "lesson_code": "6.1",
+      "title_ar": "الدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)",
+      "occurrence_count": "4886.0667"
+    },
+    {
+      "id": "24",
+      "lesson_code": "6.3",
+      "title_ar": "الدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)",
+      "occurrence_count": "4522.0667"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tlesson_code\ttitle_ar\toccurrence_count\n14\t4.1\tالدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول\t6063.9333\n15\t4.2\tالدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية\t5322.8667\n16\t4.3\tالدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)\t5255.6667\n17\t4.4\tالدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)\t5848.3333\n18\t5.1\tالدرس 5.1: أنظمة التدفئة والتبريد\t5069.0000\n22\t6.1\tالدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)\t4886.0667\n24\t6.3\tالدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)\t4522.0667\n",
+  "stderr": "",
+  "execution_time_ms": 68
+}

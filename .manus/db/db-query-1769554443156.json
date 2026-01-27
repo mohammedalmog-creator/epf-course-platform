@@ -1,0 +1,38 @@
+{
+  "query": "\nSELECT id, title_ar\nFROM lessons\nWHERE content_markdown LIKE '%وصف بصري%'\nORDER BY id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT id, title_ar\nFROM lessons\nWHERE content_markdown LIKE '%وصف بصري%'\nORDER BY id;\n",
+  "rows": [
+    {
+      "id": "14",
+      "title_ar": "الدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول"
+    },
+    {
+      "id": "15",
+      "title_ar": "الدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية"
+    },
+    {
+      "id": "16",
+      "title_ar": "الدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)"
+    },
+    {
+      "id": "17",
+      "title_ar": "الدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)"
+    },
+    {
+      "id": "18",
+      "title_ar": "الدرس 5.1: أنظمة التدفئة والتبريد"
+    },
+    {
+      "id": "22",
+      "title_ar": "الدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)"
+    },
+    {
+      "id": "24",
+      "title_ar": "الدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle_ar\n14\tالدرس 4.1: تجفيف الغاز (Dehydration): وحدات الجلايكول\n15\tالدرس 4.2: تحلية الغاز (Sweetening): إزالة المركبات الكبريتية\n16\tالدرس 4.3: التحكم في نقطة الندى واستخلاص سوائل الغاز (NGL Recovery)\n17\tالدرس 4.4: معالجة المياه المنتجة (Produced Water Handling)\n18\tالدرس 5.1: أنظمة التدفئة والتبريد\n22\tالدرس 6.1: أنظمة تخزين النفط الخام (Storage Tanks)\n24\tالدرس 6.3: فلسفة السلامة وأنظمة الإغلاق في حالات الطوارئ (ESD)\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}
