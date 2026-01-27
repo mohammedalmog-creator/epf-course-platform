@@ -59,3 +59,8 @@
 - [x] Create user profile page
 - [x] Save user-specific progress and results
 - [x] Protect course content behind authentication
+
+## Bug Fixes & Improvements (User Reported)
+- [x] Fix quiz answer verification logic (correct answers marked as wrong)
+- [x] Add visual diagrams to all lessons
+- [x] Update scientific terminology to English with Arabic explanations (content already contains proper mix)

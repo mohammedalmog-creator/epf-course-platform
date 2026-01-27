@@ -63,7 +63,9 @@ export default function Quiz() {
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const options = currentQuestion?.optionsJson as Array<{ id: string; textAr: string }>;
+  const options = typeof currentQuestion?.optionsJson === 'string' 
+    ? JSON.parse(currentQuestion.optionsJson) 
+    : currentQuestion?.optionsJson as Array<{ id: string; textAr: string }>;
   const currentAnswer = answers.find(a => a.questionId === currentQuestion.id);
 
   const handleAnswerSubmit = () => {
@@ -243,7 +245,7 @@ export default function Quiz() {
             {/* Options */}
             <RadioGroup value={selectedOption} onValueChange={setSelectedOption} disabled={showExplanation}>
               <div className="space-y-3">
-                {options?.map((option) => (
+                {options?.map((option: { id: string; textAr: string }) => (
                   <div
                     key={option.id}
                     className={`flex items-center space-x-2 space-x-reverse p-4 rounded-lg border-2 transition-all ${
