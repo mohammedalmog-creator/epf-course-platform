@@ -1,0 +1,8 @@
+{
+  "query": "SELECT q.id, q.quiz_id, q.question_text, q.correct_option_id,\n       o1.id as opt1_id, o1.option_text as opt1_text,\n       o2.id as opt2_id, o2.option_text as opt2_text,\n       o3.id as opt3_id, o3.option_text as opt3_text,\n       o4.id as opt4_id, o4.option_text as opt4_text\nFROM quiz_questions q\nLEFT JOIN quiz_options o1 ON q.id = o1.question_id AND o1.option_order = 1\nLEFT JOIN quiz_options o2 ON q.id = o2.question_id AND o2.option_order = 2\nLEFT JOIN quiz_options o3 ON q.id = o3.question_id AND o3.option_order = 3\nLEFT JOIN quiz_options o4 ON q.id = o4.question_id AND o4.option_order = 4\nWHERE q.question_text LIKE '%فصل النفط عن الماء%صعوبة%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT q.id, q.quiz_id, q.question_text, q.correct_option_id,\n       o1.id as opt1_id, o1.option_text as opt1_text,\n       o2.id as opt2_id, o2.option_text as opt2_text,\n       o3.id as opt3_id, o3.option_text as opt3_text,\n       o4.id as opt4_id, o4.option_text as opt4_text\nFROM quiz_questions q\nLEFT JOIN quiz_options o1 ON q.id = o1.question_id AND o1.option_order = 1\nLEFT JOIN quiz_options o2 ON q.id = o2.question_id AND o2.option_order = 2\nLEFT JOIN quiz_options o3 ON q.id = o3.question_id AND o3.option_order = 3\nLEFT JOIN quiz_options o4 ON q.id = o4.question_id AND o4.option_order = 4\nWHERE q.question_text LIKE '%فصل النفط عن الماء%صعوبة%';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 't3xikgmndlqjnf6z2vn3gw.quiz_options' doesn't exist"
+  ]
+}
