@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, SUBSTRING(question_text_ar, 1, 100) as question_preview, correct_option_id\nFROM quiz_questions\nWHERE module_id = 2;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT id, SUBSTRING(question_text_ar, 1, 100) as question_preview, correct_option_id\nFROM quiz_questions\nWHERE module_id = 2;",
+  "rows": [
+    {
+      "id": "49",
+      "question_preview": "أي من الخصائص التالية تجعل فصل النفط عن الماء **أكثر صعوبة**؟",
+      "correct_option_id": "c"
+    },
+    {
+      "id": "50",
+      "question_preview": "إذا كان لديك فاصل حجمه 20 متر مكعب ومعدل تدفق السائل عبره هو 4 متر مكعب في الدقيقة، فما هو **زمن الم",
+      "correct_option_id": "c"
+    },
+    {
+      "id": "51",
+      "question_preview": "ما هي الوظيفة الرئيسية **للفاصل ثلاثي الأطوار (Three-Phase Separator)**؟",
+      "correct_option_id": "c"
+    },
+    {
+      "id": "52",
+      "question_preview": "ما هو الغرض الأساسي من **مستخلص الرذاذ (Mist Extractor)** داخل الفاصل؟",
+      "correct_option_id": "b"
+    },
+    {
+      "id": "53",
+      "question_preview": "أنت مشغل في منشأة ولاحظت أن نسبة الماء في النفط المصدر (BS&W) مرتفعة جداً. ما هي المشكلة الأكثر احتم",
+      "correct_option_id": "c"
+    },
+    {
+      "id": "54",
+      "question_preview": "أي نوع من الفاصلات يعتبر الخيار الأفضل لمنصة بحرية حيث تكون المساحة الأرضية محدودة جداً؟",
+      "correct_option_id": "a"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquestion_preview\tcorrect_option_id\n49\tأي من الخصائص التالية تجعل فصل النفط عن الماء **أكثر صعوبة**؟\tc\n50\tإذا كان لديك فاصل حجمه 20 متر مكعب ومعدل تدفق السائل عبره هو 4 متر مكعب في الدقيقة، فما هو **زمن الم\tc\n51\tما هي الوظيفة الرئيسية **للفاصل ثلاثي الأطوار (Three-Phase Separator)**؟\tc\n52\tما هو الغرض الأساسي من **مستخلص الرذاذ (Mist Extractor)** داخل الفاصل؟\tb\n53\tأنت مشغل في منشأة ولاحظت أن نسبة الماء في النفط المصدر (BS&W) مرتفعة جداً. ما هي المشكلة الأكثر احتم\tc\n54\tأي نوع من الفاصلات يعتبر الخيار الأفضل لمنصة بحرية حيث تكون المساحة الأرضية محدودة جداً؟\ta\n",
+  "stderr": "",
+  "execution_time_ms": 344
+}

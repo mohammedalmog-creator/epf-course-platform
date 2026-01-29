@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, question_text_ar, correct_option_id\nFROM quiz_questions\nWHERE id IN (\n  SELECT id FROM quiz_questions \n  WHERE question_text_ar LIKE '%ثلاثي%'\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT id, question_text_ar, correct_option_id\nFROM quiz_questions\nWHERE id IN (\n  SELECT id FROM quiz_questions \n  WHERE question_text_ar LIKE '%ثلاثي%'\n);",
+  "rows": [
+    {
+      "id": "51",
+      "question_text_ar": "ما هي الوظيفة الرئيسية **للفاصل ثلاثي الأطوار (Three-Phase Separator)**؟",
+      "correct_option_id": "c"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tquestion_text_ar\tcorrect_option_id\n51\tما هي الوظيفة الرئيسية **للفاصل ثلاثي الأطوار (Three-Phase Separator)**؟\tc\n",
+  "stderr": "",
+  "execution_time_ms": 344
+}

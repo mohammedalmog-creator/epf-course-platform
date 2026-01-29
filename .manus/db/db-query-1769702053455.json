@@ -1,0 +1,55 @@
+{
+  "query": "SELECT \n  m.id as module_id,\n  m.title_ar as module_title,\n  COUNT(q.id) as question_count\nFROM modules m\nLEFT JOIN quiz_questions q ON m.id = q.module_id\nGROUP BY m.id, m.title_ar\nORDER BY m.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT \n  m.id as module_id,\n  m.title_ar as module_title,\n  COUNT(q.id) as question_count\nFROM modules m\nLEFT JOIN quiz_questions q ON m.id = q.module_id\nGROUP BY m.id, m.title_ar\nORDER BY m.id;",
+  "rows": [
+    {
+      "module_id": "1",
+      "module_title": "مقدمة في صناعة النفط والغاز ودور الـ EPF",
+      "question_count": "6"
+    },
+    {
+      "module_id": "2",
+      "module_title": "فصل السوائل الثلاثي (Three-Phase Separation)",
+      "question_count": "6"
+    },
+    {
+      "module_id": "3",
+      "module_title": "أنظمة معالجة النفط الخام",
+      "question_count": "0"
+    },
+    {
+      "module_id": "4",
+      "module_title": "معالجة الغاز الطبيعي والمياه المنتجة",
+      "question_count": "6"
+    },
+    {
+      "module_id": "5",
+      "module_title": "أنظمة التدفئة والتبريد والضغط",
+      "question_count": "6"
+    },
+    {
+      "module_id": "6",
+      "module_title": "التخزين، القياس، والسلامة",
+      "question_count": "6"
+    },
+    {
+      "module_id": "7",
+      "module_title": "التصميم الأولي والحسابات الهندسية",
+      "question_count": "6"
+    },
+    {
+      "module_id": "8",
+      "module_title": "مشروع التخرج",
+      "question_count": "0"
+    },
+    {
+      "module_id": "9",
+      "module_title": "التشغيل والصيانة",
+      "question_count": "6"
+    }
+  ],
+  "messages": [],
+  "stdout": "module_id\tmodule_title\tquestion_count\n1\tمقدمة في صناعة النفط والغاز ودور الـ EPF\t6\n2\tفصل السوائل الثلاثي (Three-Phase Separation)\t6\n3\tأنظمة معالجة النفط الخام\t0\n4\tمعالجة الغاز الطبيعي والمياه المنتجة\t6\n5\tأنظمة التدفئة والتبريد والضغط\t6\n6\tالتخزين، القياس، والسلامة\t6\n7\tالتصميم الأولي والحسابات الهندسية\t6\n8\tمشروع التخرج\t0\n9\tالتشغيل والصيانة\t6\n",
+  "stderr": "",
+  "execution_time_ms": 370
+}
