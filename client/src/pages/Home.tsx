@@ -175,7 +175,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-muted/50 py-8">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2026 منصة دورة منشآت الإنتاج المبكر. جميع الحقوق محفوظة.</p>
+          <p>© 2026 منصة دورة منشآت الإنتاج المبكر. جميع الحقوق محفوظة شركة المُق للخدمات النفطية.</p>
         </div>
       </footer>
     </div>
