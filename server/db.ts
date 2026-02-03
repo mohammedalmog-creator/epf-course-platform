@@ -223,10 +223,45 @@ export async function getAllUserProgress(userId: number) {
   const db = await getDb();
   if (!db) return { modules: [], lessons: [] };
   
-  const moduleProgressData = await db.select().from(moduleProgress).where(eq(moduleProgress.userId, userId));
   const lessonProgressData = await db.select().from(lessonProgress).where(eq(lessonProgress.userId, userId));
   
-  return { modules: moduleProgressData, lessons: lessonProgressData };
+  // Get all modules and their lessons to calculate progress
+  const allModules = await db.select().from(modules);
+  const allLessons = await db.select().from(lessons);
+  
+  // Calculate module progress based on completed lessons
+  const calculatedModuleProgress = allModules.map(module => {
+    const moduleLessons = allLessons.filter(l => l.moduleId === module.id);
+    const completedLessons = moduleLessons.filter(ml => 
+      lessonProgressData.some(lp => lp.lessonId === ml.id && lp.completed)
+    );
+    
+    const completionPercentage = moduleLessons.length > 0 
+      ? Math.round((completedLessons.length / moduleLessons.length) * 100)
+      : 0;
+    
+    const completed = completionPercentage === 100;
+    
+    // Calculate time spent from lesson progress
+    const timeSpentMinutes = moduleLessons.reduce((total, ml) => {
+      const lessonProg = lessonProgressData.find(lp => lp.lessonId === ml.id);
+      return total + (lessonProg?.timeSpentMinutes || 0);
+    }, 0);
+    
+    return {
+      id: 0, // Not stored in DB
+      userId,
+      moduleId: module.id,
+      completed,
+      completionPercentage,
+      timeSpentMinutes,
+      lastAccessedAt: new Date(),
+      completedAt: completed ? new Date() : null,
+      createdAt: new Date(),
+    };
+  });
+  
+  return { modules: calculatedModuleProgress, lessons: lessonProgressData };
 }
 
 // Quiz queries

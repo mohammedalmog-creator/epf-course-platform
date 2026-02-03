@@ -42,7 +42,7 @@ export default function Home() {
             <span className="block text-primary mt-2">Early Production Facilities</span>
           </h2>
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            دورة تعليمية شاملة ومتكاملة لتعلم كل جوانب منشآت الإنتاج المبكر في صناعة النفط والغاز، 
+            دورة تعليمية شاملة ومتكاملة من شركة المُق للخدمات النفطية لتعلم كل جوانب منشآت الإنتاج المبكر في صناعة النفط والغاز، 
             من الأساسيات إلى الاحترافية، مع مشاريع عملية واختبارات تكيفية وشهادات معتمدة.
           </p>
           {isAuthenticated ? (
