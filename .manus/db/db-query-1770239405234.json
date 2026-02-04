@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, user_id, module_id, certificate_url, issued_at FROM certificates LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT id, user_id, module_id, certificate_url, issued_at FROM certificates LIMIT 3;",
+  "rows": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "module_id": "1",
+      "certificate_url": "blob:https://3000-isgjifjgj5ohkg68bfkr0-31cc2782.us2.manus.computer/ff4409e7-e3e5-42e1-a731-9c8115d8a3b7",
+      "issued_at": "2026-01-27 22:02:57"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuser_id\tmodule_id\tcertificate_url\tissued_at\n1\t1\t1\tblob:https://3000-isgjifjgj5ohkg68bfkr0-31cc2782.us2.manus.computer/ff4409e7-e3e5-42e1-a731-9c8115d8a3b7\t2026-01-27 22:02:57\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

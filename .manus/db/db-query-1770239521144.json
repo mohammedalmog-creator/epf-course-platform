@@ -1,0 +1,40 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'lessons';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'lessons';",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "module_id"
+    },
+    {
+      "COLUMN_NAME": "lesson_number"
+    },
+    {
+      "COLUMN_NAME": "title_ar"
+    },
+    {
+      "COLUMN_NAME": "title_en"
+    },
+    {
+      "COLUMN_NAME": "content_markdown"
+    },
+    {
+      "COLUMN_NAME": "estimated_minutes"
+    },
+    {
+      "COLUMN_NAME": "video_url"
+    },
+    {
+      "COLUMN_NAME": "order"
+    },
+    {
+      "COLUMN_NAME": "created_at"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\nmodule_id\nlesson_number\ntitle_ar\ntitle_en\ncontent_markdown\nestimated_minutes\nvideo_url\norder\ncreated_at\n",
+  "stderr": "",
+  "execution_time_ms": 356
+}

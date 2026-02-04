@@ -134,15 +134,112 @@ export const appRouter = router({
       return await db.getUserCertificates(ctx.user.id);
     }),
 
-    // Issue certificate (will be called after generating PDF)
-    issueCertificate: protectedProcedure
+    // Generate and issue certificate
+    generateCertificate: protectedProcedure
       .input(z.object({
         moduleId: z.number(),
-        certificateUrl: z.string(),
       }))
       .mutation(async ({ ctx, input }) => {
-        await db.saveCertificate(ctx.user.id, input.moduleId, input.certificateUrl);
-        return { success: true };
+        const PDFDocument = (await import('pdfkit')).default;
+        const { storagePut } = await import('./storage');
+        
+        // Get module info
+        const module = await db.getModuleById(input.moduleId);
+        if (!module) throw new Error('Module not found');
+        
+        // Get quiz score
+        const quizAttempts = await db.getUserQuizAttempts(ctx.user.id, input.moduleId);
+        const latestAttempt = quizAttempts[0];
+        
+        // Create PDF
+        const doc = new PDFDocument({
+          size: 'A4',
+          layout: 'landscape',
+          margin: 50,
+        });
+        
+        const chunks: Buffer[] = [];
+        doc.on('data', (chunk) => chunks.push(chunk));
+        
+        await new Promise<void>((resolve, reject) => {
+          doc.on('end', () => resolve());
+          doc.on('error', reject);
+          
+          const pageWidth = doc.page.width;
+          const pageHeight = doc.page.height;
+          
+          // Background color
+          doc.rect(0, 0, pageWidth, pageHeight).fill('#f0f8ff');
+          
+          // Border
+          doc.rect(20, 20, pageWidth - 40, pageHeight - 40)
+             .lineWidth(3)
+             .stroke('#228B22');
+          
+          // Title
+          doc.fontSize(40)
+             .fillColor('#228B22')
+             .text('Certificate of Completion', 0, 80, { align: 'center' });
+          
+          // Subtitle
+          doc.fontSize(16)
+             .fillColor('#666666')
+             .text('This certifies that', 0, 140, { align: 'center' });
+          
+          // User name
+          doc.fontSize(32)
+             .fillColor('#000000')
+             .text(ctx.user.name || 'Student', 0, 170, { align: 'center' });
+          
+          // Description
+          doc.fontSize(16)
+             .fillColor('#666666')
+             .text('has successfully completed', 0, 220, { align: 'center' });
+          
+          // Module name
+          doc.fontSize(24)
+             .fillColor('#228B22')
+             .text(module.titleEn || module.titleAr, 0, 250, { align: 'center' });
+          
+          // Course name
+          doc.fontSize(18)
+             .fillColor('#000000')
+             .text('Early Production Facilities (EPF) Course', 0, 290, { align: 'center' });
+          
+          // Date
+          doc.fontSize(14)
+             .fillColor('#666666');
+          const completionDate = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          doc.text(`Date of Completion: ${completionDate}`, 0, 330, { align: 'center' });
+          
+          // Score
+          if (latestAttempt) {
+            const score = Math.round((latestAttempt.score / latestAttempt.totalQuestions) * 100);
+            doc.text(`Quiz Score: ${score}%`, 0, 350, { align: 'center' });
+          }
+          
+          // Footer
+          doc.fontSize(12)
+             .fillColor('#999999')
+             .text('ALMOG Oil Services Company', 0, pageHeight - 80, { align: 'center' });
+          
+          doc.end();
+        });
+        
+        const pdfBuffer = Buffer.concat(chunks);
+        
+        // Upload to S3
+        const fileName = `certificates/${ctx.user.id}/module-${input.moduleId}-${Date.now()}.pdf`;
+        const { url } = await storagePut(fileName, pdfBuffer, 'application/pdf');
+        
+        // Save to database
+        await db.saveCertificate(ctx.user.id, input.moduleId, url);
+        
+        return { success: true, certificateUrl: url };
       }),
   }),
 

@@ -253,11 +253,13 @@ export default function Dashboard() {
                       <p className="text-xs text-muted-foreground mb-3">
                         تاريخ الإصدار: {new Date(cert.issuedAt).toLocaleDateString('ar-EG')}
                       </p>
-                      <a href={cert.certificateUrl} download>
-                        <Button size="sm" className="w-full">
-                          تحميل الشهادة
-                        </Button>
-                      </a>
+                      <Button 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => window.location.href = `/certificate/${cert.moduleId}`}
+                      >
+                        تحميل الشهادة
+                      </Button>
                     </CardContent>
                   </Card>
                 );

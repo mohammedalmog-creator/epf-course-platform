@@ -7,7 +7,7 @@ import { Link, useParams } from "wouter";
 import { getLoginUrl } from "@/const";
 import { useState } from "react";
 import { toast } from "sonner";
-import jsPDF from "jspdf";
+// jsPDF removed - now using server-side generation
 
 export default function Certificate() {
   const { id } = useParams<{ id: string }>();
@@ -23,7 +23,7 @@ export default function Certificate() {
     enabled: isAuthenticated,
   });
   
-  const issueCertificate = trpc.certificate.issueCertificate.useMutation();
+  const generateCertificate = trpc.certificate.generateCertificate.useMutation();
 
   if (authLoading || moduleLoading) {
     return (
@@ -61,96 +61,24 @@ export default function Certificate() {
   // Check if certificate already exists
   const existingCertificate = certificates?.find(c => c.moduleId === moduleId);
 
-  const generateCertificate = async () => {
+  const handleGenerateCertificate = async () => {
     if (!user || !module) return;
 
     setGenerating(true);
     try {
-      // Create PDF
-      const doc = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-      });
-
-      // Set RTL support (limited in jsPDF, we'll use English for certificate)
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-
-      // Background
-      doc.setFillColor(240, 248, 255);
-      doc.rect(0, 0, pageWidth, pageHeight, "F");
-
-      // Border
-      doc.setDrawColor(34, 139, 34);
-      doc.setLineWidth(2);
-      doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
-
-      // Title
-      doc.setFontSize(40);
-      doc.setTextColor(34, 139, 34);
-      doc.text("Certificate of Completion", pageWidth / 2, 40, { align: "center" });
-
-      // Subtitle
-      doc.setFontSize(16);
-      doc.setTextColor(100, 100, 100);
-      doc.text("This certifies that", pageWidth / 2, 60, { align: "center" });
-
-      // User name
-      doc.setFontSize(32);
-      doc.setTextColor(0, 0, 0);
-      doc.text(user.name || "Student", pageWidth / 2, 80, { align: "center" });
-
-      // Description
-      doc.setFontSize(16);
-      doc.setTextColor(100, 100, 100);
-      doc.text("has successfully completed", pageWidth / 2, 100, { align: "center" });
-
-      // Module name
-      doc.setFontSize(24);
-      doc.setTextColor(34, 139, 34);
-      const moduleTitle = module.titleEn || module.titleAr;
-      doc.text(moduleTitle, pageWidth / 2, 120, { align: "center" });
-
-      // Course name
-      doc.setFontSize(18);
-      doc.setTextColor(0, 0, 0);
-      doc.text("Early Production Facilities (EPF) Course", pageWidth / 2, 135, { align: "center" });
-
-      // Date
-      doc.setFontSize(14);
-      doc.setTextColor(100, 100, 100);
-      const completionDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      doc.text(`Date of Completion: ${completionDate}`, pageWidth / 2, 155, { align: "center" });
-
-      // Score
-      if (latestAttempt) {
-        const score = Math.round((latestAttempt.score / latestAttempt.totalQuestions) * 100);
-        doc.text(`Quiz Score: ${score}%`, pageWidth / 2, 165, { align: "center" });
-      }
-
-      // Award icon (simple star)
-      doc.setFillColor(255, 215, 0);
-      doc.circle(pageWidth / 2, 35, 8, "F");
-
-      // Save PDF as blob
-      const pdfBlob = doc.output("blob");
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-
-      // Save certificate record to database
-      await issueCertificate.mutateAsync({
+      const result = await generateCertificate.mutateAsync({
         moduleId,
-        certificateUrl: pdfUrl,
       });
 
-      // Download PDF
-      doc.save(`EPF_Certificate_Module_${module.moduleNumber}.pdf`);
-
-      toast.success("تم إصدار الشهادة بنجاح!");
+      if (result.success && result.certificateUrl) {
+        // Download the certificate
+        const link = document.createElement('a');
+        link.href = result.certificateUrl;
+        link.download = `EPF_Certificate_Module_${module.moduleNumber}.pdf`;
+        link.click();
+        
+        toast.success("تم إصدار الشهادة بنجاح!");
+      }
     } catch (error) {
       console.error("Error generating certificate:", error);
       toast.error("حدث خطأ أثناء إنشاء الشهادة");
@@ -231,7 +159,7 @@ export default function Certificate() {
                   </p>
                 </div>
                 <Button
-                  onClick={generateCertificate}
+                  onClick={handleGenerateCertificate}
                   disabled={generating}
                   className="w-full"
                   size="lg"
