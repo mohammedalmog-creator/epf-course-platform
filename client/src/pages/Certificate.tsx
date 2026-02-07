@@ -24,6 +24,7 @@ export default function Certificate() {
   });
   
   const generateCertificate = trpc.certificate.generateCertificate.useMutation();
+  const downloadCertificateMutation = trpc.certificate.downloadCertificate.useMutation();
 
   if (authLoading || moduleLoading) {
     return (
@@ -71,19 +72,47 @@ export default function Certificate() {
       });
 
       if (result.success && result.certificateUrl) {
-        // Download the certificate
-        const link = document.createElement('a');
-        link.href = result.certificateUrl;
-        link.download = `EPF_Certificate_Module_${module.moduleNumber}.pdf`;
-        link.click();
-        
         toast.success("تم إصدار الشهادة بنجاح!");
+        // Reload to get the new certificate
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error generating certificate:", error);
       toast.error("حدث خطأ أثناء إنشاء الشهادة");
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const downloadCertificate = async (certificateId: number, filename: string) => {
+    try {
+      const result = await downloadCertificateMutation.mutateAsync({ certificateId });
+      
+      if (result.success && result.pdfBase64) {
+        // Convert base64 to blob
+        const byteCharacters = atob(result.pdfBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        
+        // Download
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = result.filename || filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        
+        toast.success("تم تحميل الشهادة بنجاح!");
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast.error("حدث خطأ أثناء تحميل الشهادة");
     }
   };
 
@@ -144,12 +173,24 @@ export default function Certificate() {
                     تاريخ الإصدار: {new Date(existingCertificate.issuedAt).toLocaleDateString('ar-EG')}
                   </p>
                 </div>
-                <a href={existingCertificate.certificateUrl} download>
-                  <Button className="w-full" size="lg">
-                    <Download className="ml-2 h-5 w-5" />
-                    تحميل الشهادة
-                  </Button>
-                </a>
+                <Button 
+                  onClick={() => downloadCertificate(existingCertificate.id, `EPF_Certificate_Module_${module.moduleNumber}.pdf`)}
+                  className="w-full" 
+                  size="lg"
+                  disabled={downloadCertificateMutation.isPending}
+                >
+                  {downloadCertificateMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white ml-2"></div>
+                      جاري التحميل...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="ml-2 h-5 w-5" />
+                      تحميل الشهادة
+                    </>
+                  )}
+                </Button>
               </div>
             ) : (
               <div className="space-y-4">

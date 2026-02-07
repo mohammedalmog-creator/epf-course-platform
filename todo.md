@@ -6,3 +6,6 @@
 
 ## New Issues
 - [x] Fix certificate download button on /certificate/1 page - button doesn't trigger download
+
+## Critical Issues
+- [x] Certificate download still not working - investigate and fix permanently

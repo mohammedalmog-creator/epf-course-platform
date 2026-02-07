@@ -241,6 +241,35 @@ export const appRouter = router({
         
         return { success: true, certificateUrl: url };
       }),
+
+    // Download certificate (proxy to avoid CORS issues)
+    downloadCertificate: protectedProcedure
+      .input(z.object({
+        certificateId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const certificates = await db.getUserCertificates(ctx.user.id);
+        const certificate = certificates.find(c => c.id === input.certificateId);
+        
+        if (!certificate) {
+          throw new Error('Certificate not found');
+        }
+
+        // Fetch from S3
+        const response = await fetch(certificate.certificateUrl);
+        if (!response.ok) {
+          throw new Error('Failed to fetch certificate');
+        }
+
+        const buffer = await response.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        
+        return { 
+          success: true, 
+          pdfBase64: base64,
+          filename: `EPF_Certificate_Module_${certificate.moduleId}.pdf`
+        };
+      }),
   }),
 
   project: router({
