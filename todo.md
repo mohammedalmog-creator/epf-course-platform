@@ -9,3 +9,9 @@
 
 ## Critical Issues
 - [x] Certificate download still not working - investigate and fix permanently
+
+## Deployment Issues
+- [x] Published site at https://epfcourse-t3xikgmn.manus.space not accessible - needs republishing with latest fixes
+
+## New Features
+- [x] Add ALMOG logo to certificate PDF design

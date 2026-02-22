@@ -1,0 +1,8 @@
+{
+  "query": "DELETE FROM certificates WHERE moduleId = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute DELETE FROM certificates WHERE moduleId = 1;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'moduleid' in 'where clause'"
+  ]
+}

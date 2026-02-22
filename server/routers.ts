@@ -142,6 +142,11 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const PDFDocument = (await import('pdfkit')).default;
         const { storagePut } = await import('./storage');
+        const fs = await import('fs');
+        const path = await import('path');
+        const { fileURLToPath } = await import('url');
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
         
         // Get module info
         const module = await db.getModuleById(input.moduleId);
@@ -170,6 +175,20 @@ export const appRouter = router({
           
           // Background color
           doc.rect(0, 0, pageWidth, pageHeight).fill('#f0f8ff');
+          
+          // Add ALMOG logo at top
+          try {
+            const logoPath = path.join(__dirname, 'almog-logo.png');
+            console.log('Attempting to load logo from:', logoPath);
+            if (fs.existsSync(logoPath)) {
+              doc.image(logoPath, pageWidth - 150, 30, { width: 120, fit: [120, 60] });
+              console.log('Logo added successfully');
+            } else {
+              console.log('Logo file not found at:', logoPath);
+            }
+          } catch (err) {
+            console.error('Failed to add logo to certificate:', err);
+          }
           
           // Border
           doc.rect(20, 20, pageWidth - 40, pageHeight - 40)
