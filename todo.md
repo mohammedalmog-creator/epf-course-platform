@@ -19,3 +19,6 @@
 ## Quiz UI Issues
 - [x] Align quiz answers to the right (RTL) for Arabic text
 - [x] Randomize answer order so correct answer is not always in second position
+
+## Quiz UI Enhancement
+- [x] Move green checkmark icon to the right side of correct answers (RTL layout)

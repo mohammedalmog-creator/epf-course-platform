@@ -285,16 +285,16 @@ export default function Quiz() {
                         : "border-border hover:border-primary/50"
                     }`}
                   >
-                    <RadioGroupItem value={option.id} id={option.id} />
+                    {showExplanation && option.id === currentQuestion?.correctOptionId && (
+                      <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                    )}
+                    {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
+                      <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                    )}
                     <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base text-right leading-relaxed">
                       {option.textAr}
                     </Label>
-                    {showExplanation && option.id === currentQuestion?.correctOptionId && (
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    )}
-                    {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
-                      <XCircle className="h-5 w-5 text-red-600" />
-                    )}
+                    <RadioGroupItem value={option.id} id={option.id} />
                   </div>
                 ))}
               </div>
