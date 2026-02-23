@@ -22,3 +22,6 @@
 
 ## Quiz UI Enhancement
 - [x] Move green checkmark icon to the right side of correct answers (RTL layout)
+
+## Quiz UI Fix - Correct Alignment
+- [x] Align entire answer text with checkmark together on the right side (not separate)

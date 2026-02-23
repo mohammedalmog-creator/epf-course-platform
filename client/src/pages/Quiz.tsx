@@ -273,7 +273,7 @@ export default function Quiz() {
                 {(shuffledOptions as Array<{ id: string; textAr: string }>)?.map((option) => (
                   <div
                     key={option.id}
-                    className={`flex items-center space-x-2 space-x-reverse p-4 rounded-lg border-2 transition-all ${
+                    className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
                       showExplanation
                         ? option.id === currentQuestion?.correctOptionId
                           ? "border-green-500 bg-green-50 dark:bg-green-900/20"
@@ -285,16 +285,18 @@ export default function Quiz() {
                         : "border-border hover:border-primary/50"
                     }`}
                   >
-                    {showExplanation && option.id === currentQuestion?.correctOptionId && (
-                      <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    )}
-                    {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
-                      <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                    )}
-                    <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base text-right leading-relaxed">
-                      {option.textAr}
-                    </Label>
-                    <RadioGroupItem value={option.id} id={option.id} />
+                    <RadioGroupItem value={option.id} id={option.id} className="flex-shrink-0" />
+                    <div className="flex items-center gap-2 flex-1 justify-end">
+                      <Label htmlFor={option.id} className="cursor-pointer text-base leading-relaxed">
+                        {option.textAr}
+                      </Label>
+                      {showExplanation && option.id === currentQuestion?.correctOptionId && (
+                        <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                      )}
+                      {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
+                        <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
