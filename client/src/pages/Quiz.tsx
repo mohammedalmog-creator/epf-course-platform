@@ -7,8 +7,18 @@ import { trpc } from "@/lib/trpc";
 import { BookOpen, ArrowLeft, CheckCircle2, XCircle, Award } from "lucide-react";
 import { Link, useLocation, useParams } from "wouter";
 import { getLoginUrl } from "@/const";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
+
+// Shuffle function to randomize answer order
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 interface Answer {
   questionId: number;
@@ -32,6 +42,19 @@ export default function Quiz() {
   const { data: module } = trpc.course.getModule.useQuery({ moduleId });
   const { data: questions, isLoading: questionsLoading } = trpc.course.getQuizQuestions.useQuery({ moduleId });
   const submitQuiz = trpc.quiz.submitQuiz.useMutation();
+
+  // Prepare current question data
+  const currentQuestion = questions?.[currentQuestionIndex];
+  const options = currentQuestion ? (
+    typeof currentQuestion.optionsJson === 'string' 
+      ? JSON.parse(currentQuestion.optionsJson) 
+      : currentQuestion.optionsJson as Array<{ id: string; textAr: string }>
+  ) : [];
+  
+  // Shuffle options once per question using useMemo
+  const shuffledOptions = useMemo(() => {
+    return options ? shuffleArray(options) : [];
+  }, [currentQuestion?.id]);
 
   if (authLoading || questionsLoading) {
     return (
@@ -62,14 +85,10 @@ export default function Quiz() {
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const options = typeof currentQuestion?.optionsJson === 'string' 
-    ? JSON.parse(currentQuestion.optionsJson) 
-    : currentQuestion?.optionsJson as Array<{ id: string; textAr: string }>;
-  const currentAnswer = answers.find(a => a.questionId === currentQuestion.id);
+  const currentAnswer = answers.find(a => a.questionId === currentQuestion?.id);
 
   const handleAnswerSubmit = () => {
-    if (!selectedOption) {
+    if (!selectedOption || !currentQuestion) {
       toast.error("الرجاء اختيار إجابة");
       return;
     }
@@ -244,19 +263,19 @@ export default function Quiz() {
         <Card>
           <CardHeader>
             <CardTitle className="text-xl leading-relaxed">
-              {currentQuestion.questionTextAr}
+              {currentQuestion?.questionTextAr}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Options */}
             <RadioGroup value={selectedOption} onValueChange={setSelectedOption} disabled={showExplanation}>
               <div className="space-y-3">
-                {options?.map((option: { id: string; textAr: string }) => (
+                {(shuffledOptions as Array<{ id: string; textAr: string }>)?.map((option) => (
                   <div
                     key={option.id}
                     className={`flex items-center space-x-2 space-x-reverse p-4 rounded-lg border-2 transition-all ${
                       showExplanation
-                        ? option.id === currentQuestion.correctOptionId
+                        ? option.id === currentQuestion?.correctOptionId
                           ? "border-green-500 bg-green-50 dark:bg-green-900/20"
                           : option.id === selectedOption
                           ? "border-red-500 bg-red-50 dark:bg-red-900/20"
@@ -267,13 +286,13 @@ export default function Quiz() {
                     }`}
                   >
                     <RadioGroupItem value={option.id} id={option.id} />
-                    <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base text-right">
+                    <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base text-right leading-relaxed">
                       {option.textAr}
                     </Label>
-                    {showExplanation && option.id === currentQuestion.correctOptionId && (
+                    {showExplanation && option.id === currentQuestion?.correctOptionId && (
                       <CheckCircle2 className="h-5 w-5 text-green-600" />
                     )}
-                    {showExplanation && option.id === selectedOption && option.id !== currentQuestion.correctOptionId && (
+                    {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
                       <XCircle className="h-5 w-5 text-red-600" />
                     )}
                   </div>
@@ -282,7 +301,7 @@ export default function Quiz() {
             </RadioGroup>
 
             {/* Explanation */}
-            {showExplanation && currentQuestion.explanationAr && (
+            {showExplanation && currentQuestion?.explanationAr && (
               <div className={`p-4 rounded-lg ${
                 currentAnswer?.correct
                   ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
@@ -301,7 +320,7 @@ export default function Quiz() {
                     </>
                   )}
                 </h4>
-                <p className="text-sm leading-relaxed">{currentQuestion.explanationAr}</p>
+                <p className="text-sm leading-relaxed">{currentQuestion?.explanationAr}</p>
               </div>
             )}
 
