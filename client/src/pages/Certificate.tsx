@@ -127,10 +127,10 @@ export default function Certificate() {
         <div className="container flex h-16 items-center justify-between">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
-              <img src="/almog-logo.gif" alt="ALMOG" className="h-14" />
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-emerald-600" />
-                <h1 className="text-lg font-bold">منصة دورة EPF</h1>
+              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-12" />
+              <div className="hidden sm:block">
+                <p className="text-xs text-muted-foreground leading-none">شركة المُق للخدمات النفطية</p>
+                <p className="text-sm font-bold leading-tight">منصة التدريب التقني</p>
               </div>
             </div>
           </Link>
@@ -227,7 +227,7 @@ export default function Certificate() {
                 <div className="relative flex flex-col items-center justify-center h-full px-10 py-6 text-center gap-2">
                   {/* Logo + Company */}
                   <div className="flex items-center gap-3 mb-1">
-                    <img src="/almog-logo.gif" alt="ALMOG" className="h-10 object-contain" />
+                    <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-10 object-contain" />
                     <div className="text-left">
                       <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">ALMOG OIL SERVICES</div>
                       <div className="text-[9px] text-gray-500 tracking-wide">Professional Training Division</div>

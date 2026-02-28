@@ -104,3 +104,13 @@
 - [x] Features section highlighting platform benefits
 - [x] Professional footer with ALMOG logo and navigation links
 - [x] Sticky header with navigation links and auth buttons
+
+## Logo & Certificate Improvements (Mar 2026)
+- [x] Upload official ALMOG SVG logo to CDN
+- [x] Replace old GIF logo with official SVG across all 12+ pages
+- [x] Standardize logo size to h-12 across all page headers
+- [x] Update header branding to two-line: company name + platform name
+- [x] Convert SVG to PNG for PDF certificate generation (high quality)
+- [x] Lesson completion percentage works for both courses (Modules.tsx)
+- [x] EPF certificate PDF uses same professional design as Wellhead
+- [x] Certificate.tsx shows attempt count and verification code for both courses

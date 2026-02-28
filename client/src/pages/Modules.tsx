@@ -58,7 +58,7 @@ export default function Modules() {
         <div className="container flex h-16 items-center justify-between">
           <Link href="/courses">
             <div className="flex items-center gap-4 cursor-pointer">
-              <img src="/almog-logo.gif" alt="ALMOG" className="h-16" />
+              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-16" />
               <div className="flex items-center gap-2">
                 <CourseIcon className={`h-6 w-6 ${courseInfo.color}`} />
                 <h1 className="text-xl font-bold">{courseInfo.titleAr}</h1>

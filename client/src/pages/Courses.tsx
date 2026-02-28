@@ -43,10 +43,10 @@ export default function Courses() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
-            <img src="/almog-logo.gif" alt="ALMOG" className="h-16" />
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold">منصة التدريب التقني</h1>
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-12" />
+            <div className="hidden sm:block">
+              <p className="text-xs text-muted-foreground leading-none">شركة المُق للخدمات النفطية</p>
+              <p className="text-sm font-bold leading-tight">منصة التدريب التقني</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
