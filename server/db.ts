@@ -472,3 +472,27 @@ export async function adminGetUserDetail(userId: number) {
     completedLessonsCount: Number(completedLessons[0]?.count ?? 0),
   };
 }
+
+export async function verifyCertificate(verificationCode: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const rows = await db.select({
+    certId: certificates.id,
+    issuedAt: certificates.issuedAt,
+    attemptCount: certificates.attemptCount,
+    scorePercent: certificates.scorePercent,
+    verificationCode: certificates.verificationCode,
+    userName: users.name,
+    moduleTitleAr: modules.titleAr,
+    moduleTitleEn: modules.titleEn,
+    courseId: modules.courseId,
+  })
+  .from(certificates)
+  .leftJoin(users, eq(certificates.userId, users.id))
+  .leftJoin(modules, eq(certificates.moduleId, modules.id))
+  .where(eq(certificates.verificationCode, verificationCode))
+  .limit(1);
+
+  return rows[0] ?? null;
+}

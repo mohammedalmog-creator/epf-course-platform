@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import {
   BookOpen, Award, Download, ArrowLeft, CheckCircle2, RotateCcw,
-  Shield, Hash, Calendar, Target, RefreshCw, Star
+  Shield, Hash, Calendar, Target, RefreshCw, Star, ExternalLink
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { getLoginUrl } from "@/const";
@@ -356,6 +356,15 @@ export default function Certificate() {
                   <p className="text-xs text-muted-foreground mt-1">
                     هذا الرمز الفريد مُدرج في ملف PDF ويُستخدم للتحقق من أصالة الشهادة.
                   </p>
+                  <a
+                    href={`/verify/${verificationCode}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 hover:underline mt-1"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    صفحة التحقق من الشهادة
+                  </a>
                 </div>
               </div>
             )}

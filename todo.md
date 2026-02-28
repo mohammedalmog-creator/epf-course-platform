@@ -132,3 +132,10 @@
 - [x] Add promote/demote user to admin button
 - [x] Register /admin route in App.tsx
 - [x] Add admin nav link in Home.tsx header (visible only to admin role, amber color)
+
+## Certificate Verification & CSV Export (Mar 2026)
+- [ ] Add publicProcedure: verifyCertificate (lookup by code, return cert + user + module info)
+- [ ] Build CertificateVerify.tsx: public page /verify/:code with professional verification UI
+- [ ] Register /verify/:code route in App.tsx
+- [ ] Add CSV export to AdminPanel: export trainees, quiz results, certificates as CSV
+- [ ] Add verification URL to Certificate.tsx page and PDF footer

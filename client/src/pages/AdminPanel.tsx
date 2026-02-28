@@ -37,6 +37,7 @@ import {
   FileText,
   Calendar,
   Hash,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -174,6 +175,19 @@ function UserDetailDialog({ userId, open, onClose }: { userId: number | null; op
   );
 }
 
+// ─── CSV Export Helpers ──────────────────────────────────────────────────────
+function downloadCSV(filename: string, rows: string[][]) {
+  const bom = "\uFEFF"; // UTF-8 BOM for Arabic support in Excel
+  const csv = bom + rows.map(r => r.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AdminPanel() {
   const [, navigate] = useLocation();
   const { user, loading: authLoading } = useAuth();
@@ -222,6 +236,49 @@ export default function AdminPanel() {
       c.moduleTitleAr?.toLowerCase().includes(searchCerts.toLowerCase()) ||
       c.verificationCode?.toLowerCase().includes(searchCerts.toLowerCase())
     ), [certificates, searchCerts]);
+
+  const exportUsersCSV = () => {
+    const headers = ["#", "الاسم", "الصلاحية", "تاريخ الانضمام"];
+    const rows = (users ?? []).map((u, i) => [
+      String(i + 1),
+      u.name ?? "",
+      u.role === "admin" ? "مسؤول" : "متدرب",
+      new Date(u.createdAt).toLocaleDateString("ar-SA"),
+    ]);
+    downloadCSV("المتدربون.csv", [headers, ...rows]);
+    toast.success("تم تصدير قائمة المتدربين");
+  };
+
+  const exportQuizCSV = () => {
+    const headers = ["المتدرب", "الوحدة", "النتيجة", "النسبة", "الحالة", "التاريخ"];
+    const rows = (quizAttempts ?? []).map(a => {
+      const pct = Math.round((a.score / a.totalQuestions) * 100);
+      return [
+        a.userName ?? "",
+        a.moduleTitleAr ?? "",
+        `${a.score}/${a.totalQuestions}`,
+        `${pct}%`,
+        pct >= 70 ? "ناجح" : "راسب",
+        new Date(a.completedAt).toLocaleDateString("ar-SA"),
+      ];
+    });
+    downloadCSV("نتائج_الاختبارات.csv", [headers, ...rows]);
+    toast.success("تم تصدير نتائج الاختبارات");
+  };
+
+  const exportCertsCSV = () => {
+    const headers = ["المتدرب", "الوحدة", "النتيجة", "المحاولات", "رمز التحقق", "تاريخ الإصدار"];
+    const rows = (certificates ?? []).map(c => [
+      c.userName ?? "",
+      c.moduleTitleAr ?? "",
+      `${c.scorePercent ?? 0}%`,
+      String(c.attemptCount ?? 1),
+      c.verificationCode ?? "",
+      new Date(c.issuedAt).toLocaleDateString("ar-SA"),
+    ]);
+    downloadCSV("الشهادات.csv", [headers, ...rows]);
+    toast.success("تم تصدير قائمة الشهادات");
+  };
 
   if (authLoading) {
     return (
@@ -324,6 +381,11 @@ export default function AdminPanel() {
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <CardTitle className="text-lg">قائمة المتدربين</CardTitle>
+                  <div className="flex items-center gap-3">
+                  <Button variant="outline" size="sm" onClick={exportUsersCSV} className="gap-2 shrink-0">
+                    <Download className="h-4 w-4" />
+                    تصدير CSV
+                  </Button>
                   <div className="relative w-64">
                     <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -332,6 +394,7 @@ export default function AdminPanel() {
                       onChange={e => setSearchUsers(e.target.value)}
                       className="pr-9 text-right"
                     />
+                  </div>
                   </div>
                 </div>
               </CardHeader>
@@ -424,14 +487,20 @@ export default function AdminPanel() {
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <CardTitle className="text-lg">نتائج الاختبارات</CardTitle>
-                  <div className="relative w-64">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="بحث بالاسم أو الوحدة..."
-                      value={searchQuiz}
-                      onChange={e => setSearchQuiz(e.target.value)}
-                      className="pr-9 text-right"
-                    />
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" size="sm" onClick={exportQuizCSV} className="gap-2 shrink-0">
+                      <Download className="h-4 w-4" />
+                      تصدير CSV
+                    </Button>
+                    <div className="relative w-64">
+                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="بحث بالاسم أو الوحدة..."
+                        value={searchQuiz}
+                        onChange={e => setSearchQuiz(e.target.value)}
+                        className="pr-9 text-right"
+                      />
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -506,14 +575,20 @@ export default function AdminPanel() {
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <CardTitle className="text-lg">الشهادات المُصدرة</CardTitle>
-                  <div className="relative w-64">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="بحث بالاسم أو رمز التحقق..."
-                      value={searchCerts}
-                      onChange={e => setSearchCerts(e.target.value)}
-                      className="pr-9 text-right"
-                    />
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" size="sm" onClick={exportCertsCSV} className="gap-2 shrink-0">
+                      <Download className="h-4 w-4" />
+                      تصدير CSV
+                    </Button>
+                    <div className="relative w-64">
+                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="بحث بالاسم أو رمز التحقق..."
+                        value={searchCerts}
+                        onChange={e => setSearchCerts(e.target.value)}
+                        className="pr-9 text-right"
+                      />
+                    </div>
                   </div>
                 </div>
               </CardHeader>

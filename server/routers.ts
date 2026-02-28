@@ -384,6 +384,15 @@ export const appRouter = router({
     }),
   }),
 
+  // ─── Certificate Verification (Public) ───────────────────────────────────────
+  certificates: router({
+    verify: publicProcedure
+      .input(z.object({ code: z.string().min(1) }))
+      .query(async ({ input }) => {
+        return await db.verifyCertificate(input.code);
+      }),
+  }),
+
   // ─── Admin Router ───────────────────────────────────────────────────────────
   admin: router({
     // Guard: all admin procedures require admin role

@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Certificate from "./pages/Certificate";
 import GraduationProject from "./pages/GraduationProject";
 import AdminPanel from "./pages/AdminPanel";
+import CertificateVerify from "./pages/CertificateVerify";
 
 function Router() {
   return (
@@ -31,6 +32,8 @@ function Router() {
       <Route path="/certificate/:id" component={Certificate} />
       <Route path="/graduation-project" component={GraduationProject} />
       <Route path="/admin" component={AdminPanel} />
+      <Route path="/verify/:code" component={CertificateVerify} />
+      <Route path="/verify" component={CertificateVerify} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
