@@ -65,3 +65,9 @@
 - [x] Uploaded 59 lesson images to CDN
 - [x] Updated all lessons in DB with CDN image URLs
 - [x] Updated LessonView.tsx to display lesson image at top of content
+
+## Wellhead Course - Full Content Review
+- [ ] Audit all 12 modules and 60 lessons for content quality and logical sequence
+- [ ] Fix any content issues found (missing content, wrong sequence, poor markdown)
+- [ ] Review and replace any poor-quality or mismatched lesson images
+- [ ] Verify all lesson numbers and module order are correct
