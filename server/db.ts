@@ -93,10 +93,13 @@ export async function getUserByOpenId(openId: string) {
 }
 
 // Course content queries
-export async function getAllModules(): Promise<Module[]> {
+export async function getAllModules(courseId?: number): Promise<Module[]> {
   const db = await getDb();
   if (!db) return [];
   
+  if (courseId !== undefined) {
+    return await db.select().from(modules).where(eq(modules.courseId, courseId)).orderBy(modules.order);
+  }
   return await db.select().from(modules).orderBy(modules.order);
 }
 

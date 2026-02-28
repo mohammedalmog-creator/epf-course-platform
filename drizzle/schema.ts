@@ -23,7 +23,8 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const modules = mysqlTable("modules", {
   id: int("id").autoincrement().primaryKey(),
-  moduleNumber: int("module_number").notNull().unique(),
+  courseId: int("course_id").notNull().default(1), // 1=EPF, 2=Wellhead
+  moduleNumber: int("module_number").notNull(),
   titleAr: text("title_ar").notNull(),
   titleEn: text("title_en"),
   descriptionAr: text("description_ar"),

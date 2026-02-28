@@ -22,8 +22,8 @@ export default function Home() {
           </div>
           <div>
             {isAuthenticated ? (
-              <Link href="/modules">
-                <Button>الدخول إلى الدورة</Button>
+              <Link href="/courses">
+                <Button>الدخول إلى الدورات</Button>
               </Link>
             ) : (
               <a href={getLoginUrl()}>
@@ -46,7 +46,7 @@ export default function Home() {
             من الأساسيات إلى الاحترافية، مع مشاريع عملية واختبارات تكيفية وشهادات معتمدة.
           </p>
           {isAuthenticated ? (
-            <Link href="/modules">
+            <Link href="/courses">
               <Button size="lg" className="text-lg px-8">
                 ابدأ التعلم الآن
               </Button>
@@ -157,9 +157,9 @@ export default function Home() {
             ابدأ رحلتك التعليمية الآن واحصل على المعرفة والمهارات اللازمة لتصميم وتشغيل منشآت الإنتاج المبكر
           </p>
           {isAuthenticated ? (
-            <Link href="/modules">
+            <Link href="/courses">
               <Button size="lg" className="text-lg px-8">
-                الدخول إلى الدورة
+                الدخول إلى الدورات
               </Button>
             </Link>
           ) : (

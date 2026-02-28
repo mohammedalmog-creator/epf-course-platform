@@ -34,3 +34,11 @@
 
 ## Critical Bug - Quiz Correct Answer Validation
 - [x] Fix: correct answers being marked as wrong - mismatched correct_option_id in database (21 out of 42 questions fixed)
+
+## Wellhead Maintenance Course
+- [x] Seed 12 wellhead modules and 18 lessons into database
+- [x] Add 61 bilingual (AR+EN) quiz questions for all 12 modules
+- [x] Add course selection page (EPF + Wellhead)
+- [x] Update navigation to support multiple courses
+- [x] Update getModules API to filter by courseId
+- [x] Test all modules and quizzes end-to-end
