@@ -31,3 +31,6 @@
 - [x] Migrate database schema
 - [x] Translate all quiz questions and options to English and update DB
 - [x] Update Quiz UI to display English text
+
+## Critical Bug - Quiz Correct Answer Validation
+- [x] Fix: correct answers being marked as wrong - mismatched correct_option_id in database (21 out of 42 questions fixed)
