@@ -95,3 +95,12 @@
 ### File Cleanup
 - [x] Delete all scripts/*.mjs seed/fix files (19 files removed)
 - [x] Delete ComponentShowcase.tsx (unused page)
+
+## Home Page Redesign (Mar 2026)
+- [x] Redesign Home.tsx as professional multi-course landing page for ALMOG Petroleum Services
+- [x] Hero section with dark gradient background and ALMOG branding
+- [x] Stats bar showing platform-wide numbers (21 units, 100+ lessons, 138+ questions, 2 courses)
+- [x] Courses section showing both EPF and Wellhead courses with topics, stats, and CTAs
+- [x] Features section highlighting platform benefits
+- [x] Professional footer with ALMOG logo and navigation links
+- [x] Sticky header with navigation links and auth buttons
