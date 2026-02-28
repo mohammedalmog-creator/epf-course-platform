@@ -149,3 +149,20 @@
 - [ ] Add auto-notification to admin when new user registers (via notifyOwner)
 - [ ] Update admin panel to show phone and email columns for each trainee
 - [ ] Update CSV export to include phone and email
+
+## Visual Content & UI Enhancement (Mar 2026)
+- [x] Add illustrative images for valve types lesson (60015) and other technical lessons
+- [x] Audit all wellhead lessons and identify those needing additional visual aids
+- [x] Generate professional illustrative images for identified lessons (4 valve type diagrams)
+- [x] Redesign lesson content rendering: beautiful typography, cards, callouts, step indicators
+- [x] Apply improved content style to all courses
+
+## Visual Improvements Completed (Mar 2026)
+- [x] Redesign LessonView.tsx with attractive dark theme, reading progress bar, better typography
+- [x] Add visual hierarchy with color-coded headings, styled code blocks, tables, and blockquotes
+- [x] Generate 4 professional technical diagrams for valve types (Gate, Ball, Choke, Check valves)
+- [x] Embed valve type images directly in lesson 60015 content
+- [x] Expand short lessons: 60023, 60024, 60025, 60026, 60028, 60029, 60031 with richer content
+- [x] Add reading progress bar at top of lesson page
+- [x] Improve lesson navigation with prev/next lesson titles shown in buttons
+- [x] Add motivational "key takeaway" section before completion button
