@@ -298,7 +298,14 @@ export async function getUserQuizAttempts(userId: number, moduleId?: number): Pr
 }
 
 // Certificate queries
-export async function saveCertificate(userId: number, moduleId: number, certificateUrl: string): Promise<void> {
+export async function saveCertificate(
+  userId: number,
+  moduleId: number,
+  certificateUrl: string,
+  attemptCount: number = 1,
+  scorePercent: number = 0,
+  verificationCode: string = ''
+): Promise<void> {
   const db = await getDb();
   if (!db) return;
   
@@ -307,6 +314,9 @@ export async function saveCertificate(userId: number, moduleId: number, certific
     moduleId,
     certificateUrl,
     issuedAt: new Date(),
+    attemptCount,
+    scorePercent,
+    verificationCode,
   });
 }
 

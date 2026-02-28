@@ -154,15 +154,27 @@ export const appRouter = router({
         const module = await db.getModuleById(input.moduleId);
         if (!module) throw new Error('Module not found');
         
-        // Get quiz score
+        // Get quiz attempts and count
         const quizAttempts = await db.getUserQuizAttempts(ctx.user.id, input.moduleId);
         const latestAttempt = quizAttempts[0];
+        const attemptCount = quizAttempts.length;
+        const scorePercent = latestAttempt
+          ? Math.round((latestAttempt.score / latestAttempt.totalQuestions) * 100)
+          : 0;
+        
+        // Generate unique verification code
+        const verificationCode = `ALM-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        
+        // Determine course name
+        const courseName = (module as any).courseId === 2
+          ? 'Oil & Gas Wellhead Maintenance — Onshore & Offshore'
+          : 'Early Production Facilities (EPF) Course';
         
         // Create PDF
         const doc = new PDFDocument({
           size: 'A4',
           layout: 'landscape',
-          margin: 50,
+          margin: 0,
         });
         
         const chunks: Buffer[] = [];
@@ -172,81 +184,134 @@ export const appRouter = router({
           doc.on('end', () => resolve());
           doc.on('error', reject);
           
-          const pageWidth = doc.page.width;
-          const pageHeight = doc.page.height;
+          const W = doc.page.width;   // 841.89
+          const H = doc.page.height;  // 595.28
           
-          // Background color
-          doc.rect(0, 0, pageWidth, pageHeight).fill('#f0f8ff');
+          // ── Background ──────────────────────────────────────────────
+          doc.rect(0, 0, W, H).fill('#FAFDF7');
           
-          // Add ALMOG logo at top
-          try {
-            const logoPath = path.join(__dirname, 'almog-logo.png');
-            console.log('Attempting to load logo from:', logoPath);
-            if (fs.existsSync(logoPath)) {
-              doc.image(logoPath, pageWidth - 150, 30, { width: 120, fit: [120, 60] });
-              console.log('Logo added successfully');
-            } else {
-              console.log('Logo file not found at:', logoPath);
-            }
-          } catch (err) {
-            console.error('Failed to add logo to certificate:', err);
+          // ── Diagonal watermark pattern ───────────────────────────────
+          doc.save();
+          doc.opacity(0.04);
+          for (let x = -H; x < W + H; x += 60) {
+            doc.moveTo(x, 0).lineTo(x + H, H)
+               .lineWidth(18).strokeColor('#1a6b3c').stroke();
           }
+          doc.restore();
           
-          // Border
-          doc.rect(20, 20, pageWidth - 40, pageHeight - 40)
-             .lineWidth(3)
-             .stroke('#228B22');
+          // ── Outer border (double line) ───────────────────────────────
+          doc.rect(14, 14, W - 28, H - 28).lineWidth(4).strokeColor('#1a6b3c').stroke();
+          doc.rect(20, 20, W - 40, H - 40).lineWidth(1.5).strokeColor('#4caf7d').stroke();
           
-          // Title
-          doc.fontSize(40)
-             .fillColor('#228B22')
-             .text('Certificate of Completion', 0, 80, { align: 'center' });
+          // ── Top gold bar ─────────────────────────────────────────────
+          doc.rect(14, 14, W - 28, 8).fill('#c8a84b');
+          doc.rect(14, H - 22, W - 28, 8).fill('#c8a84b');
           
-          // Subtitle
-          doc.fontSize(16)
-             .fillColor('#666666')
-             .text('This certifies that', 0, 140, { align: 'center' });
-          
-          // User name
-          doc.fontSize(32)
-             .fillColor('#000000')
-             .text(ctx.user.name || 'Student', 0, 170, { align: 'center' });
-          
-          // Description
-          doc.fontSize(16)
-             .fillColor('#666666')
-             .text('has successfully completed', 0, 220, { align: 'center' });
-          
-          // Module name
-          doc.fontSize(24)
-             .fillColor('#228B22')
-             .text(module.titleEn || module.titleAr, 0, 250, { align: 'center' });
-          
-          // Course name
-          doc.fontSize(18)
-             .fillColor('#000000')
-             .text('Early Production Facilities (EPF) Course', 0, 290, { align: 'center' });
-          
-          // Date
-          doc.fontSize(14)
-             .fillColor('#666666');
-          const completionDate = new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+          // ── Corner ornaments ─────────────────────────────────────────
+          const corners = [[30, 30], [W - 30, 30], [30, H - 30], [W - 30, H - 30]];
+          corners.forEach(([cx, cy]) => {
+            doc.circle(cx, cy, 6).fill('#c8a84b');
+            doc.circle(cx, cy, 10).lineWidth(1).strokeColor('#c8a84b').stroke();
           });
-          doc.text(`Date of Completion: ${completionDate}`, 0, 330, { align: 'center' });
           
-          // Score
-          if (latestAttempt) {
-            const score = Math.round((latestAttempt.score / latestAttempt.totalQuestions) * 100);
-            doc.text(`Quiz Score: ${score}%`, 0, 350, { align: 'center' });
+          // ── Logo ─────────────────────────────────────────────────────
+          const logoPath = path.join(__dirname, 'almog-logo.png');
+          if (fs.existsSync(logoPath)) {
+            doc.image(logoPath, W / 2 - 45, 36, { width: 90, height: 50, fit: [90, 50] });
           }
           
-          // Footer
-          doc.fontSize(12)
-             .fillColor('#999999')
-             .text('ALMOG Oil Services Company', 0, pageHeight - 80, { align: 'center' });
+          // ── Company name ─────────────────────────────────────────────
+          doc.fontSize(9).fillColor('#1a6b3c')
+             .text('ALMOG OIL SERVICES', 0, 92, { align: 'center', characterSpacing: 3 });
+          
+          // ── Divider line ─────────────────────────────────────────────
+          doc.moveTo(W * 0.25, 108).lineTo(W * 0.75, 108)
+             .lineWidth(1).strokeColor('#c8a84b').stroke();
+          
+          // ── Certificate title ─────────────────────────────────────────
+          doc.fontSize(34).fillColor('#1a6b3c')
+             .font('Helvetica-Bold')
+             .text('CERTIFICATE OF COMPLETION', 0, 118, { align: 'center', characterSpacing: 1.5 });
+          
+          // ── Subtitle ─────────────────────────────────────────────────
+          doc.fontSize(11).fillColor('#555555').font('Helvetica')
+             .text('This is to certify that', 0, 162, { align: 'center' });
+          
+          // ── Recipient name ────────────────────────────────────────────
+          doc.fontSize(28).fillColor('#1a1a1a').font('Helvetica-Bold')
+             .text(ctx.user.name || 'Student', 0, 180, { align: 'center' });
+          
+          // ── Name underline ────────────────────────────────────────────
+          const nameWidth = Math.min(doc.widthOfString(ctx.user.name || 'Student') + 40, 400);
+          const nameX = (W - nameWidth) / 2;
+          doc.moveTo(nameX, 216).lineTo(nameX + nameWidth, 216)
+             .lineWidth(1.5).strokeColor('#1a6b3c').stroke();
+          
+          // ── Completion text ───────────────────────────────────────────
+          doc.fontSize(11).fillColor('#555555').font('Helvetica')
+             .text('has successfully completed the following module:', 0, 226, { align: 'center' });
+          
+          // ── Module name ───────────────────────────────────────────────
+          doc.fontSize(16).fillColor('#1a6b3c').font('Helvetica-Bold')
+             .text(module.titleEn || module.titleAr, 60, 246, { align: 'center', width: W - 120 });
+          
+          // ── Course name ───────────────────────────────────────────────
+          doc.fontSize(10).fillColor('#777777').font('Helvetica')
+             .text(courseName, 60, 272, { align: 'center', width: W - 120 });
+          
+          // ── Stats row ─────────────────────────────────────────────────
+          const statsY = 302;
+          const statW = 130;
+          const gap = 30;
+          const totalW = statW * 3 + gap * 2;
+          const startX = (W - totalW) / 2;
+          
+          // Score box
+          doc.roundedRect(startX, statsY, statW, 52, 6).fill('#e8f5ee');
+          doc.fontSize(22).fillColor('#1a6b3c').font('Helvetica-Bold')
+             .text(`${scorePercent}%`, startX, statsY + 6, { width: statW, align: 'center' });
+          doc.fontSize(8).fillColor('#555').font('Helvetica')
+             .text('QUIZ SCORE', startX, statsY + 34, { width: statW, align: 'center', characterSpacing: 1 });
+          
+          // Attempts box
+          const attX = startX + statW + gap;
+          doc.roundedRect(attX, statsY, statW, 52, 6).fill('#fff8e7');
+          doc.fontSize(22).fillColor('#c8a84b').font('Helvetica-Bold')
+             .text(`${attemptCount}`, attX, statsY + 6, { width: statW, align: 'center' });
+          doc.fontSize(8).fillColor('#555').font('Helvetica')
+             .text(attemptCount === 1 ? 'ATTEMPT' : 'ATTEMPTS', attX, statsY + 34, { width: statW, align: 'center', characterSpacing: 1 });
+          
+          // Date box
+          const dateX = attX + statW + gap;
+          const completionDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+          doc.roundedRect(dateX, statsY, statW, 52, 6).fill('#e8f5ee');
+          doc.fontSize(12).fillColor('#1a6b3c').font('Helvetica-Bold')
+             .text(completionDate, dateX, statsY + 12, { width: statW, align: 'center' });
+          doc.fontSize(8).fillColor('#555').font('Helvetica')
+             .text('DATE OF ISSUE', dateX, statsY + 34, { width: statW, align: 'center', characterSpacing: 1 });
+          
+          // ── Signature lines ───────────────────────────────────────────
+          const sigY = 374;
+          const sig1X = W * 0.25;
+          const sig2X = W * 0.65;
+          
+          doc.moveTo(sig1X - 60, sigY).lineTo(sig1X + 60, sigY)
+             .lineWidth(1).strokeColor('#aaa').stroke();
+          doc.fontSize(8).fillColor('#777').font('Helvetica')
+             .text('Training Director', sig1X - 60, sigY + 4, { width: 120, align: 'center' });
+          doc.text('ALMOG Oil Services', sig1X - 60, sigY + 14, { width: 120, align: 'center' });
+          
+          doc.moveTo(sig2X - 60, sigY).lineTo(sig2X + 60, sigY)
+             .lineWidth(1).strokeColor('#aaa').stroke();
+          doc.fontSize(8).fillColor('#777').font('Helvetica')
+             .text('Course Coordinator', sig2X - 60, sigY + 4, { width: 120, align: 'center' });
+          doc.text('EPF Training Division', sig2X - 60, sigY + 14, { width: 120, align: 'center' });
+          
+          // ── Verification footer ───────────────────────────────────────
+          doc.rect(14, H - 50, W - 28, 28).fill('#1a6b3c');
+          doc.fontSize(8).fillColor('#ffffff').font('Helvetica')
+             .text(`Verification Code: ${verificationCode}   |   This certificate is issued by ALMOG Oil Services and is valid for professional use.   |   Issued: ${completionDate}`,
+               20, H - 44, { width: W - 40, align: 'center' });
           
           doc.end();
         });
@@ -257,8 +322,8 @@ export const appRouter = router({
         const fileName = `certificates/${ctx.user.id}/module-${input.moduleId}-${Date.now()}.pdf`;
         const { url } = await storagePut(fileName, pdfBuffer, 'application/pdf');
         
-        // Save to database
-        await db.saveCertificate(ctx.user.id, input.moduleId, url);
+        // Save to database with new fields
+        await db.saveCertificate(ctx.user.id, input.moduleId, url, attemptCount, scorePercent, verificationCode);
         
         return { success: true, certificateUrl: url };
       }),

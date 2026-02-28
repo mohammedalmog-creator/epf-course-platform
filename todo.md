@@ -67,7 +67,31 @@
 - [x] Updated LessonView.tsx to display lesson image at top of content
 
 ## Wellhead Course - Full Content Review
-- [ ] Audit all 12 modules and 60 lessons for content quality and logical sequence
-- [ ] Fix any content issues found (missing content, wrong sequence, poor markdown)
-- [ ] Review and replace any poor-quality or mismatched lesson images
-- [ ] Verify all lesson numbers and module order are correct
+- [x] Audit all 12 modules and 60 lessons for content quality and logical sequence
+  - [x] Fix any content issues found (missing content, wrong sequence, poor markdown)
+  - [x] Review and replace any poor-quality or mismatched lesson images
+  - [x] Verify all lesson numbers and module order are correct
+
+## New Improvements (Feb 2026)
+
+### Quiz Enhancements
+- [x] Upgrade wellhead modules to 8 questions each (more comprehensive)
+- [x] Add Arabic UI to quiz page (bilingual)
+- [x] Show attempt number on quiz
+
+### Certificate Redesign
+- [x] Add attempt count on certificate (transparency)
+- [x] Add unique certificate verification code (anti-forgery)
+- [x] Redesign PDF: professional layout with prominent ALMOG logo
+- [x] Add watermark to PDF certificate
+- [x] Store attempt_count in certificates table (schema update)
+
+### Course UI Improvements
+- [x] ModuleDetail: add icons per lesson, improve layout
+- [x] LessonView: add breadcrumb, sidebar lesson list, improve mark-complete button
+- [x] Quiz.tsx: translate UI to Arabic, add attempt counter
+- [x] Modules.tsx: add completion badges (existing)
+
+### File Cleanup
+- [x] Delete all scripts/*.mjs seed/fix files (19 files removed)
+- [x] Delete ComponentShowcase.tsx (unused page)

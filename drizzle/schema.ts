@@ -139,6 +139,9 @@ export const certificates = mysqlTable("certificates", {
   certificateUrl: text("certificate_url").notNull(),
   issuedAt: timestamp("issued_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  attemptCount: int("attempt_count").notNull().default(1),
+  scorePercent: int("score_percent").notNull().default(0),
+  verificationCode: varchar("verification_code", { length: 20 }).notNull().default(""),
 });
 
 export type Certificate = typeof certificates.$inferSelect;
