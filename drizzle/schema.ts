@@ -50,7 +50,8 @@ export const lessons = mysqlTable("lessons", {
   contentMarkdown: text("content_markdown").notNull(),
   estimatedMinutes: int("estimated_minutes"),
   videoUrl: text("video_url"),
-  order: int("order").notNull(),
+  imageUrl: text("image_url"),
+  order: int("order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

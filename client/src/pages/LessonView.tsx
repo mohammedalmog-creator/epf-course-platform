@@ -148,6 +148,17 @@ export default function LessonView() {
           )}
         </div>
 
+        {/* Lesson Image (if available) */}
+        {lesson.imageUrl && (
+          <div className="mb-8">
+            <img
+              src={lesson.imageUrl}
+              alt={lesson.titleAr || lesson.titleEn || 'Lesson illustration'}
+              className="w-full rounded-xl object-cover max-h-80 shadow-md"
+            />
+          </div>
+        )}
+
         {/* Video (if available) */}
         {lesson.videoUrl && (
           <div className="mb-8">

@@ -57,3 +57,11 @@
 - [x] Generate 12 professional AI images for each Wellhead module
 - [x] Upload images to CDN and link to modules in database
 - [x] Update Modules.tsx to display module images in cards with hover effects
+
+## Missing Lessons & Per-Lesson Images
+- [x] Added 11 missing lessons to reach 60 total (5 per module x 12 modules)
+- [x] Generated 60 professional AI illustrative images for all lessons
+- [x] Added image_url column to lessons table in schema and ran db:push
+- [x] Uploaded 59 lesson images to CDN
+- [x] Updated all lessons in DB with CDN image URLs
+- [x] Updated LessonView.tsx to display lesson image at top of content
