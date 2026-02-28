@@ -42,3 +42,18 @@
 - [x] Update navigation to support multiple courses
 - [x] Update getModules API to filter by courseId
 - [x] Test all modules and quizzes end-to-end
+
+## Wellhead Course - Missing Lessons Fix
+- [x] Audit current lessons in DB (only 18 exist, need 57)
+- [x] Add 31 missing lessons for modules 5-12 (total 49 lessons now)
+- [x] Ensure each lesson has full Arabic content in EPF style
+
+## Certificate After Quiz
+- [x] Redesign Certificate.tsx with professional visual certificate preview (English)
+- [x] Certificate includes course name, module name, student name, score, and date
+- [x] Download PDF certificate functionality
+
+## Professional Illustrative Images
+- [x] Generate 12 professional AI images for each Wellhead module
+- [x] Upload images to CDN and link to modules in database
+- [x] Update Modules.tsx to display module images in cards with hover effects

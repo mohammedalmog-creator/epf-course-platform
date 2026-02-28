@@ -30,6 +30,7 @@ export const modules = mysqlTable("modules", {
   descriptionAr: text("description_ar"),
   descriptionEn: text("description_en"),
   duration: varchar("duration", { length: 50 }), // e.g., "2 weeks"
+  imageUrl: text("image_url"), // CDN URL for module illustration
   order: int("order").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

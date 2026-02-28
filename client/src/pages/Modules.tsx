@@ -97,18 +97,39 @@ export default function Modules() {
             return (
               <Card
                 key={module.id}
-                className="hover:shadow-lg transition-all cursor-pointer group"
+                className="hover:shadow-lg transition-all cursor-pointer group overflow-hidden"
                 onClick={() => setLocation(`/module/${module.id}`)}
               >
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-lg">
+                {/* Module image */}
+                {(module as any).imageUrl && (
+                  <div className="relative h-40 overflow-hidden">
+                    <img
+                      src={(module as any).imageUrl}
+                      alt={module.titleEn || module.titleAr}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    {completed && (
+                      <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
+                        <CheckCircle2 className="h-5 w-5 text-white" />
+                      </div>
+                    )}
+                    <div className="absolute bottom-2 left-2 bg-primary text-primary-foreground rounded-full h-8 w-8 flex items-center justify-center font-bold text-sm">
                       {module.moduleNumber}
                     </div>
-                    {completed && (
-                      <CheckCircle2 className="h-6 w-6 text-green-600" />
-                    )}
                   </div>
+                )}
+                <CardHeader>
+                  {!(module as any).imageUrl && (
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-lg">
+                        {module.moduleNumber}
+                      </div>
+                      {completed && (
+                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                      )}
+                    </div>
+                  )}
                   <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
                     {module.titleAr}
                   </CardTitle>
