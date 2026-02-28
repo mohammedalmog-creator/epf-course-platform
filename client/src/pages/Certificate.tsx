@@ -124,7 +124,7 @@ export default function Certificate() {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur sticky top-0 z-50 shadow-sm">
-        <div className="container flex h-40 items-center justify-between">
+        <div className="container flex h-24 items-center justify-between">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
               <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-36" />
