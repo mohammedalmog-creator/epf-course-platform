@@ -55,10 +55,10 @@ export default function Modules() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-20 items-center justify-between">
+        <div className="container flex h-32 items-center justify-between">
           <Link href="/courses">
             <div className="flex items-center gap-4 cursor-pointer">
-              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-16" />
+              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-30" />
               <div className="flex items-center gap-2">
                 <CourseIcon className={`h-6 w-6 ${courseInfo.color}`} />
                 <h1 className="text-xl font-bold">{courseInfo.titleAr}</h1>
