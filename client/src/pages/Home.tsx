@@ -17,7 +17,7 @@ export default function Home() {
             <img src="/almog-logo.gif" alt="ALMOG" className="h-16" />
             <div className="flex items-center gap-2">
               <BookOpen className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold">منصة دورة EPF</h1>
+              <h1 className="text-xl font-bold">منصة كورسات شركة المُق للخدمات النفطية</h1>
             </div>
           </div>
           <div>
