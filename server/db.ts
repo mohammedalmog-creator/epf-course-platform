@@ -364,6 +364,9 @@ export async function adminGetAllUsers() {
     name: users.name,
     openId: users.openId,
     role: users.role,
+    email: users.email,
+    phone: users.phone,
+    profileCompleted: users.profileCompleted,
     createdAt: users.createdAt,
   }).from(users).orderBy(desc(users.createdAt));
 }

@@ -139,3 +139,13 @@
 - [ ] Register /verify/:code route in App.tsx
 - [ ] Add CSV export to AdminPanel: export trainees, quiz results, certificates as CSV
 - [ ] Add verification URL to Certificate.tsx page and PDF footer
+
+## Notification System & Trainee Profile (Mar 2026)
+- [ ] Add phone and email fields to users table in drizzle schema
+- [ ] Push DB migration for new user fields
+- [ ] Add updateProfile tRPC procedure (protected)
+- [ ] Build ProfileSetup.tsx onboarding page for first-login trainees
+- [ ] Add redirect logic: after login, if no phone/email → redirect to /profile-setup
+- [ ] Add auto-notification to admin when new user registers (via notifyOwner)
+- [ ] Update admin panel to show phone and email columns for each trainee
+- [ ] Update CSV export to include phone and email

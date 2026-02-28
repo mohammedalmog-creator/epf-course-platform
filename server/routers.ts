@@ -423,7 +423,7 @@ export const appRouter = router({
         return await db.adminGetUserDetail(input.userId);
       }),
 
-    promoteUser: protectedProcedure
+     promoteUser: protectedProcedure
       .input(z.object({ userId: z.number(), role: z.enum(['user', 'admin']) }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
@@ -435,6 +435,72 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
-});
 
+  // Profile management
+  profile: router({
+    // Get current user profile
+    get: protectedProcedure.query(async ({ ctx }) => {
+      const dbConn = await db.getDb();
+      if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+      const { users } = await import('../drizzle/schema');
+      const { eq } = await import('drizzle-orm');
+      const [user] = await dbConn.select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        phone: users.phone,
+        profileCompleted: users.profileCompleted,
+        role: users.role,
+        createdAt: users.createdAt,
+      }).from(users).where(eq(users.id, ctx.user.id));
+      return user ?? null;
+    }),
+
+    // Update profile (phone + email) — marks profileCompleted = true
+    update: protectedProcedure
+      .input(z.object({
+        phone: z.string().min(7).max(20),
+        email: z.string().email(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        const isFirstTime = !ctx.user.profileCompleted;
+        await dbConn.update(users).set({
+          phone: input.phone,
+          email: input.email,
+          profileCompleted: true,
+        }).where(eq(users.id, ctx.user.id));
+
+        // Notify admin on first profile completion (new trainee)
+        if (isFirstTime) {
+          try {
+            const { notifyOwner } = await import('./_core/notification');
+            await notifyOwner({
+              title: `متعلم جديد انضم إلى المنصة`,
+              content: `انضم متعلم جديد إلى منصة المُق للتدريب التقني:\n\n` +
+                `الاسم: ${ctx.user.name ?? 'غير محدد'}\n` +
+                `البريد الإلكتروني: ${input.email}\n` +
+                `رقم الهاتف: ${input.phone}\n` +
+                `تاريخ التسجيل: ${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            });
+          } catch (e) {
+            // Notification failure should not block profile update
+            console.error('Failed to notify admin:', e);
+          }
+        }
+
+        return { success: true, isFirstTime };
+      }),
+  }),
+
+  // Public certificate verification
+  verifyCertificate: publicProcedure
+    .input(z.object({ code: z.string() }))
+    .query(async ({ input }) => {
+      return await db.verifyCertificate(input.code);
+    }),
+});
 export type AppRouter = typeof appRouter;

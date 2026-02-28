@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useProfileGuard } from "@/hooks/useProfileGuard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
@@ -36,6 +37,8 @@ const courses = [
 
 export default function Courses() {
   const { user, isAuthenticated } = useAuth();
+  // Redirect to profile setup if user hasn't completed their profile
+  useProfileGuard();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">

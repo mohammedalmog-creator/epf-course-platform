@@ -238,11 +238,14 @@ export default function AdminPanel() {
     ), [certificates, searchCerts]);
 
   const exportUsersCSV = () => {
-    const headers = ["#", "الاسم", "الصلاحية", "تاريخ الانضمام"];
+    const headers = ["#", "الاسم", "الهاتف", "البريد الإلكتروني", "الصلاحية", "حالة الملف", "تاريخ الانضمام"];
     const rows = (users ?? []).map((u, i) => [
       String(i + 1),
       u.name ?? "",
+      (u as any).phone ?? "—",
+      (u as any).email ?? "—",
       u.role === "admin" ? "مسؤول" : "متدرب",
+      (u as any).profileCompleted ? "مكتمل" : "ناقص",
       new Date(u.createdAt).toLocaleDateString("ar-SA"),
     ]);
     downloadCSV("المتدربون.csv", [headers, ...rows]);
@@ -382,19 +385,19 @@ export default function AdminPanel() {
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <CardTitle className="text-lg">قائمة المتدربين</CardTitle>
                   <div className="flex items-center gap-3">
-                  <Button variant="outline" size="sm" onClick={exportUsersCSV} className="gap-2 shrink-0">
-                    <Download className="h-4 w-4" />
-                    تصدير CSV
-                  </Button>
-                  <div className="relative w-64">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="بحث بالاسم..."
-                      value={searchUsers}
-                      onChange={e => setSearchUsers(e.target.value)}
-                      className="pr-9 text-right"
-                    />
-                  </div>
+                    <Button variant="outline" size="sm" onClick={exportUsersCSV} className="gap-2 shrink-0">
+                      <Download className="h-4 w-4" />
+                      تصدير CSV
+                    </Button>
+                    <div className="relative w-64">
+                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="بحث بالاسم..."
+                        value={searchUsers}
+                        onChange={e => setSearchUsers(e.target.value)}
+                        className="pr-9 text-right"
+                      />
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -409,6 +412,8 @@ export default function AdminPanel() {
                       <TableRow>
                         <TableHead className="text-right">#</TableHead>
                         <TableHead className="text-right">الاسم</TableHead>
+                        <TableHead className="text-right">الهاتف</TableHead>
+                        <TableHead className="text-right">البريد الإلكتروني</TableHead>
                         <TableHead className="text-right">الصلاحية</TableHead>
                         <TableHead className="text-right">تاريخ الانضمام</TableHead>
                         <TableHead className="text-right">الإجراءات</TableHead>
@@ -417,7 +422,7 @@ export default function AdminPanel() {
                     <TableBody>
                       {filteredUsers.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                             لا توجد نتائج
                           </TableCell>
                         </TableRow>
@@ -433,10 +438,29 @@ export default function AdminPanel() {
                                 <span className="font-medium">{u.name}</span>
                               </div>
                             </TableCell>
+                            <TableCell className="text-sm">
+                              {(u as any).phone ? (
+                                <span className="font-mono text-xs">{(u as any).phone}</span>
+                              ) : (
+                                <span className="text-muted-foreground text-xs">—</span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              {(u as any).email ? (
+                                <span className="text-xs">{(u as any).email}</span>
+                              ) : (
+                                <span className="text-muted-foreground text-xs">—</span>
+                              )}
+                            </TableCell>
                             <TableCell>
-                              <Badge variant={u.role === "admin" ? "default" : "secondary"}>
-                                {u.role === "admin" ? "مسؤول" : "متدرب"}
-                              </Badge>
+                              <div className="flex items-center gap-1">
+                                <Badge variant={u.role === "admin" ? "default" : "secondary"}>
+                                  {u.role === "admin" ? "مسؤول" : "متدرب"}
+                                </Badge>
+                                {!(u as any).profileCompleted && (
+                                  <Badge variant="outline" className="text-amber-600 border-amber-300 text-xs">ملف ناقص</Badge>
+                                )}
+                              </div>
                             </TableCell>
                             <TableCell className="text-muted-foreground text-sm">
                               {new Date(u.createdAt).toLocaleDateString("ar-SA")}
