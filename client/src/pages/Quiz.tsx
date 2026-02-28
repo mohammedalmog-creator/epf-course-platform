@@ -46,11 +46,11 @@ export default function Quiz() {
   // Prepare current question data
   const currentQuestion = questions?.[currentQuestionIndex];
   const options = currentQuestion ? (
-    typeof currentQuestion.optionsJson === 'string' 
-      ? JSON.parse(currentQuestion.optionsJson) 
-      : currentQuestion.optionsJson as Array<{ id: string; textAr: string }>
+    typeof currentQuestion.optionsJson === 'string'
+      ? JSON.parse(currentQuestion.optionsJson)
+      : currentQuestion.optionsJson as Array<{ id: string; textAr: string; textEn?: string }>
   ) : [];
-  
+
   // Shuffle options once per question using useMemo
   const shuffledOptions = useMemo(() => {
     return options ? shuffleArray(options) : [];
@@ -61,7 +61,7 @@ export default function Quiz() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">جاري التحميل...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -76,9 +76,9 @@ export default function Quiz() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-lg text-muted-foreground">لا توجد أسئلة متاحة لهذه الوحدة</p>
+          <p className="text-lg text-muted-foreground">No questions available for this module</p>
           <Link href={`/module/${moduleId}`}>
-            <Button className="mt-4">العودة إلى الوحدة</Button>
+            <Button className="mt-4">Back to Module</Button>
           </Link>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default function Quiz() {
 
   const handleAnswerSubmit = () => {
     if (!selectedOption || !currentQuestion) {
-      toast.error("الرجاء اختيار إجابة");
+      toast.error("Please select an answer");
       return;
     }
 
@@ -122,9 +122,9 @@ export default function Quiz() {
       });
       setQuizResult(result);
       setQuizCompleted(true);
-      toast.success("تم إرسال الاختبار بنجاح!");
+      toast.success("Quiz submitted successfully!");
     } catch (error) {
-      toast.error("حدث خطأ أثناء إرسال الاختبار");
+      toast.error("An error occurred while submitting the quiz");
     }
   };
 
@@ -140,7 +140,7 @@ export default function Quiz() {
                 <img src="/almog-logo.gif" alt="ALMOG" className="h-16" />
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-6 w-6 text-primary" />
-                  <h1 className="text-xl font-bold">منصة دورة EPF</h1>
+                  <h1 className="text-xl font-bold">EPF Course Platform</h1>
                 </div>
               </div>
             </Link>
@@ -158,32 +158,32 @@ export default function Quiz() {
                 )}
               </div>
               <CardTitle className="text-3xl">
-                {passed ? "مبروك! لقد اجتزت الاختبار" : "اختبار مكتمل"}
+                {passed ? "Congratulations! You Passed!" : "Quiz Completed"}
               </CardTitle>
               <CardDescription className="text-lg mt-2">
-                {module?.titleAr}
+                {module?.titleEn || module?.titleAr}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary">{quizResult.score}</div>
-                  <div className="text-sm text-muted-foreground">إجابات صحيحة</div>
+                  <div className="text-sm text-muted-foreground">Correct Answers</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold">{quizResult.totalQuestions}</div>
-                  <div className="text-sm text-muted-foreground">إجمالي الأسئلة</div>
+                  <div className="text-sm text-muted-foreground">Total Questions</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-green-600">{quizResult.percentage}%</div>
-                  <div className="text-sm text-muted-foreground">النسبة المئوية</div>
+                  <div className="text-sm text-muted-foreground">Score</div>
                 </div>
               </div>
 
               {passed && (
                 <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                   <p className="text-green-800 dark:text-green-200">
-                    أحسنت! لقد حققت درجة النجاح (70% أو أكثر). يمكنك الآن الحصول على شهادتك.
+                    Well done! You achieved the passing score (70% or above). You can now get your certificate.
                   </p>
                 </div>
               )}
@@ -191,7 +191,7 @@ export default function Quiz() {
               {!passed && (
                 <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                   <p className="text-yellow-800 dark:text-yellow-200">
-                    لم تحقق درجة النجاح المطلوبة (70%). ننصحك بمراجعة الدروس وإعادة المحاولة.
+                    You did not reach the required passing score (70%). We recommend reviewing the lessons and trying again.
                   </p>
                 </div>
               )}
@@ -199,14 +199,14 @@ export default function Quiz() {
               <div className="flex gap-4">
                 <Link href={`/module/${moduleId}`} className="flex-1">
                   <Button variant="outline" className="w-full">
-                    العودة إلى الوحدة
+                    Back to Module
                   </Button>
                 </Link>
                 {passed && (
                   <Link href={`/certificate/${moduleId}`} className="flex-1">
                     <Button className="w-full">
-                      <Award className="ml-2 h-4 w-4" />
-                      احصل على الشهادة
+                      <Award className="mr-2 h-4 w-4" />
+                      Get Certificate
                     </Button>
                   </Link>
                 )}
@@ -218,6 +218,10 @@ export default function Quiz() {
     );
   }
 
+  // Get display text - prefer English, fallback to Arabic
+  const questionText = (currentQuestion as any)?.questionTextEn || currentQuestion?.questionTextAr;
+  const explanationText = (currentQuestion as any)?.explanationEn || (currentQuestion as any)?.explanationAr;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -228,14 +232,14 @@ export default function Quiz() {
               <img src="/almog-logo.gif" alt="ALMOG" className="h-16" />
               <div className="flex items-center gap-2">
                 <BookOpen className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold">منصة دورة EPF</h1>
+                <h1 className="text-xl font-bold">EPF Course Platform</h1>
               </div>
             </div>
           </Link>
           <Link href={`/module/${moduleId}`}>
             <Button variant="outline">
-              <ArrowLeft className="ml-2 h-4 w-4" />
-              العودة إلى الوحدة
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Module
             </Button>
           </Link>
         </div>
@@ -246,9 +250,9 @@ export default function Quiz() {
         {/* Progress */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-2xl font-bold">{module?.titleAr}</h2>
+            <h2 className="text-2xl font-bold">{module?.titleEn || module?.titleAr}</h2>
             <span className="text-sm text-muted-foreground">
-              السؤال {currentQuestionIndex + 1} من {questions.length}
+              Question {currentQuestionIndex + 1} of {questions.length}
             </span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -262,18 +266,18 @@ export default function Quiz() {
         {/* Question Card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl leading-relaxed">
-              {currentQuestion?.questionTextAr}
+            <CardTitle className="text-xl leading-relaxed" dir="ltr">
+              {questionText?.replace(/\*\*(.*?)\*\*/g, '$1')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Options */}
             <RadioGroup value={selectedOption} onValueChange={setSelectedOption} disabled={showExplanation}>
               <div className="space-y-3">
-                {(shuffledOptions as Array<{ id: string; textAr: string }>)?.map((option) => (
+                {(shuffledOptions as Array<{ id: string; textAr: string; textEn?: string }>)?.map((option) => (
                   <div
                     key={option.id}
-                    className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
+                    className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
                       showExplanation
                         ? option.id === currentQuestion?.correctOptionId
                           ? "border-green-500 bg-green-50 dark:bg-green-900/20"
@@ -286,24 +290,22 @@ export default function Quiz() {
                     }`}
                   >
                     <RadioGroupItem value={option.id} id={option.id} className="flex-shrink-0" />
-                    <div className="flex items-center gap-2 flex-1 justify-end">
-                      <Label htmlFor={option.id} className="cursor-pointer text-base leading-relaxed">
-                        {option.textAr}
-                      </Label>
-                      {showExplanation && option.id === currentQuestion?.correctOptionId && (
-                        <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                      )}
-                      {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
-                        <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                      )}
-                    </div>
+                    <Label htmlFor={option.id} className="cursor-pointer text-base leading-relaxed flex-1">
+                      {option.textEn || option.textAr}
+                    </Label>
+                    {showExplanation && option.id === currentQuestion?.correctOptionId && (
+                      <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                    )}
+                    {showExplanation && option.id === selectedOption && option.id !== currentQuestion?.correctOptionId && (
+                      <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                    )}
                   </div>
                 ))}
               </div>
             </RadioGroup>
 
             {/* Explanation */}
-            {showExplanation && currentQuestion?.explanationAr && (
+            {showExplanation && explanationText && (
               <div className={`p-4 rounded-lg ${
                 currentAnswer?.correct
                   ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
@@ -313,16 +315,16 @@ export default function Quiz() {
                   {currentAnswer?.correct ? (
                     <>
                       <CheckCircle2 className="h-5 w-5 text-green-600" />
-                      <span className="text-green-800 dark:text-green-200">إجابة صحيحة!</span>
+                      <span className="text-green-800 dark:text-green-200">Correct!</span>
                     </>
                   ) : (
                     <>
                       <XCircle className="h-5 w-5 text-red-600" />
-                      <span className="text-red-800 dark:text-red-200">إجابة خاطئة</span>
+                      <span className="text-red-800 dark:text-red-200">Incorrect</span>
                     </>
                   )}
                 </h4>
-                <p className="text-sm leading-relaxed">{currentQuestion?.explanationAr}</p>
+                <p className="text-sm leading-relaxed">{explanationText}</p>
               </div>
             )}
 
@@ -330,11 +332,11 @@ export default function Quiz() {
             <div className="flex gap-4">
               {!showExplanation ? (
                 <Button onClick={handleAnswerSubmit} className="flex-1" disabled={!selectedOption}>
-                  تحقق من الإجابة
+                  Check Answer
                 </Button>
               ) : (
                 <Button onClick={handleNextQuestion} className="flex-1">
-                  {currentQuestionIndex < questions.length - 1 ? "السؤال التالي" : "إنهاء الاختبار"}
+                  {currentQuestionIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}
                 </Button>
               )}
             </div>

@@ -25,3 +25,9 @@
 
 ## Quiz UI Fix - Correct Alignment
 - [x] Align entire answer text with checkmark together on the right side (not separate)
+
+## Quiz English Translation
+- [x] Add English text fields to database schema (textEn, explanationEn for questions; textEn for options)
+- [x] Migrate database schema
+- [x] Translate all quiz questions and options to English and update DB
+- [x] Update Quiz UI to display English text
