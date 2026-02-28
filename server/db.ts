@@ -1,4 +1,4 @@
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, users, modules, lessons, quizQuestions, 
@@ -350,4 +350,125 @@ export async function getUserProjectSubmissions(userId: number): Promise<Project
   return await db.select().from(projectSubmissions)
     .where(eq(projectSubmissions.userId, userId))
     .orderBy(desc(projectSubmissions.submittedAt));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADMIN HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function adminGetAllUsers() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select({
+    id: users.id,
+    name: users.name,
+    openId: users.openId,
+    role: users.role,
+    createdAt: users.createdAt,
+  }).from(users).orderBy(desc(users.createdAt));
+}
+
+export async function adminGetPlatformStats() {
+  const db = await getDb();
+  if (!db) return { totalUsers: 0, totalCertificates: 0, totalQuizAttempts: 0, totalLessonsCompleted: 0 };
+
+  const [userCount] = await db.select({ count: sql<number>`COUNT(*)` }).from(users);
+  const [certCount] = await db.select({ count: sql<number>`COUNT(*)` }).from(certificates);
+  const [attemptCount] = await db.select({ count: sql<number>`COUNT(*)` }).from(quizAttempts);
+  const [lessonCount] = await db.select({ count: sql<number>`COUNT(*)` })
+    .from(lessonProgress).where(eq(lessonProgress.completed, true));
+
+  return {
+    totalUsers: Number(userCount?.count ?? 0),
+    totalCertificates: Number(certCount?.count ?? 0),
+    totalQuizAttempts: Number(attemptCount?.count ?? 0),
+    totalLessonsCompleted: Number(lessonCount?.count ?? 0),
+  };
+}
+
+export async function adminGetAllQuizAttempts() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select({
+    id: quizAttempts.id,
+    userId: quizAttempts.userId,
+    moduleId: quizAttempts.moduleId,
+    score: quizAttempts.score,
+    totalQuestions: quizAttempts.totalQuestions,
+    completedAt: quizAttempts.completedAt,
+    userName: users.name,
+    moduleTitleAr: modules.titleAr,
+    moduleTitleEn: modules.titleEn,
+  })
+  .from(quizAttempts)
+  .leftJoin(users, eq(quizAttempts.userId, users.id))
+  .leftJoin(modules, eq(quizAttempts.moduleId, modules.id))
+  .orderBy(desc(quizAttempts.completedAt));
+}
+
+export async function adminGetAllCertificates() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select({
+    id: certificates.id,
+    userId: certificates.userId,
+    moduleId: certificates.moduleId,
+    issuedAt: certificates.issuedAt,
+    attemptCount: certificates.attemptCount,
+    scorePercent: certificates.scorePercent,
+    verificationCode: certificates.verificationCode,
+    userName: users.name,
+    moduleTitleAr: modules.titleAr,
+    moduleTitleEn: modules.titleEn,
+  })
+  .from(certificates)
+  .leftJoin(users, eq(certificates.userId, users.id))
+  .leftJoin(modules, eq(certificates.moduleId, modules.id))
+  .orderBy(desc(certificates.issuedAt));
+}
+
+export async function adminGetUserDetail(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const [user] = await db.select().from(users).where(eq(users.id, userId));
+  if (!user) return null;
+
+  const userCerts = await db.select({
+    id: certificates.id,
+    moduleId: certificates.moduleId,
+    issuedAt: certificates.issuedAt,
+    attemptCount: certificates.attemptCount,
+    scorePercent: certificates.scorePercent,
+    verificationCode: certificates.verificationCode,
+    moduleTitleAr: modules.titleAr,
+  })
+  .from(certificates)
+  .leftJoin(modules, eq(certificates.moduleId, modules.id))
+  .where(eq(certificates.userId, userId))
+  .orderBy(desc(certificates.issuedAt));
+
+  const userAttempts = await db.select({
+    id: quizAttempts.id,
+    moduleId: quizAttempts.moduleId,
+    score: quizAttempts.score,
+    totalQuestions: quizAttempts.totalQuestions,
+    completedAt: quizAttempts.completedAt,
+    moduleTitleAr: modules.titleAr,
+  })
+  .from(quizAttempts)
+  .leftJoin(modules, eq(quizAttempts.moduleId, modules.id))
+  .where(eq(quizAttempts.userId, userId))
+  .orderBy(desc(quizAttempts.completedAt));
+
+  const completedLessons = await db.select({ count: sql<number>`COUNT(*)` })
+    .from(lessonProgress)
+    .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.completed, true)));
+
+  return {
+    user,
+    certificates: userCerts,
+    quizAttempts: userAttempts,
+    completedLessonsCount: Number(completedLessons[0]?.count ?? 0),
+  };
 }

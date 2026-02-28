@@ -110,6 +110,14 @@ export default function Home() {
             {isAuthenticated ? (
               <>
                 <span className="hidden sm:block text-sm text-muted-foreground">مرحباً، {user?.name || "المتعلم"}</span>
+                {user?.role === "admin" && (
+                  <Link href="/admin">
+                    <Button variant="outline" size="sm" className="gap-1 border-amber-500 text-amber-600 hover:bg-amber-50">
+                      <Shield className="h-3 w-3" />
+                      لوحة المسؤول
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/dashboard">
                   <Button variant="outline" size="sm">لوحة التحكم</Button>
                 </Link>

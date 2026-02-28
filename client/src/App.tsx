@@ -13,6 +13,7 @@ import Quiz from "./pages/Quiz";
 import Dashboard from "./pages/Dashboard";
 import Certificate from "./pages/Certificate";
 import GraduationProject from "./pages/GraduationProject";
+import AdminPanel from "./pages/AdminPanel";
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/certificate/:id" component={Certificate} />
       <Route path="/graduation-project" component={GraduationProject} />
+      <Route path="/admin" component={AdminPanel} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

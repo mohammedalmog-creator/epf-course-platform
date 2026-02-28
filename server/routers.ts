@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
 
@@ -381,6 +382,49 @@ export const appRouter = router({
     getUserSubmissions: protectedProcedure.query(async ({ ctx }) => {
       return await db.getUserProjectSubmissions(ctx.user.id);
     }),
+  }),
+
+  // ─── Admin Router ───────────────────────────────────────────────────────────
+  admin: router({
+    // Guard: all admin procedures require admin role
+    getStats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      return await db.adminGetPlatformStats();
+    }),
+
+    getUsers: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      return await db.adminGetAllUsers();
+    }),
+
+    getQuizAttempts: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      return await db.adminGetAllQuizAttempts();
+    }),
+
+    getCertificates: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+      return await db.adminGetAllCertificates();
+    }),
+
+    getUserDetail: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        return await db.adminGetUserDetail(input.userId);
+      }),
+
+    promoteUser: protectedProcedure
+      .input(z.object({ userId: z.number(), role: z.enum(['user', 'admin']) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        await dbConn.update(users).set({ role: input.role }).where(eq(users.id, input.userId));
+        return { success: true };
+      }),
   }),
 });
 

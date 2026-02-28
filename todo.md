@@ -122,3 +122,13 @@
 - [x] Regenerate PNG logo at 800x400 high resolution for PDF
 - [x] Adjust PDF Y positions to fit larger logo
 - [x] Add Arabic company name to PDF certificate footer
+
+## Admin Panel (Mar 2026)
+- [x] Add admin DB helpers: list users, quiz attempts, certificates, platform stats
+- [x] Add TRPCError guard in routers.ts (role check: admin only)
+- [x] Add tRPC procedures: admin.getStats, admin.getUsers, admin.getQuizAttempts, admin.getCertificates, admin.getUserDetail, admin.promoteUser
+- [x] Build AdminPanel.tsx with 3 tabs: Trainees, Quiz Results, Certificates + stats cards
+- [x] Add user detail dialog with full history (certs, quiz attempts, lesson count)
+- [x] Add promote/demote user to admin button
+- [x] Register /admin route in App.tsx
+- [x] Add admin nav link in Home.tsx header (visible only to admin role, amber color)
