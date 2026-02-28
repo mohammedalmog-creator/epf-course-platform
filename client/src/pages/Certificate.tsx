@@ -124,10 +124,10 @@ export default function Certificate() {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur sticky top-0 z-50 shadow-sm">
-        <div className="container flex h-32 items-center justify-between">
+        <div className="container flex h-40 items-center justify-between">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
-              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-30" />
+              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-36" />
               <div className="hidden sm:block">
                 <p className="text-xs text-muted-foreground leading-none">شركة المُق للخدمات النفطية</p>
                 <p className="text-sm font-bold leading-tight">منصة التدريب التقني</p>
@@ -227,7 +227,7 @@ export default function Certificate() {
                 <div className="relative flex flex-col items-center justify-center h-full px-10 py-6 text-center gap-2">
                   {/* Logo + Company */}
                   <div className="flex items-center gap-3 mb-1">
-                    <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-30 object-contain" />
+                    <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-36 object-contain" />
                     <div className="text-left">
                       <div className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">ALMOG OIL SERVICES</div>
                       <div className="text-[9px] text-gray-500 tracking-wide">Professional Training Division</div>
