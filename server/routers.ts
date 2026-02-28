@@ -214,53 +214,54 @@ export const appRouter = router({
             doc.circle(cx, cy, 10).lineWidth(1).strokeColor('#c8a84b').stroke();
           });
           
-          // ── Logo ─────────────────────────────────────────────────────
+          // ── Logo (large, centered, prominent) ────────────────────────
           const logoPath = path.join(__dirname, 'almog-logo.png');
           if (fs.existsSync(logoPath)) {
-            doc.image(logoPath, W / 2 - 45, 36, { width: 90, height: 50, fit: [90, 50] });
+            // Large logo: 180px wide, centered
+            doc.image(logoPath, W / 2 - 90, 28, { width: 180, height: 90, fit: [180, 90] });
           }
           
           // ── Company name ─────────────────────────────────────────────
-          doc.fontSize(9).fillColor('#1a6b3c')
-             .text('ALMOG OIL SERVICES', 0, 92, { align: 'center', characterSpacing: 3 });
+          doc.fontSize(10).fillColor('#1a6b3c')
+             .text('ALMOG OIL SERVICES  |  شركة المُق للخدمات النفطية', 0, 122, { align: 'center', characterSpacing: 2 });
           
           // ── Divider line ─────────────────────────────────────────────
-          doc.moveTo(W * 0.25, 108).lineTo(W * 0.75, 108)
-             .lineWidth(1).strokeColor('#c8a84b').stroke();
+          doc.moveTo(W * 0.2, 138).lineTo(W * 0.8, 138)
+             .lineWidth(1.5).strokeColor('#c8a84b').stroke();
           
           // ── Certificate title ─────────────────────────────────────────
-          doc.fontSize(34).fillColor('#1a6b3c')
+          doc.fontSize(32).fillColor('#1a6b3c')
              .font('Helvetica-Bold')
-             .text('CERTIFICATE OF COMPLETION', 0, 118, { align: 'center', characterSpacing: 1.5 });
+             .text('CERTIFICATE OF COMPLETION', 0, 148, { align: 'center', characterSpacing: 1.5 });
           
           // ── Subtitle ─────────────────────────────────────────────────
           doc.fontSize(11).fillColor('#555555').font('Helvetica')
-             .text('This is to certify that', 0, 162, { align: 'center' });
+             .text('This is to certify that', 0, 178, { align: 'center' });
           
           // ── Recipient name ────────────────────────────────────────────
           doc.fontSize(28).fillColor('#1a1a1a').font('Helvetica-Bold')
-             .text(ctx.user.name || 'Student', 0, 180, { align: 'center' });
+             .text(ctx.user.name || 'Student', 0, 196, { align: 'center' });
           
           // ── Name underline ────────────────────────────────────────────
           const nameWidth = Math.min(doc.widthOfString(ctx.user.name || 'Student') + 40, 400);
           const nameX = (W - nameWidth) / 2;
-          doc.moveTo(nameX, 216).lineTo(nameX + nameWidth, 216)
+          doc.moveTo(nameX, 232).lineTo(nameX + nameWidth, 232)
              .lineWidth(1.5).strokeColor('#1a6b3c').stroke();
           
           // ── Completion text ───────────────────────────────────────────
           doc.fontSize(11).fillColor('#555555').font('Helvetica')
-             .text('has successfully completed the following module:', 0, 226, { align: 'center' });
+             .text('has successfully completed the following module:', 0, 242, { align: 'center' });
           
           // ── Module name ───────────────────────────────────────────────
           doc.fontSize(16).fillColor('#1a6b3c').font('Helvetica-Bold')
-             .text(module.titleEn || module.titleAr, 60, 246, { align: 'center', width: W - 120 });
+             .text(module.titleEn || module.titleAr, 60, 262, { align: 'center', width: W - 120 });
           
           // ── Course name ───────────────────────────────────────────────
           doc.fontSize(10).fillColor('#777777').font('Helvetica')
-             .text(courseName, 60, 272, { align: 'center', width: W - 120 });
+             .text(courseName, 60, 288, { align: 'center', width: W - 120 });
           
           // ── Stats row ─────────────────────────────────────────────────
-          const statsY = 302;
+          const statsY = 318;
           const statW = 130;
           const gap = 30;
           const totalW = statW * 3 + gap * 2;
@@ -290,8 +291,8 @@ export const appRouter = router({
           doc.fontSize(8).fillColor('#555').font('Helvetica')
              .text('DATE OF ISSUE', dateX, statsY + 34, { width: statW, align: 'center', characterSpacing: 1 });
           
-          // ── Signature lines ───────────────────────────────────────────
-          const sigY = 374;
+          // ── Signature lines ────────────────────────────────────────────
+          const sigY = statsY + 68;
           const sig1X = W * 0.25;
           const sig2X = W * 0.65;
           

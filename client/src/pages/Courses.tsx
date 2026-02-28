@@ -41,9 +41,9 @@ export default function Courses() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container flex h-20 items-center justify-between">
           <div className="flex items-center gap-4">
-            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-12" />
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/juIkiBzVsHshNjRK.svg" alt="ALMOG" className="h-16" />
             <div className="hidden sm:block">
               <p className="text-xs text-muted-foreground leading-none">شركة المُق للخدمات النفطية</p>
               <p className="text-sm font-bold leading-tight">منصة التدريب التقني</p>

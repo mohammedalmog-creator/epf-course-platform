@@ -114,3 +114,11 @@
 - [x] Lesson completion percentage works for both courses (Modules.tsx)
 - [x] EPF certificate PDF uses same professional design as Wellhead
 - [x] Certificate.tsx shows attempt count and verification code for both courses
+
+## Logo Size Enhancement (Mar 2026)
+- [x] Increase logo size in all page headers (h-12 → h-16)
+- [x] Increase header height from h-16 to h-20 to accommodate larger logo
+- [x] Increase logo size in PDF certificate (90px → 180px wide, doubled)
+- [x] Regenerate PNG logo at 800x400 high resolution for PDF
+- [x] Adjust PDF Y positions to fit larger logo
+- [x] Add Arabic company name to PDF certificate footer
