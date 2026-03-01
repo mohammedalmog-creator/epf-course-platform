@@ -17,7 +17,7 @@ const courses = [
     titleEn: "Early Production Facilities (EPF)",
     descriptionAr: "دورة شاملة تغطي جميع جوانب منشآت الإنتاج المبكر في صناعة النفط والغاز، من الأساسيات إلى التصميم والتشغيل والصيانة.",
     modules: 9,
-    lessons: "42+",
+    lessons: "36+",
     questions: "42+",
     level: "متوسط - متقدم",
     duration: "9 أسابيع",
@@ -37,7 +37,7 @@ const courses = [
     descriptionAr: "دورة متخصصة في صيانة رأس البئر للمنشآت البرية والبحرية، تشمل الإجراءات والسلامة والتشخيص والإصلاح.",
     modules: 12,
     lessons: "60+",
-    questions: "96+",
+    questions: "97+",
     level: "مبتدئ - متقدم",
     duration: "12 أسبوعاً",
     icon: Wrench,
@@ -76,8 +76,8 @@ const features = [
 
 const stats = [
   { value: "21", label: "وحدة تعليمية", icon: BookOpen },
-  { value: "100+", label: "درس تفاعلي", icon: TrendingUp },
-  { value: "138+", label: "سؤال اختبار", icon: CheckCircle2 },
+  { value: "96+", label: "درس تفاعلي", icon: TrendingUp },
+  { value: "139+", label: "سؤال اختبار", icon: CheckCircle2 },
   { value: "2", label: "كورس متخصص", icon: Users },
 ];
 

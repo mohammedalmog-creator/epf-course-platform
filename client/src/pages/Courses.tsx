@@ -2,19 +2,18 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useProfileGuard } from "@/hooks/useProfileGuard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getLoginUrl } from "@/const";
 import { BookOpen, ArrowRight, Wrench } from "lucide-react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 
-const courses = [
+const COURSE_META = [
   {
     id: 1,
     titleAr: "منشآت الإنتاج المبكر",
     titleEn: "Early Production Facilities (EPF)",
     descriptionAr: "دورة شاملة تغطي جميع جوانب منشآت الإنتاج المبكر في صناعة النفط والغاز، من الأساسيات إلى التصميم والتشغيل والصيانة.",
-    modules: 9,
-    lessons: "42+",
-    questions: "42+",
     icon: BookOpen,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
@@ -25,15 +24,81 @@ const courses = [
     titleAr: "صيانة رأس البئر",
     titleEn: "Wellhead Maintenance (Onshore & Offshore)",
     descriptionAr: "دورة متخصصة في صيانة رأس البئر للمنشآت البرية والبحرية، تشمل الإجراءات والسلامة والتشخيص والإصلاح.",
-    modules: 12,
-    lessons: "18+",
-    questions: "61+",
     icon: Wrench,
     color: "text-orange-600",
     bgColor: "bg-orange-50",
     href: "/modules/2",
   },
 ];
+
+function CourseCard({ course, isAuthenticated }: { course: typeof COURSE_META[0]; isAuthenticated: boolean }) {
+  const Icon = course.icon;
+  const { data: stats, isLoading } = trpc.course.getCourseStats.useQuery({ courseId: course.id });
+
+  return (
+    <Card className="hover:shadow-xl transition-all duration-300 group border-2 hover:border-primary/30">
+      <CardHeader className="pb-4">
+        <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${course.bgColor} mb-4`}>
+          <Icon className={`h-8 w-8 ${course.color}`} />
+        </div>
+        <CardTitle className="text-2xl leading-tight group-hover:text-primary transition-colors">
+          {course.titleAr}
+        </CardTitle>
+        <CardDescription className="text-sm font-medium">
+          {course.titleEn}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-muted-foreground leading-relaxed">
+          {course.descriptionAr}
+        </p>
+
+        <div className="grid grid-cols-3 gap-3 py-3 border-t border-b">
+          <div className="text-center">
+            {isLoading ? (
+              <Skeleton className="h-8 w-12 mx-auto mb-1" />
+            ) : (
+              <div className="text-2xl font-bold text-primary">{stats?.moduleCount ?? 0}</div>
+            )}
+            <div className="text-xs text-muted-foreground">وحدة</div>
+          </div>
+          <div className="text-center border-x">
+            {isLoading ? (
+              <Skeleton className="h-8 w-12 mx-auto mb-1" />
+            ) : (
+              <div className="text-2xl font-bold text-primary">{stats?.lessonCount ?? 0}+</div>
+            )}
+            <div className="text-xs text-muted-foreground">درس</div>
+          </div>
+          <div className="text-center">
+            {isLoading ? (
+              <Skeleton className="h-8 w-12 mx-auto mb-1" />
+            ) : (
+              <div className="text-2xl font-bold text-primary">{stats?.questionCount ?? 0}+</div>
+            )}
+            <div className="text-xs text-muted-foreground">سؤال</div>
+          </div>
+        </div>
+
+        {isAuthenticated ? (
+          <Link href={course.href}>
+            <Button className="w-full" size="lg">
+              ابدأ الدورة
+              <ArrowRight className="mr-2 h-4 w-4" />
+            </Button>
+          </Link>
+        ) : (
+          <a href={getLoginUrl()}>
+            <Button className="w-full" size="lg">
+              سجل للوصول
+              <ArrowRight className="mr-2 h-4 w-4" />
+            </Button>
+          </a>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Courses() {
   const { user, isAuthenticated } = useAuth();
@@ -82,60 +147,9 @@ export default function Courses() {
       {/* Courses Grid */}
       <section className="container py-8 pb-16">
         <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-          {courses.map((course) => {
-            const Icon = course.icon;
-            return (
-              <Card key={course.id} className="hover:shadow-xl transition-all duration-300 group border-2 hover:border-primary/30">
-                <CardHeader className="pb-4">
-                  <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${course.bgColor} mb-4`}>
-                    <Icon className={`h-8 w-8 ${course.color}`} />
-                  </div>
-                  <CardTitle className="text-2xl leading-tight group-hover:text-primary transition-colors">
-                    {course.titleAr}
-                  </CardTitle>
-                  <CardDescription className="text-sm font-medium">
-                    {course.titleEn}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-muted-foreground leading-relaxed">
-                    {course.descriptionAr}
-                  </p>
-
-                  <div className="grid grid-cols-3 gap-3 py-3 border-t border-b">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">{course.modules}</div>
-                      <div className="text-xs text-muted-foreground">وحدة</div>
-                    </div>
-                    <div className="text-center border-x">
-                      <div className="text-2xl font-bold text-primary">{course.lessons}</div>
-                      <div className="text-xs text-muted-foreground">درس</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-primary">{course.questions}</div>
-                      <div className="text-xs text-muted-foreground">سؤال</div>
-                    </div>
-                  </div>
-
-                  {isAuthenticated ? (
-                    <Link href={course.href}>
-                      <Button className="w-full" size="lg">
-                        ابدأ الدورة
-                        <ArrowRight className="mr-2 h-4 w-4" />
-                      </Button>
-                    </Link>
-                  ) : (
-                    <a href={getLoginUrl()}>
-                      <Button className="w-full" size="lg">
-                        سجل للوصول
-                        <ArrowRight className="mr-2 h-4 w-4" />
-                      </Button>
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
+          {COURSE_META.map((course) => (
+            <CourseCard key={course.id} course={course} isAuthenticated={isAuthenticated} />
+          ))}
         </div>
       </section>
 

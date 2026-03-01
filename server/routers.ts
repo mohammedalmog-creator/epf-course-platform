@@ -20,6 +20,12 @@ export const appRouter = router({
   }),
 
   course: router({
+    // Get course stats (module/lesson/question counts)
+    getCourseStats: publicProcedure
+      .input(z.object({ courseId: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getCourseStats(input.courseId);
+      }),
     // Get all modules (optionally filtered by courseId)
     getModules: publicProcedure
       .input(z.object({ courseId: z.number().optional() }).optional())

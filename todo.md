@@ -167,6 +167,12 @@
 - [x] Improve lesson navigation with prev/next lesson titles shown in buttons
 - [x] Add motivational "key takeaway" section before completion button
 
+## Course Stats Fix (Mar 2026)
+- [x] Fix incorrect lesson/question counts on course cards (were hardcoded, now dynamic from DB)
+- [x] Add getCourseStats tRPC procedure returning real module/lesson/question counts per course
+- [x] Update Courses.tsx to fetch live stats via tRPC (no more stale hardcoded numbers)
+- [x] Fix Home.tsx stats bar to show accurate totals (96+ lessons, 139+ questions)
+
 ## EPF Course Illustrative Images (Mar 2026)
 - [x] Generate 35 professional technical illustrations for all EPF course lessons
 - [x] Upload all 35 images to CDN (CloudFront)

@@ -499,3 +499,21 @@ export async function verifyCertificate(verificationCode: string) {
 
   return rows[0] ?? null;
 }
+
+export async function getCourseStats(courseId: number) {
+  const db = await getDb();
+  if (!db) return { moduleCount: 0, lessonCount: 0, questionCount: 0 };
+  const [modRow] = await db.select({ count: sql<number>`COUNT(*)` })
+    .from(modules).where(eq(modules.courseId, courseId));
+  const [lessonRow] = await db.select({ count: sql<number>`COUNT(*)` })
+    .from(lessons).innerJoin(modules, eq(lessons.moduleId, modules.id))
+    .where(eq(modules.courseId, courseId));
+  const [questionRow] = await db.select({ count: sql<number>`COUNT(*)` })
+    .from(quizQuestions).innerJoin(modules, eq(quizQuestions.moduleId, modules.id))
+    .where(eq(modules.courseId, courseId));
+  return {
+    moduleCount: Number(modRow?.count ?? 0),
+    lessonCount: Number(lessonRow?.count ?? 0),
+    questionCount: Number(questionRow?.count ?? 0),
+  };
+}
