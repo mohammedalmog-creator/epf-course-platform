@@ -166,3 +166,9 @@
 - [x] Add reading progress bar at top of lesson page
 - [x] Improve lesson navigation with prev/next lesson titles shown in buttons
 - [x] Add motivational "key takeaway" section before completion button
+
+## EPF Course Illustrative Images (Mar 2026)
+- [x] Generate 35 professional technical illustrations for all EPF course lessons
+- [x] Upload all 35 images to CDN (CloudFront)
+- [x] Update all EPF lessons (IDs 1-35) in database with CDN image URLs
+- [x] All images verified: 35/35 lessons have unique CDN image URLs
