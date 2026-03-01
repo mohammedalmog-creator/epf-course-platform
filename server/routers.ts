@@ -578,9 +578,27 @@ export const appRouter = router({
             attemptId: attempt.id,
             scorePercent,
           });
+          // Notify owner of successful course completion
+          try {
+            const { notifyOwner } = await import('./_core/notification');
+            const courseNames: Record<number, string> = {
+              1: 'منشآت الإنتاج المبكر (EPF)',
+              2: 'صيانة رأس البئر (Wellhead Maintenance)',
+            };
+            const courseName = courseNames[input.courseId] || `كورس رقم ${input.courseId}`;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+            await notifyOwner({
+              title: `🎓 نجاح في الامتحان الشامل — ${courseName}`,
+              content: `المتدرب: ${ctx.user.name}\nالكورس: ${courseName}\nالدرجة: ${scorePercent.toFixed(1)}%\nالتاريخ: ${dateStr} — ${timeStr}\nرمز الشهادة: ${certificate?.verificationCode || 'N/A'}`,
+            });
+          } catch (notifyErr) {
+            // Notification failure should not block the response
+            console.error('[notifyOwner] Failed to send exam pass notification:', notifyErr);
+          }
         }
-
-        return { passed, scorePercent, correct, total: questions.length, certificate, nextAllowedAt };
+        return { passed, scorePercent, correct, total: questions.length, certificate, nextAllowedAt };;
       }),
 
     // Get course certificate
