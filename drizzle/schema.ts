@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json, decimal, datetime } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -78,6 +78,63 @@ export const quizQuestions = mysqlTable("quiz_questions", {
 
 export type QuizQuestion = typeof quizQuestions.$inferSelect;
 export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
+
+/**
+ * Course-level final exam questions (100+ per course, mixed MCQ + True/False)
+ */
+export const courseExamQuestions = mysqlTable("course_exam_questions", {
+  id: int("id").autoincrement().primaryKey(),
+  courseId: int("course_id").notNull(), // 1=EPF, 2=Wellhead
+  questionType: mysqlEnum("question_type", ["mcq", "true_false"]).notNull().default("mcq"),
+  questionTextAr: text("question_text_ar").notNull(),
+  questionTextEn: text("question_text_en"),
+  optionsJson: json("options_json").notNull(), // MCQ: [{id,textAr,textEn}], TrueFalse: [{id:"T",textAr:"صح"},{id:"F",textAr:"خطأ"}]
+  correctOptionId: varchar("correct_option_id", { length: 10 }).notNull(),
+  explanationAr: text("explanation_ar"),
+  explanationEn: text("explanation_en"),
+  difficulty: mysqlEnum("difficulty", ["medium", "hard", "expert"]).notNull().default("hard"),
+  timeLimitSeconds: int("time_limit_seconds").notNull().default(90), // per-question timer
+  order: int("order").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type CourseExamQuestion = typeof courseExamQuestions.$inferSelect;
+export type InsertCourseExamQuestion = typeof courseExamQuestions.$inferInsert;
+
+/**
+ * Course-level final exam attempts
+ */
+export const courseExamAttempts = mysqlTable("course_exam_attempts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  courseId: int("course_id").notNull(),
+  scorePercent: varchar("score_percent", { length: 10 }).notNull().default("0"),
+  passed: int("passed").notNull().default(0),
+  answers: json("answers"),
+  timeTakenSeconds: int("time_taken_seconds"),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  nextAllowedAt: timestamp("next_allowed_at"),
+});
+
+export type CourseExamAttempt = typeof courseExamAttempts.$inferSelect;
+export type InsertCourseExamAttempt = typeof courseExamAttempts.$inferInsert;
+
+/**
+ * Course-level certificates (issued after passing the final exam)
+ */
+export const courseCertificates = mysqlTable("course_certificates", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  courseId: int("course_id").notNull(),
+  attemptId: int("attempt_id").notNull().default(0),
+  scorePercent: varchar("score_percent", { length: 10 }).notNull().default("0"),
+  verificationCode: varchar("verification_code", { length: 20 }).notNull().default(""),
+  issuedAt: timestamp("issued_at").defaultNow().notNull(),
+});
+
+export type CourseCertificate = typeof courseCertificates.$inferSelect;
+export type InsertCourseCertificate = typeof courseCertificates.$inferInsert;
 
 /**
  * User progress on lessons

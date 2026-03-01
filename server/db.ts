@@ -517,3 +517,102 @@ export async function getCourseStats(courseId: number) {
     questionCount: Number(questionRow?.count ?? 0),
   };
 }
+
+// ─── Course Final Exam Helpers ────────────────────────────────────────────────
+
+export async function getCourseExamQuestions(courseId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  // Import the new tables
+  const { courseExamQuestions } = await import("../drizzle/schema");
+  const rows = await db.select().from(courseExamQuestions)
+    .where(eq(courseExamQuestions.courseId, courseId))
+    .orderBy(courseExamQuestions.order);
+  return rows;
+}
+
+export async function getCourseExamStatus(userId: number, courseId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const { courseExamAttempts, courseCertificates } = await import("../drizzle/schema");
+  // Get last attempt
+  const [lastAttempt] = await db.select().from(courseExamAttempts)
+    .where(and(eq(courseExamAttempts.userId, userId), eq(courseExamAttempts.courseId, courseId)))
+    .orderBy(desc(courseExamAttempts.startedAt))
+    .limit(1);
+  // Get certificate if any
+  const [cert] = await db.select().from(courseCertificates)
+    .where(and(eq(courseCertificates.userId, userId), eq(courseCertificates.courseId, courseId)))
+    .limit(1);
+  return {
+    lastAttempt: lastAttempt ?? null,
+    certificate: cert ?? null,
+    lockedUntil: lastAttempt?.nextAllowedAt ?? null,
+    hasPassed: cert != null,
+  };
+}
+
+export async function saveCourseExamAttempt(data: {
+  userId: number;
+  courseId: number;
+  scorePercent: number;
+  passed: boolean;
+  answers: Record<string, string>;
+  timeTakenSeconds: number;
+  nextAllowedAt: Date | null;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error('DB not available');
+  const { courseExamAttempts } = await import("../drizzle/schema");
+  const [result] = await db.insert(courseExamAttempts).values({
+    userId: data.userId,
+    courseId: data.courseId,
+    scorePercent: String(data.scorePercent),
+    passed: data.passed ? 1 : 0,
+    answers: data.answers as unknown as null,
+    timeTakenSeconds: data.timeTakenSeconds,
+    startedAt: new Date(),
+    completedAt: new Date(),
+    nextAllowedAt: data.nextAllowedAt,
+  });
+  return { id: (result as any).insertId as number };
+}
+
+export async function issueCourseExamCertificate(data: {
+  userId: number;
+  courseId: number;
+  attemptId: number;
+  scorePercent: number;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error('DB not available');
+  const { courseCertificates } = await import("../drizzle/schema");
+  // Check if certificate already exists
+  const [existing] = await db.select().from(courseCertificates)
+    .where(and(eq(courseCertificates.userId, data.userId), eq(courseCertificates.courseId, data.courseId)))
+    .limit(1);
+  if (existing) return existing;
+  // Generate verification code
+  const code = `CE-${data.courseId}-${data.userId}-${Date.now().toString(36).toUpperCase()}`;
+  await db.insert(courseCertificates).values({
+    userId: data.userId,
+    courseId: data.courseId,
+    attemptId: data.attemptId,
+    scorePercent: String(data.scorePercent),
+    verificationCode: code,
+  });
+  const [cert] = await db.select().from(courseCertificates)
+    .where(eq(courseCertificates.verificationCode, code))
+    .limit(1);
+  return cert;
+}
+
+export async function getCourseCertificate(userId: number, courseId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const { courseCertificates } = await import("../drizzle/schema");
+  const [cert] = await db.select().from(courseCertificates)
+    .where(and(eq(courseCertificates.userId, userId), eq(courseCertificates.courseId, courseId)))
+    .limit(1);
+  return cert ?? null;
+}

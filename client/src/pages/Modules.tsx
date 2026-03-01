@@ -177,6 +177,37 @@ export default function Modules() {
             );
           })}
         </div>
+
+        {/* Final Exam Banner */}
+        <div className="mt-10 mb-6">
+          <div className="bg-gradient-to-r from-yellow-950/60 via-amber-950/40 to-yellow-950/60 border border-yellow-600/50 rounded-2xl p-6" dir="rtl">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+              </div>
+              <div className="flex-1 text-center md:text-right">
+                <h3 className="text-xl font-bold text-yellow-300 mb-1">الامتحان الشامل للكورس</h3>
+                <p className="text-sm text-yellow-600/80 mb-1">100 سؤال متقدم • نسبة النجاح 90% • شهادة إتمام الكورس الكاملة</p>
+                <p className="text-xs text-slate-400">في حالة الرسوب: لا يمكن إعادة الامتحان إلا بعد أسبوع كامل</p>
+              </div>
+              <div className="flex gap-3 flex-shrink-0">
+                <Button
+                  onClick={() => setLocation(`/course-exam/${courseId}`)}
+                  className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white font-bold px-6"
+                >
+                  الامتحان الشامل
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setLocation(`/course-certificate/${courseId}`)}
+                  className="border-yellow-600/50 text-yellow-400 hover:bg-yellow-900/30"
+                >
+                  الشهادة
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

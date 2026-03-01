@@ -508,5 +508,87 @@ export const appRouter = router({
     .query(async ({ input }) => {
       return await db.verifyCertificate(input.code);
     }),
+
+  // Course Final Exam
+  courseExam: router({
+    // Get exam questions for a course (randomized)
+    getQuestions: protectedProcedure
+      .input(z.object({ courseId: z.number() }))
+      .query(async ({ input, ctx }) => {
+        // Check if user is locked out
+        const status = await db.getCourseExamStatus(ctx.user.id, input.courseId);
+        if (status?.lockedUntil && new Date(status.lockedUntil) > new Date()) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: `LOCKED:${status.lockedUntil}`,
+          });
+        }
+        return await db.getCourseExamQuestions(input.courseId);
+      }),
+
+    // Get exam status for current user
+    getStatus: protectedProcedure
+      .input(z.object({ courseId: z.number() }))
+      .query(async ({ input, ctx }) => {
+        return await db.getCourseExamStatus(ctx.user.id, input.courseId);
+      }),
+
+    // Submit exam answers
+    submit: protectedProcedure
+      .input(z.object({
+        courseId: z.number(),
+        answers: z.record(z.string(), z.string()), // questionId -> selectedOptionId
+        timeTakenSeconds: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const questions = await db.getCourseExamQuestions(input.courseId);
+        if (questions.length === 0) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'No exam questions found' });
+        }
+
+        // Calculate score
+        let correct = 0;
+        for (const q of questions) {
+          const userAnswer = input.answers[String(q.id)];
+          if (userAnswer === q.correctOptionId) correct++;
+        }
+        const scorePercent = Math.round((correct / questions.length) * 100 * 100) / 100;
+        const passed = scorePercent >= 90;
+
+        // Determine next allowed attempt date (1 week if failed)
+        const nextAllowedAt = passed ? null : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+        // Save attempt
+        const attempt = await db.saveCourseExamAttempt({
+          userId: ctx.user.id,
+          courseId: input.courseId,
+          scorePercent,
+          passed,
+          answers: input.answers,
+          timeTakenSeconds: input.timeTakenSeconds,
+          nextAllowedAt,
+        });
+
+        // Issue certificate if passed
+        let certificate = null;
+        if (passed) {
+          certificate = await db.issueCourseExamCertificate({
+            userId: ctx.user.id,
+            courseId: input.courseId,
+            attemptId: attempt.id,
+            scorePercent,
+          });
+        }
+
+        return { passed, scorePercent, correct, total: questions.length, certificate, nextAllowedAt };
+      }),
+
+    // Get course certificate
+    getCertificate: protectedProcedure
+      .input(z.object({ courseId: z.number() }))
+      .query(async ({ input, ctx }) => {
+        return await db.getCourseCertificate(ctx.user.id, input.courseId);
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

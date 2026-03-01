@@ -1,0 +1,40 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "certificates"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "lesson_progress"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "lessons"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "module_progress"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "modules"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "project_submissions"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "quiz_attempts"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "quiz_questions"
+    },
+    {
+      "Tables_in_T3XiKgmnDLqJNf6z2vN3GW": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_T3XiKgmnDLqJNf6z2vN3GW\n__drizzle_migrations\ncertificates\nlesson_progress\nlessons\nmodule_progress\nmodules\nproject_submissions\nquiz_attempts\nquiz_questions\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}

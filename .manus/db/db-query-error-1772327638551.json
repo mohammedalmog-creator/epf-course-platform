@@ -1,0 +1,8 @@
+{
+  "query": "\nSELECT c.id as courseId, c.title as courseTitle, m.id as moduleId, m.titleAr, COUNT(q.id) as questionCount\nFROM courses c\nJOIN modules m ON m.courseId = c.id\nLEFT JOIN quiz_questions q ON q.moduleId = m.id\nGROUP BY c.id, c.title, m.id, m.titleAr\nORDER BY c.id, m.orderIndex;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT c.id as courseId, c.title as courseTitle, m.id as moduleId, m.titleAr, COUNT(q.id) as questionCount\nFROM courses c\nJOIN modules m ON m.courseId = c.id\nLEFT JOIN quiz_questions q ON q.moduleId = m.id\nGROUP BY c.id, c.title, m.id, m.titleAr\nORDER BY c.id, m.orderIndex;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 2: Table 't3xikgmndlqjnf6z2vn3gw.courses' doesn't exist"
+  ]
+}

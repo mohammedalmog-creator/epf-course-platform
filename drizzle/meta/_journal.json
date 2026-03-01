@@ -50,6 +50,13 @@
       "when": 1772320520207,
       "tag": "0006_normal_dazzler",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1772327707772,
+      "tag": "0007_conscious_virginia_dare",
+      "breakpoints": true
     }
   ]
 }

@@ -16,6 +16,8 @@ import GraduationProject from "./pages/GraduationProject";
 import AdminPanel from "./pages/AdminPanel";
 import CertificateVerify from "./pages/CertificateVerify";
 import ProfileSetup from "./pages/ProfileSetup";
+import CourseExam from "./pages/CourseExam";
+import CourseCertificate from "./pages/CourseCertificate";
 
 function Router() {
   return (
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/verify/:code" component={CertificateVerify} />
       <Route path="/verify" component={CertificateVerify} />
       <Route path="/profile-setup" component={ProfileSetup} />
+      <Route path="/course-exam/:courseId" component={CourseExam} />
+      <Route path="/course-certificate/:courseId" component={CourseCertificate} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

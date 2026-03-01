@@ -1,0 +1,136 @@
+{
+  "query": "\nSELECT m.course_id as courseId, m.id as moduleId, m.title_ar as titleAr, COUNT(q.id) as questionCount\nFROM modules m\nLEFT JOIN quiz_questions q ON q.module_id = m.id\nGROUP BY m.course_id, m.id, m.title_ar\nORDER BY m.course_id, m.id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT m.course_id as courseId, m.id as moduleId, m.title_ar as titleAr, COUNT(q.id) as questionCount\nFROM modules m\nLEFT JOIN quiz_questions q ON q.module_id = m.id\nGROUP BY m.course_id, m.id, m.title_ar\nORDER BY m.course_id, m.id;\n",
+  "rows": [
+    {
+      "courseId": "1",
+      "moduleId": "1",
+      "titleAr": "مقدمة في صناعة النفط والغاز ودور الـ EPF",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "2",
+      "titleAr": "فصل السوائل الثلاثي (Three-Phase Separation)",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "3",
+      "titleAr": "أنظمة معالجة النفط الخام",
+      "questionCount": "0"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "4",
+      "titleAr": "معالجة الغاز الطبيعي والمياه المنتجة",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "5",
+      "titleAr": "أنظمة التدفئة والتبريد والضغط",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "6",
+      "titleAr": "التخزين، القياس، والسلامة",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "7",
+      "titleAr": "التصميم الأولي والحسابات الهندسية",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "8",
+      "titleAr": "مشروع التخرج",
+      "questionCount": "0"
+    },
+    {
+      "courseId": "1",
+      "moduleId": "9",
+      "titleAr": "التشغيل والصيانة",
+      "questionCount": "6"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30001",
+      "titleAr": "مقدمة في رأس البئر وتركيبه",
+      "questionCount": "9"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30002",
+      "titleAr": "أنواع رؤوس الآبار البرية والبحرية",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30003",
+      "titleAr": "إجراءات تركيب رأس البئر",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30004",
+      "titleAr": "صيانة رأس البئر الدورية والوقائية",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30005",
+      "titleAr": "إجراءات السلامة في صيانة رأس البئر",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30006",
+      "titleAr": "إصلاح وتشخيص أعطال رأس البئر",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30007",
+      "titleAr": "أنظمة التحكم في البئر (Well Control)",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30008",
+      "titleAr": "التآكل وحماية معدات رأس البئر",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30009",
+      "titleAr": "صيانة الصمامات في رأس البئر",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30010",
+      "titleAr": "إدارة سلامة العمليات (Process Safety Management)",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30011",
+      "titleAr": "تقنيات التدخل في البئر (Well Intervention)",
+      "questionCount": "8"
+    },
+    {
+      "courseId": "2",
+      "moduleId": "30012",
+      "titleAr": "الاتجاهات الحديثة في صيانة رأس البئر",
+      "questionCount": "8"
+    }
+  ],
+  "messages": [],
+  "stdout": "courseId\tmoduleId\ttitleAr\tquestionCount\n1\t1\tمقدمة في صناعة النفط والغاز ودور الـ EPF\t6\n1\t2\tفصل السوائل الثلاثي (Three-Phase Separation)\t6\n1\t3\tأنظمة معالجة النفط الخام\t0\n1\t4\tمعالجة الغاز الطبيعي والمياه المنتجة\t6\n1\t5\tأنظمة التدفئة والتبريد والضغط\t6\n1\t6\tالتخزين، القياس، والسلامة\t6\n1\t7\tالتصميم الأولي والحسابات الهندسية\t6\n1\t8\tمشروع التخرج\t0\n1\t9\tالتشغيل والصيانة\t6\n2\t30001\tمقدمة في رأس البئر وتركيبه\t9\n2\t30002\tأنواع رؤوس الآبار البرية والبحرية\t8\n2\t30003\tإجراءات تركيب رأس البئر\t8\n2\t30004\tصيانة رأس البئر الدورية والوقائية\t8\n2\t30005\tإجراءات السلامة في صيانة رأس البئر\t8\n2\t30006\tإصلاح وتشخيص أعطال رأس البئر\t8\n2\t30007\tأنظمة التحكم في البئر (Well Control)\t8\n2\t30008\tالتآكل وحماية معدات رأس البئر\t8\n2\t30009\tصيانة الصمامات في رأس البئر\t8\n2\t30010\tإدارة سلامة العمليات (Process Safety Management)\t8\n2\t30011\tتقنيات التدخل في البئر (Well Intervention)\t8\n2\t30012\tالاتجاهات الحديثة في صيانة رأس البئر\t8\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

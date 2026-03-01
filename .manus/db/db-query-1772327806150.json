@@ -1,0 +1,157 @@
+{
+  "query": "\nSELECT m.id, m.course_id, m.title_ar, m.title_en, COUNT(q.id) as current_count\nFROM modules m\nLEFT JOIN quiz_questions q ON q.module_id = m.id\nGROUP BY m.id, m.course_id, m.title_ar, m.title_en\nORDER BY m.course_id, m.id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user Bk7aCGrDyRKGN1q.root --database T3XiKgmnDLqJNf6z2vN3GW --execute \nSELECT m.id, m.course_id, m.title_ar, m.title_en, COUNT(q.id) as current_count\nFROM modules m\nLEFT JOIN quiz_questions q ON q.module_id = m.id\nGROUP BY m.id, m.course_id, m.title_ar, m.title_en\nORDER BY m.course_id, m.id;\n",
+  "rows": [
+    {
+      "id": "1",
+      "course_id": "1",
+      "title_ar": "مقدمة في صناعة النفط والغاز ودور الـ EPF",
+      "title_en": "Introduction to Oil & Gas Industry and EPF Role",
+      "current_count": "6"
+    },
+    {
+      "id": "2",
+      "course_id": "1",
+      "title_ar": "فصل السوائل الثلاثي (Three-Phase Separation)",
+      "title_en": "Three-Phase Separation",
+      "current_count": "6"
+    },
+    {
+      "id": "3",
+      "course_id": "1",
+      "title_ar": "أنظمة معالجة النفط الخام",
+      "title_en": "Crude Oil Treatment Systems",
+      "current_count": "0"
+    },
+    {
+      "id": "4",
+      "course_id": "1",
+      "title_ar": "معالجة الغاز الطبيعي والمياه المنتجة",
+      "title_en": "Natural Gas and Produced Water Treatment",
+      "current_count": "6"
+    },
+    {
+      "id": "5",
+      "course_id": "1",
+      "title_ar": "أنظمة التدفئة والتبريد والضغط",
+      "title_en": "Heating, Cooling, and Compression Systems",
+      "current_count": "6"
+    },
+    {
+      "id": "6",
+      "course_id": "1",
+      "title_ar": "التخزين، القياس، والسلامة",
+      "title_en": "Storage, Metering, and Safety",
+      "current_count": "6"
+    },
+    {
+      "id": "7",
+      "course_id": "1",
+      "title_ar": "التصميم الأولي والحسابات الهندسية",
+      "title_en": "Initial Design and Engineering Calculations",
+      "current_count": "6"
+    },
+    {
+      "id": "8",
+      "course_id": "1",
+      "title_ar": "مشروع التخرج",
+      "title_en": "Graduation Project",
+      "current_count": "0"
+    },
+    {
+      "id": "9",
+      "course_id": "1",
+      "title_ar": "التشغيل والصيانة",
+      "title_en": "Operations and Maintenance",
+      "current_count": "6"
+    },
+    {
+      "id": "30001",
+      "course_id": "2",
+      "title_ar": "مقدمة في رأس البئر وتركيبه",
+      "title_en": "Introduction to Wellhead and Its Components",
+      "current_count": "9"
+    },
+    {
+      "id": "30002",
+      "course_id": "2",
+      "title_ar": "أنواع رؤوس الآبار البرية والبحرية",
+      "title_en": "Types of Onshore and Offshore Wellheads",
+      "current_count": "8"
+    },
+    {
+      "id": "30003",
+      "course_id": "2",
+      "title_ar": "إجراءات تركيب رأس البئر",
+      "title_en": "Wellhead Installation Procedures",
+      "current_count": "8"
+    },
+    {
+      "id": "30004",
+      "course_id": "2",
+      "title_ar": "صيانة رأس البئر الدورية والوقائية",
+      "title_en": "Periodic and Preventive Wellhead Maintenance",
+      "current_count": "8"
+    },
+    {
+      "id": "30005",
+      "course_id": "2",
+      "title_ar": "إجراءات السلامة في صيانة رأس البئر",
+      "title_en": "Safety Procedures in Wellhead Maintenance",
+      "current_count": "8"
+    },
+    {
+      "id": "30006",
+      "course_id": "2",
+      "title_ar": "إصلاح وتشخيص أعطال رأس البئر",
+      "title_en": "Wellhead Troubleshooting and Repair",
+      "current_count": "8"
+    },
+    {
+      "id": "30007",
+      "course_id": "2",
+      "title_ar": "أنظمة التحكم في البئر (Well Control)",
+      "title_en": "Well Control Systems",
+      "current_count": "8"
+    },
+    {
+      "id": "30008",
+      "course_id": "2",
+      "title_ar": "التآكل وحماية معدات رأس البئر",
+      "title_en": "Corrosion and Protection of Wellhead Equipment",
+      "current_count": "8"
+    },
+    {
+      "id": "30009",
+      "course_id": "2",
+      "title_ar": "صيانة الصمامات في رأس البئر",
+      "title_en": "Wellhead Valve Maintenance",
+      "current_count": "8"
+    },
+    {
+      "id": "30010",
+      "course_id": "2",
+      "title_ar": "إدارة سلامة العمليات (Process Safety Management)",
+      "title_en": "Process Safety Management (PSM)",
+      "current_count": "8"
+    },
+    {
+      "id": "30011",
+      "course_id": "2",
+      "title_ar": "تقنيات التدخل في البئر (Well Intervention)",
+      "title_en": "Well Intervention Techniques",
+      "current_count": "8"
+    },
+    {
+      "id": "30012",
+      "course_id": "2",
+      "title_ar": "الاتجاهات الحديثة في صيانة رأس البئر",
+      "title_en": "Modern Trends in Wellhead Maintenance",
+      "current_count": "8"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcourse_id\ttitle_ar\ttitle_en\tcurrent_count\n1\t1\tمقدمة في صناعة النفط والغاز ودور الـ EPF\tIntroduction to Oil & Gas Industry and EPF Role\t6\n2\t1\tفصل السوائل الثلاثي (Three-Phase Separation)\tThree-Phase Separation\t6\n3\t1\tأنظمة معالجة النفط الخام\tCrude Oil Treatment Systems\t0\n4\t1\tمعالجة الغاز الطبيعي والمياه المنتجة\tNatural Gas and Produced Water Treatment\t6\n5\t1\tأنظمة التدفئة والتبريد والضغط\tHeating, Cooling, and Compression Systems\t6\n6\t1\tالتخزين، القياس، والسلامة\tStorage, Metering, and Safety\t6\n7\t1\tالتصميم الأولي والحسابات الهندسية\tInitial Design and Engineering Calculations\t6\n8\t1\tمشروع التخرج\tGraduation Project\t0\n9\t1\tالتشغيل والصيانة\tOperations and Maintenance\t6\n30001\t2\tمقدمة في رأس البئر وتركيبه\tIntroduction to Wellhead and Its Components\t9\n30002\t2\tأنواع رؤوس الآبار البرية والبحرية\tTypes of Onshore and Offshore Wellheads\t8\n30003\t2\tإجراءات تركيب رأس البئر\tWellhead Installation Procedures\t8\n30004\t2\tصيانة رأس البئر الدورية والوقائية\tPeriodic and Preventive Wellhead Maintenance\t8\n30005\t2\tإجراءات السلامة في صيانة رأس البئر\tSafety Procedures in Wellhead Maintenance\t8\n30006\t2\tإصلاح وتشخيص أعطال رأس البئر\tWellhead Troubleshooting and Repair\t8\n30007\t2\tأنظمة التحكم في البئر (Well Control)\tWell Control Systems\t8\n30008\t2\tالتآكل وحماية معدات رأس البئر\tCorrosion and Protection of Wellhead Equipment\t8\n30009\t2\tصيانة الصمامات في رأس البئر\tWellhead Valve Maintenance\t8\n30010\t2\tإدارة سلامة العمليات (Process Safety Management)\tProcess Safety Management (PSM)\t8\n30011\t2\tتقنيات التدخل في البئر (Well Intervention)\tWell Intervention Techniques\t8\n30012\t2\tالاتجاهات الحديثة في صيانة رأس البئر\tModern Trends in Wellhead Maintenance\t8\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}
