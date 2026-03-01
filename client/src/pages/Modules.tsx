@@ -187,8 +187,8 @@ export default function Modules() {
               </div>
               <div className="flex-1 text-center md:text-right">
                 <h3 className="text-xl font-bold text-yellow-300 mb-1">الامتحان الشامل للكورس</h3>
-                <p className="text-sm text-yellow-600/80 mb-1">100 سؤال متقدم • نسبة النجاح 90% • شهادة إتمام الكورس الكاملة</p>
-                <p className="text-xs text-slate-400">في حالة الرسوب: لا يمكن إعادة الامتحان إلا بعد أسبوع كامل</p>
+                <p className="text-sm font-medium mb-1" style={{color: '#000000'}}>100 سؤال متقدم • نسبة النجاح 90% • شهادة إتمام الكورس الكاملة</p>
+                <p className="text-xs font-semibold" style={{color: '#c11515'}}>في حالة الرسوب: لا يمكن إعادة الامتحان إلا بعد أسبوع كامل</p>
               </div>
               <div className="flex gap-3 flex-shrink-0">
                 <Button
