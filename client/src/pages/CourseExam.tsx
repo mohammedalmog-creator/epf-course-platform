@@ -11,13 +11,16 @@ import {
 } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
+interface ExamOption {
+  id: string;
+  text: string;
+}
 interface ExamQuestion {
   id: number;
   courseId: number;
   questionType: "mcq" | "true_false";
-  questionTextAr: string;
-  questionTextEn: string;
-  options: string[];
+  questionText: string;
+  options: ExamOption[];
   correctOptionId: string;
   timeLimitSeconds: number;
   order: number;
@@ -405,21 +408,20 @@ export default function CourseExam() {
             {/* Question text */}
             <div className="bg-slate-800/80 border border-slate-600 rounded-2xl p-6 mb-6">
               <p className="text-xl font-semibold leading-relaxed text-white">
-                {currentQ.questionTextAr}
+                {currentQ.questionText}
               </p>
             </div>
 
             {/* Options */}
             <div className="space-y-3">
               {currentQ.options.map((option, idx) => {
-                const optionId = String(idx);
-                const isSelected = selectedOption === optionId;
+                const isSelected = selectedOption === option.id;
                 return (
                   <button
-                    key={idx}
-                    onClick={() => handleSelectOption(optionId)}
+                    key={option.id}
+                    onClick={() => handleSelectOption(option.id)}
                     disabled={timerPaused}
-                    className={`w-full text-right p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 ${
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 ${
                       isSelected
                         ? "border-blue-500 bg-blue-900/40 text-white"
                         : "border-slate-600 bg-slate-800/50 text-slate-300 hover:border-slate-400 hover:bg-slate-700/50"
@@ -428,9 +430,9 @@ export default function CourseExam() {
                     <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0 ${
                       isSelected ? "border-blue-400 bg-blue-600 text-white" : "border-slate-500 text-slate-400"
                     }`}>
-                      {["أ", "ب", "ج", "د"][idx] ?? String.fromCharCode(65 + idx)}
+                      {["A", "B", "C", "D"][idx] ?? String.fromCharCode(65 + idx)}
                     </div>
-                    <span className="flex-1">{option}</span>
+                    <span className="flex-1">{option.text}</span>
                     {isSelected && <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0" />}
                   </button>
                 );

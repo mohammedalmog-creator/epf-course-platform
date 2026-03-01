@@ -523,7 +523,21 @@ export const appRouter = router({
             message: `LOCKED:${status.lockedUntil}`,
           });
         }
-        return await db.getCourseExamQuestions(input.courseId);
+        const rawQuestions = await db.getCourseExamQuestions(input.courseId);
+        // Transform DB rows into the shape CourseExam.tsx expects
+        return rawQuestions.map((q) => {
+          const opts = (q.optionsJson as Array<{id: string; textEn?: string; textAr?: string}>) ?? [];
+          return {
+            id: q.id,
+            courseId: q.courseId,
+            questionType: q.questionType,
+            questionText: q.questionTextEn || q.questionTextAr,
+            options: opts.map((o) => ({ id: o.id, text: o.textEn || o.textAr || '' })),
+            correctOptionId: q.correctOptionId,
+            timeLimitSeconds: q.timeLimitSeconds,
+            order: q.order,
+          };
+        });
       }),
 
     // Get exam status for current user

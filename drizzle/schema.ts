@@ -88,7 +88,7 @@ export const courseExamQuestions = mysqlTable("course_exam_questions", {
   questionType: mysqlEnum("question_type", ["mcq", "true_false"]).notNull().default("mcq"),
   questionTextAr: text("question_text_ar").notNull(),
   questionTextEn: text("question_text_en"),
-  optionsJson: json("options_json").notNull(), // MCQ: [{id,textAr,textEn}], TrueFalse: [{id:"T",textAr:"صح"},{id:"F",textAr:"خطأ"}]
+  optionsJson: json("options").notNull(), // MCQ: [{id,textAr,textEn}], TrueFalse: [{id:"T",textAr:"صح"},{id:"F",textAr:"خطأ"}]
   correctOptionId: varchar("correct_option_id", { length: 10 }).notNull(),
   explanationAr: text("explanation_ar"),
   explanationEn: text("explanation_en"),
