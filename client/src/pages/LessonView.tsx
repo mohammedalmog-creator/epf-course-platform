@@ -5,7 +5,7 @@ import { trpc } from "@/lib/trpc";
 import {
   BookOpen, ArrowLeft, ArrowRight, CheckCircle2, Clock, ChevronRight,
   FileText, PlayCircle, Award, List, X, Lightbulb, Target, AlertTriangle,
-  Info, Star, Zap, BookMarked, GraduationCap
+  Info, Star, Zap, BookMarked, GraduationCap, Sun, Moon
 } from "lucide-react";
 import { Link, useLocation, useParams } from "wouter";
 import { getLoginUrl } from "@/const";
@@ -23,6 +23,15 @@ export default function LessonView() {
   const [startTime] = useState(Date.now());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const stored = localStorage.getItem("lesson-theme");
+    return stored !== "light"; // default dark
+  });
+  const toggleTheme = () => setIsDark(prev => {
+    const next = !prev;
+    localStorage.setItem("lesson-theme", next ? "dark" : "light");
+    return next;
+  });
 
   const { data: lesson, isLoading: lessonLoading } = trpc.course.getLesson.useQuery({ lessonId });
   const { data: module } = trpc.course.getModule.useQuery(
@@ -124,10 +133,25 @@ export default function LessonView() {
     }
   };
 
+  // Theme-aware class helpers
+  const th = {
+    bg: isDark ? "bg-slate-950" : "bg-gray-50",
+    header: isDark ? "border-slate-800 bg-slate-900/95" : "border-gray-200 bg-white/95",
+    text: isDark ? "text-white" : "text-gray-900",
+    sub: isDark ? "text-slate-400" : "text-gray-500",
+    muted: isDark ? "text-slate-500" : "text-gray-400",
+    progressBg: isDark ? "bg-slate-700" : "bg-gray-200",
+    btn: isDark ? "border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white" : "border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+    card: isDark ? "bg-slate-900 border-slate-800" : "bg-white border-gray-200",
+    sidebar: isDark ? "bg-slate-900 border-slate-700" : "bg-white border-gray-200",
+    sidebarItem: isDark ? "hover:bg-slate-800" : "hover:bg-gray-50",
+    sidebarDot: isDark ? "bg-slate-700 text-slate-400" : "bg-gray-200 text-gray-500",
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col" dir="rtl">
+    <div className={`min-h-screen ${th.bg} flex flex-col transition-colors duration-300`} dir="rtl">
       {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 z-[60] h-1 bg-slate-800">
+      <div className={`fixed top-0 left-0 right-0 z-[60] h-1 ${th.progressBg}`}>
         <div
           className="h-full bg-gradient-to-r from-primary to-amber-400 transition-all duration-150"
           style={{ width: `${readingProgress}%` }}
@@ -135,7 +159,7 @@ export default function LessonView() {
       </div>
 
       {/* Header */}
-      <header className="border-b border-slate-800 bg-slate-900/95 backdrop-blur sticky top-0 z-50">
+      <header className={`border-b ${th.header} backdrop-blur sticky top-0 z-50`}>
         <div className="container flex h-20 items-center justify-between gap-4">
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer group">
@@ -145,39 +169,51 @@ export default function LessonView() {
                 className="h-14 transition-transform group-hover:scale-105"
               />
               <div className="hidden sm:block">
-                <p className="text-xs text-slate-400 leading-none">شركة المُق للخدمات النفطية</p>
-                <p className="text-sm font-bold text-white leading-tight">منصة التدريب التقني</p>
+                <p className={`text-xs ${th.sub} leading-none`}>شركة المُق للخدمات النفطية</p>
+                <p className={`text-sm font-bold ${th.text} leading-tight`}>منصة التدريب التقني</p>
               </div>
             </div>
           </Link>
 
           {/* Module progress indicator */}
           <div className="flex-1 max-w-xs hidden md:block">
-            <div className="flex justify-between text-xs text-slate-400 mb-1.5">
-              <span className="truncate max-w-[160px]">{module?.titleAr}</span>
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className={`truncate max-w-[160px] ${th.sub}`}>{module?.titleAr}</span>
               <span className="text-primary font-bold">{completedCount}/{totalLessons} درس</span>
             </div>
-            <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div className={`h-2 ${th.progressBg} rounded-full overflow-hidden`}>
               <div
                 className="h-full bg-gradient-to-r from-primary to-amber-400 transition-all duration-500 rounded-full"
                 style={{ width: `${moduleProgress}%` }}
               />
             </div>
-            <p className="text-xs text-slate-500 mt-1 text-left">{moduleProgress}% مكتمل</p>
+            <p className={`text-xs ${th.muted} mt-1 text-left`}>{moduleProgress}% مكتمل</p>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Dark / Light toggle */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleTheme}
+              title={isDark ? "تبديل للوضع النهاري" : "تبديل للوضع الليلي"}
+              className={`${th.btn} transition-colors`}
+            >
+              {isDark
+                ? <Sun className="h-4 w-4 text-amber-400" />
+                : <Moon className="h-4 w-4 text-indigo-500" />}
+            </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+              className={th.btn}
             >
               <List className="h-4 w-4 ml-1" />
               <span className="hidden sm:inline">قائمة الدروس</span>
             </Button>
             <Link href={`/module/${lesson.moduleId}`}>
-              <Button variant="outline" size="sm" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white">
+              <Button variant="outline" size="sm" className={th.btn}>
                 <ArrowLeft className="h-4 w-4 ml-1" />
                 <span className="hidden sm:inline">الوحدة</span>
               </Button>

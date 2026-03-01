@@ -178,3 +178,8 @@
 - [x] Upload all 35 images to CDN (CloudFront)
 - [x] Update all EPF lessons (IDs 1-35) in database with CDN image URLs
 - [x] All images verified: 35/35 lessons have unique CDN image URLs
+
+## Dark/Light Mode Toggle in LessonView (Mar 2026)
+- [x] Add sun/moon toggle button to LessonView header
+- [x] Persist user preference in localStorage
+- [x] Apply theme class to LessonView container only (not global)
