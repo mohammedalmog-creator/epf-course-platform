@@ -59,7 +59,7 @@ export default function Certificate() {
 
   const latestAttempt = quizAttempts?.[0];
   const totalAttempts = quizAttempts?.length || 0;
-  const hasPassed = latestAttempt && (latestAttempt.score / latestAttempt.totalQuestions) >= 0.7;
+  const hasPassed = latestAttempt && (latestAttempt.score / latestAttempt.totalQuestions) >= 0.9;
   const scorePercent = latestAttempt ? Math.round((latestAttempt.score / latestAttempt.totalQuestions) * 100) : 0;
   const existingCertificate = certificates?.find(c => c.moduleId === moduleId);
 
@@ -156,7 +156,7 @@ export default function Certificate() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">الشهادة غير متاحة بعد</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  تحتاج إلى تحقيق <strong>70% أو أكثر</strong> في اختبار الوحدة للحصول على شهادتك.
+                  تحتاج إلى تحقيق <strong>90% أو أكثر</strong> في اختبار الوحدة للحصول على شهادتك.
                   {latestAttempt && (
                     <span className="block mt-2 text-yellow-700 font-medium">
                       آخر نتيجة: {scorePercent}% — المحاولة {totalAttempts}

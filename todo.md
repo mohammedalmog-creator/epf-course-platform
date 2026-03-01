@@ -183,3 +183,8 @@
 - [x] Add sun/moon toggle button to LessonView header
 - [x] Persist user preference in localStorage
 - [x] Apply theme class to LessonView container only (not global)
+
+## Passing Score Change (Mar 2026)
+- [x] Change passing score from 70% to 90% in Quiz.tsx
+- [x] Change passing score from 70% to 90% in Certificate.tsx
+- [x] Change passing score from 70% to 90% in AdminPanel.tsx (display + CSV export)

@@ -126,7 +126,7 @@ export default function Quiz() {
 
   // ── Results Screen ──────────────────────────────────────────────────────────
   if (quizCompleted && quizResult) {
-    const passed = quizResult.percentage >= 70;
+    const passed = quizResult.percentage >= 90;
     const thisAttemptNumber = previousAttempts + 1;
 
     return (
@@ -195,13 +195,13 @@ export default function Quiz() {
               {passed ? (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
                   <p className="text-green-800 font-medium">
-                    ممتاز! حققت النسبة المطلوبة (70% أو أكثر). يمكنك الآن الحصول على شهادتك.
+                    ممتاز! حققت النسبة المطلوبة (90% أو أكثر). يمكنك الآن الحصول على شهادتك.
                   </p>
                 </div>
               ) : (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
                   <p className="text-yellow-800">
-                    لم تصل إلى النسبة المطلوبة (70%). ننصحك بمراجعة الدروس والمحاولة مرة أخرى.
+                    لم تصل إلى النسبة المطلوبة (90%). ننصحك بمراجعة الدروس والمحاولة مرة أخرى.
                   </p>
                 </div>
               )}

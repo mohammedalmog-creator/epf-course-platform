@@ -157,7 +157,7 @@ function UserDetailDialog({ userId, open, onClose }: { userId: number | null; op
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className={`font-bold ${pct >= 70 ? "text-green-600" : "text-red-500"}`}>{pct}%</p>
+                          <p className={`font-bold ${pct >= 90 ? "text-green-600" : "text-red-500"}`}>{pct}%</p>
                           <p className="text-xs text-muted-foreground">{attempt.score}/{attempt.totalQuestions}</p>
                         </div>
                       </div>
@@ -261,7 +261,7 @@ export default function AdminPanel() {
         a.moduleTitleAr ?? "",
         `${a.score}/${a.totalQuestions}`,
         `${pct}%`,
-        pct >= 70 ? "ناجح" : "راسب",
+        pct >= 90 ? "ناجح" : "راسب",
         new Date(a.completedAt).toLocaleDateString("ar-SA"),
       ];
     });
