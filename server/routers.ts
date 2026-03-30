@@ -1,10 +1,11 @@
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
+import bcrypt from "bcryptjs";
 
 export const appRouter = router({
   system: systemRouter,
@@ -17,6 +18,187 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+
+    // ── Custom Registration ──────────────────────────────────────────────
+    register: publicProcedure
+      .input(z.object({
+        name: z.string().min(2).max(100),
+        email: z.string().email(),
+        phone: z.string().min(7).max(30),
+        password: z.string().min(6).max(128),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database unavailable' });
+        const { users } = await import('../drizzle/schema');
+        const { or, eq } = await import('drizzle-orm');
+
+        // Check email uniqueness
+        const existing = await dbConn.select({ id: users.id })
+          .from(users)
+          .where(or(eq(users.email, input.email), eq(users.phone, input.phone)))
+          .limit(1);
+        if (existing.length > 0) {
+          throw new TRPCError({ code: 'CONFLICT', message: 'البريد الإلكتروني أو رقم الهاتف مسجل مسبقاً' });
+        }
+
+        const passwordHash = await bcrypt.hash(input.password, 12);
+        const openId = `local_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+        await dbConn.insert(users).values({
+          openId,
+          name: input.name,
+          email: input.email,
+          phone: input.phone,
+          passwordHash,
+          loginMethod: 'local',
+          accountStatus: 'pending',
+          profileCompleted: true,
+          lastSignedIn: new Date(),
+        });
+
+        // Notify admin of new registration
+        try {
+          const { notifyOwner } = await import('./_core/notification');
+          await notifyOwner({
+            title: `طلب تسجيل جديد — ${input.name}`,
+            content: `طلب تسجيل جديد يحتاج إلى موافقتك:\n\nالاسم: ${input.name}\nالبريد: ${input.email}\nالهاتف: ${input.phone}\nالتاريخ: ${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+          });
+        } catch (e) { /* silent */ }
+
+        return { success: true, message: 'تم التسجيل بنجاح. سيتم مراجعة طلبك من قبل المسؤول.' };
+      }),
+
+    // ── Custom Login (email or phone + password) ─────────────────────────
+    loginLocal: publicProcedure
+      .input(z.object({
+        identifier: z.string().min(3), // email or phone
+        password: z.string().min(1),
+        loginType: z.enum(['email', 'phone']),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database unavailable' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+
+        const field = input.loginType === 'email' ? users.email : users.phone;
+        const [user] = await dbConn.select().from(users).where(eq(field, input.identifier)).limit(1);
+
+        if (!user || !user.passwordHash) {
+          throw new TRPCError({ code: 'UNAUTHORIZED', message: 'بيانات الدخول غير صحيحة' });
+        }
+
+        const valid = await bcrypt.compare(input.password, user.passwordHash);
+        if (!valid) {
+          throw new TRPCError({ code: 'UNAUTHORIZED', message: 'بيانات الدخول غير صحيحة' });
+        }
+
+        if (user.accountStatus === 'pending') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'PENDING: حسابك قيد المراجعة. يرجى الانتظار حتى يتم قبولك من قبل المسؤول.' });
+        }
+        if (user.accountStatus === 'rejected') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'REJECTED: تم رفض حسابك. يرجى التواصل مع المسؤول.' });
+        }
+
+        // Update last signed in
+        await dbConn.update(users).set({ lastSignedIn: new Date() }).where(eq(users.id, user.id));
+
+        // Create session JWT
+        const { sdk } = await import('./_core/sdk');
+        const sessionToken = await sdk.signSession(
+          { openId: user.openId, appId: 'local', name: user.name || '' },
+          { expiresInMs: ONE_YEAR_MS }
+        );
+
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+          ...cookieOptions,
+          maxAge: ONE_YEAR_MS,
+        });
+
+        return { success: true, user: { id: user.id, name: user.name, role: user.role, accountStatus: user.accountStatus } };
+      }),
+  }),
+
+  // ── Admin User Management ────────────────────────────────────────────────
+  userManagement: router({
+    // List all users with filters
+    getAll: protectedProcedure
+      .input(z.object({ status: z.enum(['all', 'pending', 'approved', 'rejected']).optional() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+
+        let query = dbConn.select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          phone: users.phone,
+          role: users.role,
+          accountStatus: users.accountStatus,
+          createdAt: users.createdAt,
+          approvedAt: users.approvedAt,
+          loginMethod: users.loginMethod,
+        }).from(users);
+
+        if (input?.status && input.status !== 'all') {
+          return (await query).filter(u => u.accountStatus === input.status);
+        }
+        return await query;
+      }),
+
+    // Approve a user
+    approve: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        await dbConn.update(users).set({
+          accountStatus: 'approved',
+          approvedAt: new Date(),
+          approvedBy: ctx.user.id,
+        }).where(eq(users.id, input.userId));
+        return { success: true };
+      }),
+
+    // Reject a user
+    reject: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        await dbConn.update(users).set({ accountStatus: 'rejected' }).where(eq(users.id, input.userId));
+        return { success: true };
+      }),
+
+    // Delete a user (removes all their data)
+    delete: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        if (ctx.user.id === input.userId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'لا يمكن حذف حسابك الخاص' });
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users, lessonProgress, moduleProgress, quizAttempts, certificates } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        // Delete related data first
+        await dbConn.delete(lessonProgress).where(eq(lessonProgress.userId, input.userId));
+        await dbConn.delete(moduleProgress).where(eq(moduleProgress.userId, input.userId));
+        await dbConn.delete(quizAttempts).where(eq(quizAttempts.userId, input.userId));
+        await dbConn.delete(certificates).where(eq(certificates.userId, input.userId));
+        await dbConn.delete(users).where(eq(users.id, input.userId));
+        return { success: true };
+      }),
   }),
 
   course: router({

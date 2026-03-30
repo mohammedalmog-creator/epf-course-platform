@@ -195,6 +195,7 @@ export default function AdminPanel() {
   const [searchQuiz, setSearchQuiz] = useState("");
   const [searchCerts, setSearchCerts] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [userStatusFilter, setUserStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
 
   const { data: stats, isLoading: statsLoading } = trpc.admin.getStats.useQuery(undefined, {
     enabled: user?.role === "admin",
@@ -208,6 +209,10 @@ export default function AdminPanel() {
   const { data: certificates, isLoading: certsLoading } = trpc.admin.getCertificates.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
+  const { data: pendingUsers, isLoading: pendingUsersLoading } = trpc.userManagement.getAll.useQuery(
+    { status: userStatusFilter },
+    { enabled: user?.role === "admin" }
+  );
 
   const utils = trpc.useUtils();
   const promoteMutation = trpc.admin.promoteUser.useMutation({
@@ -216,6 +221,30 @@ export default function AdminPanel() {
       toast.success("تم تحديث صلاحية المستخدم");
     },
     onError: () => toast.error("فشل تحديث الصلاحية"),
+  });
+
+  const approveMutation = trpc.userManagement.approve.useMutation({
+    onSuccess: () => {
+      utils.userManagement.getAll.invalidate();
+      toast.success("تم قبول الحساب");
+    },
+    onError: () => toast.error("فشل قبول الحساب"),
+  });
+
+  const rejectMutation = trpc.userManagement.reject.useMutation({
+    onSuccess: () => {
+      utils.userManagement.getAll.invalidate();
+      toast.success("تم رفض الحساب");
+    },
+    onError: () => toast.error("فشل رفض الحساب"),
+  });
+
+  const deleteUserMutation = trpc.userManagement.delete.useMutation({
+    onSuccess: () => {
+      utils.userManagement.getAll.invalidate();
+      toast.success("تم حذف الحساب");
+    },
+    onError: (err) => toast.error(err.message || "فشل حذف الحساب"),
   });
 
   const filteredUsers = useMemo(() =>
@@ -363,10 +392,14 @@ export default function AdminPanel() {
 
         {/* Tabs */}
         <Tabs defaultValue="users">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="users" className="gap-2">
               <Users className="h-4 w-4" />
               المتدربون ({users?.length ?? 0})
+            </TabsTrigger>
+            <TabsTrigger value="accounts" className="gap-2">
+              <Shield className="h-4 w-4" />
+              الحسابات ({pendingUsers?.length ?? 0})
             </TabsTrigger>
             <TabsTrigger value="quiz" className="gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -377,6 +410,144 @@ export default function AdminPanel() {
               الشهادات ({certificates?.length ?? 0})
             </TabsTrigger>
           </TabsList>
+
+          {/* ── Account Management Tab ── */}
+          <TabsContent value="accounts">
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <CardTitle className="text-lg">إدارة الحسابات</CardTitle>
+                  <div className="flex items-center gap-3">
+                    <select
+                      value={userStatusFilter}
+                      onChange={(e) => setUserStatusFilter(e.target.value as any)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="all">جميع الحسابات</option>
+                      <option value="pending">قيد المراجعة</option>
+                      <option value="approved">موافق عليها</option>
+                      <option value="rejected">مرفوضة</option>
+                    </select>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {pendingUsersLoading ? (
+                  <div className="space-y-3">
+                    {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-right">#</TableHead>
+                        <TableHead className="text-right">الاسم</TableHead>
+                        <TableHead className="text-right">البريد الإلكتروني</TableHead>
+                        <TableHead className="text-right">الهاتف</TableHead>
+                        <TableHead className="text-right">الحالة</TableHead>
+                        <TableHead className="text-right">تاريخ الطلب</TableHead>
+                        <TableHead className="text-right">الإجراءات</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {!pendingUsers || pendingUsers.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                            لا توجد حسابات
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        pendingUsers.map((u, idx) => (
+                          <TableRow key={u.id}>
+                            <TableCell className="text-muted-foreground">{idx + 1}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                                  {u.name?.charAt(0)?.toUpperCase() ?? "?"}
+                                </div>
+                                <span className="font-medium">{u.name}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              <span className="text-xs">{u.email || "—"}</span>
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              <span className="font-mono text-xs">{u.phone || "—"}</span>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={`${
+                                  u.accountStatus === "pending"
+                                    ? "bg-amber-50 text-amber-700 border-amber-300"
+                                    : u.accountStatus === "approved"
+                                    ? "bg-green-50 text-green-700 border-green-300"
+                                    : "bg-red-50 text-red-700 border-red-300"
+                                }`}
+                              >
+                                {u.accountStatus === "pending"
+                                  ? "قيد المراجعة"
+                                  : u.accountStatus === "approved"
+                                  ? "موافق عليه"
+                                  : "مرفوض"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-sm">
+                              {new Date(u.createdAt).toLocaleDateString("ar-SA")}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {u.accountStatus === "pending" && (
+                                  <>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => approveMutation.mutate({ userId: u.id })}
+                                      disabled={approveMutation.isPending}
+                                      className="gap-1 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    >
+                                      <CheckCircle className="h-3 w-3" />
+                                      قبول
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => rejectMutation.mutate({ userId: u.id })}
+                                      disabled={rejectMutation.isPending}
+                                      className="gap-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    >
+                                      <XCircle className="h-3 w-3" />
+                                      رفض
+                                    </Button>
+                                  </>
+                                )}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (confirm(`هل أنت متأكد من حذف حساب ${u.name}؟`)) {
+                                      deleteUserMutation.mutate({ userId: u.id });
+                                    }
+                                  }}
+                                  disabled={deleteUserMutation.isPending}
+                                  className="gap-1 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                >
+                                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  حذف
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* ── Trainees Tab ── */}
           <TabsContent value="users">

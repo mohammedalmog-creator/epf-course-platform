@@ -18,11 +18,17 @@ import CertificateVerify from "./pages/CertificateVerify";
 import ProfileSetup from "./pages/ProfileSetup";
 import CourseExam from "./pages/CourseExam";
 import CourseCertificate from "./pages/CourseCertificate";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import PendingApproval from "./pages/PendingApproval";
 
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path="/" component={Home} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/pending-approval" component={PendingApproval} />
       <Route path="/courses" component={Courses} />
       {/* Course-specific modules route */}
       <Route path="/modules/:courseId" component={Modules} />

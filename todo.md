@@ -188,3 +188,26 @@
 - [x] Change passing score from 70% to 90% in Quiz.tsx
 - [x] Change passing score from 70% to 90% in Certificate.tsx
 - [x] Change passing score from 70% to 90% in AdminPanel.tsx (display + CSV export)
+
+
+## Custom Authentication System (Mar 2026)
+- [x] Add password, accountStatus, approvedAt, approvedBy fields to users table
+- [x] Create register procedure (email/phone + password with bcryptjs hashing)
+- [x] Create loginLocal procedure (email or phone + password authentication)
+- [x] Create account approval workflow (approve/reject/delete procedures in userManagement router)
+- [x] Add admin user management router with getAll, approve, reject, delete procedures
+- [x] Create Login page with email/phone toggle and password visibility toggle
+- [x] Create Register page with form validation and success confirmation
+- [x] Create PendingApproval page for accounts under review
+- [x] Add Login, Register, PendingApproval routes to App.tsx
+- [x] Add user management tab to AdminPanel with account status filtering
+- [x] Implement approve/reject/delete buttons in admin panel
+- [x] Add status badges (pending/approved/rejected) with color coding
+- [x] Add admin notification on new user registration
+- [ ] Test registration flow end-to-end
+- [ ] Test login with email and phone
+- [ ] Test pending approval redirect
+- [ ] Test admin approval workflow
+- [ ] Test admin rejection workflow
+- [ ] Test account deletion
+- [ ] Test password validation
