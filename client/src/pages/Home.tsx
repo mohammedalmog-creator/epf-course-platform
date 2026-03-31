@@ -6,7 +6,7 @@ import { getLoginUrl } from "@/const";
 import {
   BookOpen, Award, TrendingUp, Users, ArrowLeft,
   Wrench, ChevronLeft, Shield, Clock, CheckCircle2,
-  GraduationCap, BarChart3, Star
+  GraduationCap, BarChart3, Star, LogIn, UserPlus
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -127,12 +127,18 @@ export default function Home() {
               </>
             ) : (
               <>
-                <a href={getLoginUrl()}>
-                  <Button variant="outline" size="sm">تسجيل الدخول</Button>
-                </a>
-                <a href={getLoginUrl()}>
-                  <Button size="sm">ابدأ مجاناً</Button>
-                </a>
+                <Link href="/login">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <LogIn className="h-4 w-4" />
+                    <span className="hidden sm:inline">تسجيل الدخول</span>
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm" className="gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    <span className="hidden sm:inline">تسجيل جديد</span>
+                  </Button>
+                </Link>
               </>
             )}
           </div>

@@ -58,19 +58,19 @@ export default function Register() {
       style={{ background: "linear-gradient(160deg, #1a3a8f 0%, #1e4db7 50%, #1a3a8f 100%)" }}
     >
       {/* Top logo area */}
-      <div className="flex flex-col items-center pt-10 pb-4">
-        <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg mb-3 overflow-hidden">
+      <div className="flex flex-col items-center pt-12 pb-8">
+        <div className="mb-6">
           <img
-            src="https://manuscdn.com/asset/7LMUEtTxDjDG7Ry/1748430756193-almog-logo.png"
+            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png"
             alt="ALMOG Logo"
-            className="w-16 h-16 object-contain"
+            className="h-20 object-contain drop-shadow-lg"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
             }}
           />
         </div>
-        <h1 className="text-white text-2xl font-bold tracking-wide">ALMOG Oil Services</h1>
-        <p className="text-blue-200 text-sm mt-1">منصة التدريب التقني للنفط والغاز</p>
+        <h1 className="text-white text-3xl font-bold tracking-wide">ALMOG Oil Services</h1>
+        <p className="text-blue-100 text-sm mt-2 font-medium">منصة التدريب التقني</p>
       </div>
 
       {/* Register card */}

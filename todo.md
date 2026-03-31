@@ -211,3 +211,10 @@
 - [ ] Test admin rejection workflow
 - [ ] Test account deletion
 - [ ] Test password validation
+
+
+## UI Improvements (Mar 2026)
+- [x] Add login/register icons to platform header
+- [x] Add Almog logo to Login page
+- [x] Add Almog logo to Register page
+- [x] Set password for main account (mohammed.almog@yahoo.com)
