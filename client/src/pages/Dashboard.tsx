@@ -5,6 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { BookOpen, Award, Clock, TrendingUp, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { getLoginUrl } from "@/const";
+import PageHeader from "@/components/PageHeader";
 
 export default function Dashboard() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -61,26 +62,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-24 items-center justify-between">
-          <Link href="/">
-            <div className="flex items-center gap-4 cursor-pointer">
-              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-36" />
-              <div className="hidden sm:block">
-                <p className="text-xs text-muted-foreground leading-none">شركة المُق للخدمات النفطية</p>
-                <p className="text-sm font-bold leading-tight">منصة التدريب التقني</p>
-              </div>
-            </div>
-          </Link>
-          <Link href="/modules">
-            <Button variant="outline">
-              <ArrowLeft className="ml-2 h-4 w-4" />
-              العودة إلى الوحدات
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <PageHeader />
 
       {/* Main Content */}
       <main className="container py-8">

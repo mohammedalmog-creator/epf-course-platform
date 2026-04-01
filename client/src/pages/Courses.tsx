@@ -7,6 +7,7 @@ import { getLoginUrl } from "@/const";
 import { BookOpen, ArrowRight, Wrench } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+import PageHeader from "@/components/PageHeader";
 
 const COURSE_META = [
   {
@@ -107,32 +108,7 @@ export default function Courses() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-24 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-36" />
-            <div className="hidden sm:block">
-              <p className="text-xs text-muted-foreground leading-none">شركة المُق للخدمات النفطية</p>
-              <p className="text-sm font-bold leading-tight">منصة التدريب التقني</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {isAuthenticated ? (
-              <>
-                <span className="text-sm text-muted-foreground">مرحباً، {user?.name || "المتعلم"}</span>
-                <Link href="/dashboard">
-                  <Button variant="outline" size="sm">لوحة التحكم</Button>
-                </Link>
-              </>
-            ) : (
-              <a href={getLoginUrl()}>
-                <Button>تسجيل الدخول</Button>
-              </a>
-            )}
-          </div>
-        </div>
-      </header>
+      <PageHeader />
 
       {/* Hero */}
       <section className="container py-12 text-center">

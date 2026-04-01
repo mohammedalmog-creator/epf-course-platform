@@ -6,6 +6,7 @@ import { BookOpen, CheckCircle2, Clock, ArrowRight, Wrench } from "lucide-react"
 import { Link, useLocation, useParams } from "wouter";
 import { getLoginUrl } from "@/const";
 import { useMemo } from "react";
+import PageHeader from "@/components/PageHeader";
 
 const COURSE_INFO: Record<number, { titleAr: string; titleEn: string; icon: React.ElementType; color: string }> = {
   1: { titleAr: "منشآت الإنتاج المبكر", titleEn: "Early Production Facilities (EPF)", icon: BookOpen, color: "text-blue-600" },
@@ -53,31 +54,7 @@ export default function Modules() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-24 items-center justify-between">
-          <Link href="/courses">
-            <div className="flex items-center gap-4 cursor-pointer">
-              <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663121863326/FVrEGXBKGaDlsHpx.png" alt="ALMOG" className="h-36" />
-              <div className="flex items-center gap-2">
-                <CourseIcon className={`h-6 w-6 ${courseInfo.color}`} />
-                <h1 className="text-xl font-bold">{courseInfo.titleAr}</h1>
-              </div>
-            </div>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/courses">
-              <Button variant="ghost" size="sm">← الدورات</Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button variant="outline">لوحة التحكم</Button>
-            </Link>
-            <div className="text-sm text-muted-foreground">
-              مرحباً، {user?.name || "المتعلم"}
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader />
 
       {/* Main Content */}
       <main className="container py-8">

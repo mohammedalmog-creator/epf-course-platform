@@ -218,3 +218,7 @@
 - [x] Add Almog logo to Login page
 - [x] Add Almog logo to Register page
 - [x] Set password for main account (mohammed.almog@yahoo.com)
+- [x] Create reusable PageHeader component with login/register icons
+- [x] Add PageHeader to Courses page
+- [x] Add PageHeader to Dashboard page
+- [x] Add PageHeader to Modules page
