@@ -3,6 +3,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("./db", () => ({
   getDb: vi.fn(),
   getUserByOpenId: vi.fn(),
+  getUserById: vi.fn(),
+  createUserNotification: vi.fn().mockResolvedValue(undefined),
+  getUserNotifications: vi.fn().mockResolvedValue([]),
+  markUserNotificationRead: vi.fn().mockResolvedValue(undefined),
+  markAllUserNotificationsRead: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("./_core/notification", () => ({
@@ -349,9 +354,10 @@ describe("Custom Authentication System", () => {
       expect(caller.userManagement.delete).toBeDefined();
     });
 
-    it("approves a trainee account", async () => {
+    it("approves a trainee account and creates an approval notification", async () => {
       const fakeDb = makeDbForAdmin();
       vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      vi.mocked(db.getUserById).mockResolvedValue(makeUser("pending", null));
       const caller = appRouter.createCaller(adminContext());
 
       await caller.userManagement.approve({ userId: 42 });
@@ -360,26 +366,58 @@ describe("Custom Authentication System", () => {
         accountStatus: "approved",
         approvedBy: 999,
       }));
+      expect(db.createUserNotification).toHaveBeenCalledWith(expect.objectContaining({
+        userId: 42,
+        type: "account_approved",
+        title: "تم قبول حسابك",
+      }));
     });
 
-    it("pauses a trainee account", async () => {
+    it("creates a reactivation notification when a paused account is restored", async () => {
       const fakeDb = makeDbForAdmin();
       vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      vi.mocked(db.getUserById).mockResolvedValue(makeUser("paused", null));
+      const caller = appRouter.createCaller(adminContext());
+
+      await caller.userManagement.approve({ userId: 42 });
+
+      expect(db.createUserNotification).toHaveBeenCalledWith(expect.objectContaining({
+        userId: 42,
+        type: "account_reactivated",
+        title: "تمت إعادة تفعيل حسابك",
+      }));
+    });
+
+    it("pauses a trainee account and creates a pause notification", async () => {
+      const fakeDb = makeDbForAdmin();
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      vi.mocked(db.getUserById).mockResolvedValue(makeUser("approved", null));
       const caller = appRouter.createCaller(adminContext());
 
       await caller.userManagement.pause({ userId: 42 });
 
       expect(fakeDb.set).toHaveBeenCalledWith({ accountStatus: "paused" });
+      expect(db.createUserNotification).toHaveBeenCalledWith(expect.objectContaining({
+        userId: 42,
+        type: "account_paused",
+        title: "تم إيقاف حسابك مؤقتاً",
+      }));
     });
 
-    it("rejects a trainee account", async () => {
+    it("rejects a trainee account and creates a rejection notification", async () => {
       const fakeDb = makeDbForAdmin();
       vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      vi.mocked(db.getUserById).mockResolvedValue(makeUser("pending", null));
       const caller = appRouter.createCaller(adminContext());
 
       await caller.userManagement.reject({ userId: 42 });
 
       expect(fakeDb.set).toHaveBeenCalledWith({ accountStatus: "rejected" });
+      expect(db.createUserNotification).toHaveBeenCalledWith(expect.objectContaining({
+        userId: 42,
+        type: "account_rejected",
+        title: "تم رفض طلب تسجيلك",
+      }));
     });
 
     it("prevents an administrator from pausing their own account", async () => {
@@ -425,6 +463,30 @@ describe("Custom Authentication System", () => {
       expect(fakeDb.insertValues).toHaveBeenCalled();
       expect(fakeDb.delete).toHaveBeenCalledTimes(8);
       expect(fakeDb.deleteWhere).toHaveBeenCalledTimes(8);
+    });
+  });
+
+  describe("Notifications Router", () => {
+    it("returns only the signed-in trainee's notifications and marks them read", async () => {
+      const notifications = [{
+        id: 7,
+        userId: 999,
+        type: "account_approved",
+        title: "تم قبول حسابك",
+        message: "يمكنك الآن الدخول.",
+        isRead: false,
+        createdAt: new Date(),
+      }];
+      vi.mocked(db.getUserNotifications).mockResolvedValue(notifications as any);
+      const caller = appRouter.createCaller(createMockContext({ id: 999, role: "user" }));
+
+      await expect(caller.notifications.getMine()).resolves.toEqual(notifications);
+      await caller.notifications.markRead({ notificationId: 7 });
+      await caller.notifications.markAllRead();
+
+      expect(db.getUserNotifications).toHaveBeenCalledWith(999);
+      expect(db.markUserNotificationRead).toHaveBeenCalledWith(999, 7);
+      expect(db.markAllUserNotificationsRead).toHaveBeenCalledWith(999);
     });
   });
 

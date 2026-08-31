@@ -16,6 +16,21 @@ export function getCertificateVerificationUrl(verificationCode: string) {
   return `${PUBLIC_APP_URL}/verify/${encodeURIComponent(verificationCode)}`;
 }
 
+type AccountNotificationType = "account_approved" | "account_paused" | "account_reactivated" | "account_rejected";
+
+async function sendTraineeNotification(
+  userId: number,
+  type: AccountNotificationType,
+  title: string,
+  message: string,
+) {
+  try {
+    await db.createUserNotification({ userId, type, title, message });
+  } catch (error) {
+    console.warn("[Notification] Could not save trainee notification:", error);
+  }
+}
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -172,11 +187,23 @@ export const appRouter = router({
         if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
         const { users } = await import('../drizzle/schema');
         const { eq } = await import('drizzle-orm');
+        const targetUser = await db.getUserById(input.userId);
+        const wasPaused = targetUser?.accountStatus === 'paused';
         await dbConn.update(users).set({
           accountStatus: 'approved',
           approvedAt: new Date(),
           approvedBy: ctx.user.id,
         }).where(eq(users.id, input.userId));
+        if (targetUser) {
+          await sendTraineeNotification(
+            input.userId,
+            wasPaused ? 'account_reactivated' : 'account_approved',
+            wasPaused ? 'تمت إعادة تفعيل حسابك' : 'تم قبول حسابك',
+            wasPaused
+              ? 'تمت إعادة تفعيل حسابك من قبل المسؤول. يمكنك الآن تسجيل الدخول ومتابعة دراستك.'
+              : 'تم قبول طلب تسجيلك من قبل المسؤول. يمكنك الآن تسجيل الدخول والبدء في الدراسة.',
+          );
+        }
         return { success: true };
       }),
 
@@ -190,7 +217,16 @@ export const appRouter = router({
         if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
         const { users } = await import('../drizzle/schema');
         const { eq } = await import('drizzle-orm');
+        const targetUser = await db.getUserById(input.userId);
         await dbConn.update(users).set({ accountStatus: 'paused' }).where(eq(users.id, input.userId));
+        if (targetUser) {
+          await sendTraineeNotification(
+            input.userId,
+            'account_paused',
+            'تم إيقاف حسابك مؤقتاً',
+            'تم إيقاف دخولك إلى المنصة مؤقتاً من قبل المسؤول. يرجى التواصل مع الإدارة لمعرفة التفاصيل.',
+          );
+        }
         return { success: true };
       }),
 
@@ -203,7 +239,16 @@ export const appRouter = router({
         if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
         const { users } = await import('../drizzle/schema');
         const { eq } = await import('drizzle-orm');
+        const targetUser = await db.getUserById(input.userId);
         await dbConn.update(users).set({ accountStatus: 'rejected' }).where(eq(users.id, input.userId));
+        if (targetUser) {
+          await sendTraineeNotification(
+            input.userId,
+            'account_rejected',
+            'تم رفض طلب تسجيلك',
+            'تم رفض طلب تسجيلك في المنصة من قبل المسؤول. يرجى التواصل مع الإدارة إذا كنت بحاجة إلى مزيد من المعلومات.',
+          );
+        }
         return { success: true };
       }),
 
@@ -228,6 +273,24 @@ export const appRouter = router({
         await dbConn.delete(users).where(eq(users.id, input.userId));
         return { success: true };
       }),
+  }),
+
+  notifications: router({
+    getMine: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getUserNotifications(ctx.user.id);
+    }),
+
+    markRead: protectedProcedure
+      .input(z.object({ notificationId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.markUserNotificationRead(ctx.user.id, input.notificationId);
+        return { success: true };
+      }),
+
+    markAllRead: protectedProcedure.mutation(async ({ ctx }) => {
+      await db.markAllUserNotificationsRead(ctx.user.id);
+      return { success: true };
+    }),
   }),
 
   course: router({

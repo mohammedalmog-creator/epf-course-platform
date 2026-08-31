@@ -1,9 +1,10 @@
 import { eq, and, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
-  InsertUser, users, modules, lessons, quizQuestions, 
+  InsertUser, users, notifications, modules, lessons, quizQuestions,
   lessonProgress, moduleProgress, quizAttempts, certificates, projectSubmissions,
-  Module, Lesson, QuizQuestion, LessonProgress, ModuleProgress, QuizAttempt, Certificate, ProjectSubmission
+  Module, Lesson, QuizQuestion, LessonProgress, ModuleProgress, QuizAttempt, Certificate, ProjectSubmission,
+  Notification, InsertNotification
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -19,6 +20,41 @@ export async function getDb() {
     }
   }
   return _db;
+}
+
+export async function createUserNotification(notification: InsertNotification): Promise<Notification | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.insert(notifications).values(notification);
+  const notificationId = Number((result as any).insertId);
+  if (!notificationId) return undefined;
+  const rows = await db.select().from(notifications).where(eq(notifications.id, notificationId)).limit(1);
+  return rows[0];
+}
+
+export async function getUserNotifications(userId: number): Promise<Notification[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select()
+    .from(notifications)
+    .where(eq(notifications.userId, userId))
+    .orderBy(desc(notifications.createdAt));
+}
+
+export async function markUserNotificationRead(userId: number, notificationId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(notifications)
+    .set({ isRead: true })
+    .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)));
+}
+
+export async function markAllUserNotificationsRead(userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(notifications)
+    .set({ isRead: true })
+    .where(eq(notifications.userId, userId));
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -86,9 +122,16 @@ export async function getUserByOpenId(openId: string) {
     console.warn("[Database] Cannot get user: database not available");
     return undefined;
   }
-
+  
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
 
+export async function getUserById(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.id, userId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
 }
 

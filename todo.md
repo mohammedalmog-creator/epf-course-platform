@@ -232,3 +232,13 @@
 - [x] Save a checkpoint after validation
 
 ولا يتم حذف سجل هذه البنود؛ تُستخدم هذه القائمة لتتبع تاريخ تنفيذ الطلب.
+
+
+## Trainee Account Notifications
+- [x] Add persistent trainee notifications for account status changes
+- [x] Trigger approval, pause, resume, and rejection notifications from admin actions
+- [x] Add trainee notification inbox and unread indicator
+- [x] Add mark-as-read interaction
+- [x] Test notification creation, visibility, and read-state flows
+- [x] Add PageHeader UI/integration coverage for unread count, notification content, mark-read, and mark-all-read interactions
+- [x] Save a checkpoint after validation
