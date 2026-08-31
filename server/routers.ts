@@ -7,6 +7,15 @@ import { z } from "zod";
 import * as db from "./db";
 import bcrypt from "bcryptjs";
 
+const configuredPublicAppUrl = process.env.PUBLIC_APP_URL || "https://almog.vip";
+const PUBLIC_APP_URL = configuredPublicAppUrl.endsWith("/")
+  ? configuredPublicAppUrl.slice(0, -1)
+  : configuredPublicAppUrl;
+
+export function getCertificateVerificationUrl(verificationCode: string) {
+  return `${PUBLIC_APP_URL}/verify/${encodeURIComponent(verificationCode)}`;
+}
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -519,8 +528,8 @@ export const appRouter = router({
           
           // ── Verification footer ───────────────────────────────────────
           doc.rect(14, H - 50, W - 28, 28).fill('#1a6b3c');
-          doc.fontSize(8).fillColor('#ffffff').font('Helvetica')
-             .text(`Verification Code: ${verificationCode}   |   This certificate is issued by ALMOG Oil Services and is valid for professional use.   |   Issued: ${completionDate}`,
+           doc.fontSize(8).fillColor('#ffffff').font('Helvetica')
+             .text(`Verification Code: ${verificationCode}   |   Verify online: ${getCertificateVerificationUrl(verificationCode)}   |   Issued: ${completionDate}`,
                20, H - 44, { width: W - 40, align: 'center' });
           
           doc.end();

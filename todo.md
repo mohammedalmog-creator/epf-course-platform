@@ -134,21 +134,21 @@
 - [x] Add admin nav link in Home.tsx header (visible only to admin role, amber color)
 
 ## Certificate Verification & CSV Export (Mar 2026)
-- [ ] Add publicProcedure: verifyCertificate (lookup by code, return cert + user + module info)
-- [ ] Build CertificateVerify.tsx: public page /verify/:code with professional verification UI
-- [ ] Register /verify/:code route in App.tsx
-- [ ] Add CSV export to AdminPanel: export trainees, quiz results, certificates as CSV
-- [ ] Add verification URL to Certificate.tsx page and PDF footer
+- [x] Add publicProcedure: verifyCertificate (lookup by code, return cert + user + module info)
+- [x] Build CertificateVerify.tsx: public page /verify/:code with professional verification UI
+- [x] Register /verify/:code route in App.tsx
+- [x] Add CSV export to AdminPanel: export trainees, quiz results, certificates as CSV
+- [x] Add verification URL to Certificate.tsx page and PDF footer
 
 ## Notification System & Trainee Profile (Mar 2026)
-- [ ] Add phone and email fields to users table in drizzle schema
-- [ ] Push DB migration for new user fields
-- [ ] Add updateProfile tRPC procedure (protected)
-- [ ] Build ProfileSetup.tsx onboarding page for first-login trainees
-- [ ] Add redirect logic: after login, if no phone/email → redirect to /profile-setup
-- [ ] Add auto-notification to admin when new user registers (via notifyOwner)
-- [ ] Update admin panel to show phone and email columns for each trainee
-- [ ] Update CSV export to include phone and email
+- [x] Add phone and email fields to users table in drizzle schema
+- [x] Push DB migration for new user fields
+- [x] Add updateProfile tRPC procedure (protected)
+- [x] Build ProfileSetup.tsx onboarding page for first-login trainees
+- [x] Add redirect logic: after login, if no phone/email → redirect to /profile-setup
+- [x] Add auto-notification to admin when new user registers (via notifyOwner)
+- [x] Update admin panel to show phone and email columns for each trainee
+- [x] Update CSV export to include phone and email
 
 ## Visual Content & UI Enhancement (Mar 2026)
 - [x] Add illustrative images for valve types lesson (60015) and other technical lessons
@@ -204,13 +204,13 @@
 - [x] Implement approve/reject/delete buttons in admin panel
 - [x] Add status badges (pending/approved/rejected) with color coding
 - [x] Add admin notification on new user registration
-- [ ] Test registration flow end-to-end
-- [ ] Test login with email and phone
-- [ ] Test pending approval redirect
-- [ ] Test admin approval workflow
-- [ ] Test admin rejection workflow
-- [ ] Test account deletion
-- [ ] Test password validation
+- [x] Test registration flow end-to-end
+- [x] Test login with email and phone
+- [x] Test pending approval redirect
+- [x] Test admin approval workflow
+- [x] Test admin rejection workflow
+- [x] Test account deletion
+- [x] Test password validation
 
 
 ## UI Improvements (Mar 2026)

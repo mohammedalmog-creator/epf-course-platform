@@ -5,6 +5,10 @@ import { toast } from "sonner";
 
 type LoginTab = "email" | "phone";
 
+export function getLoginRedirectForError(message: string): string | null {
+  return message.startsWith("PENDING:") ? "/pending-approval" : null;
+}
+
 export default function Login() {
   const [, navigate] = useLocation();
   const [tab, setTab] = useState<LoginTab>("email");
@@ -21,8 +25,11 @@ export default function Login() {
     },
     onError: (err) => {
       const msg = err.message || "";
-      if (msg.startsWith("PENDING:")) {
-        navigate("/pending-approval");
+      const redirect = getLoginRedirectForError(msg);
+      if (redirect) {
+        navigate(redirect);
+      } else if (msg.startsWith("PAUSED:")) {
+        toast.error("تم إيقاف حسابك مؤقتاً. يرجى التواصل مع المسؤول.");
       } else if (msg.startsWith("REJECTED:")) {
         toast.error("تم رفض حسابك. يرجى التواصل مع المسؤول.");
       } else {

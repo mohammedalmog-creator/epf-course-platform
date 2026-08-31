@@ -5,12 +5,17 @@ vi.mock("./db", () => ({
   getUserByOpenId: vi.fn(),
 }));
 
+vi.mock("./_core/notification", () => ({
+  notifyOwner: vi.fn().mockResolvedValue(true),
+}));
+
 import bcrypt from "bcryptjs";
-import { appRouter } from "./routers";
+import { appRouter, getCertificateVerificationUrl } from "./routers";
 import * as db from "./db";
 import type { TrpcContext } from "./_core/context";
 import { sdk } from "./_core/sdk";
 import { COOKIE_NAME } from "@shared/const";
+import { getLoginRedirectForError } from "../client/src/pages/Login";
 
 type AuthenticatedUser = NonNullable<TrpcContext["user"]>;
 
@@ -79,6 +84,48 @@ function makeDbForLogin(user: AuthenticatedUser | null) {
   return { select, update, limit, set, updateWhere };
 }
 
+function makeDbForRegister() {
+  const limit = vi.fn().mockResolvedValue([]);
+  const where = vi.fn().mockReturnValue({ limit });
+  const from = vi.fn().mockReturnValue({ where });
+  const select = vi.fn().mockReturnValue({ from });
+  const insertValues = vi.fn().mockResolvedValue(undefined);
+  const insert = vi.fn().mockReturnValue({ values: insertValues });
+
+  return { select, insert, insertValues, limit };
+}
+
+function makeDbForUserLifecycle(initialUser: AuthenticatedUser | null) {
+  let currentUser = initialUser;
+  const limit = vi.fn().mockImplementation(async () => currentUser ? [currentUser] : []);
+  const where = vi.fn().mockReturnValue({ limit });
+  const from = vi.fn().mockReturnValue({ where });
+  const select = vi.fn().mockReturnValue({ from });
+  const updateWhere = vi.fn().mockResolvedValue(undefined);
+  const set = vi.fn().mockImplementation((values: Record<string, unknown>) => {
+    if (currentUser && typeof values.accountStatus === "string") {
+      currentUser = { ...currentUser, accountStatus: values.accountStatus as AuthenticatedUser["accountStatus"] };
+    }
+    return { where: updateWhere };
+  });
+  const update = vi.fn().mockReturnValue({ set });
+  const deleteWhere = vi.fn().mockImplementation(async () => {
+    currentUser = null;
+  });
+  const deleteFn = vi.fn().mockReturnValue({ where: deleteWhere });
+  const insertValues = vi.fn().mockImplementation(async (values: Partial<AuthenticatedUser>) => {
+    currentUser = {
+      ...makeUser("pending", typeof values.passwordHash === "string" ? values.passwordHash : ""),
+      ...values,
+      id: 42,
+      accountStatus: "pending",
+    } as AuthenticatedUser;
+  });
+  const insert = vi.fn().mockReturnValue({ values: insertValues });
+
+  return { select, update, set, updateWhere, delete: deleteFn, deleteWhere, insert, insertValues };
+}
+
 function makeDbForAdmin() {
   const updateWhere = vi.fn().mockResolvedValue(undefined);
   const set = vi.fn().mockReturnValue({ where: updateWhere });
@@ -116,12 +163,68 @@ describe("Custom Authentication System", () => {
     });
   });
 
+  describe("Login Page Redirects", () => {
+    it("redirects pending accounts to the pending-approval page", () => {
+      expect(getLoginRedirectForError("PENDING: account awaiting approval")).toBe("/pending-approval");
+    });
+
+    it("does not redirect paused or invalid-login errors", () => {
+      expect(getLoginRedirectForError("PAUSED: account suspended")).toBeNull();
+      expect(getLoginRedirectForError("UNAUTHORIZED: invalid credentials")).toBeNull();
+    });
+  });
+
+  describe("Certificate Verification URL", () => {
+    it("builds a public verification URL for certificate PDFs", () => {
+      expect(getCertificateVerificationUrl("ALM-ABC-1234")).toBe("https://almog.vip/verify/ALM-ABC-1234");
+    });
+  });
+
   describe("Auth Router Structure", () => {
     it("should expose registration and local login procedures", () => {
       const caller = appRouter.createCaller(createMockContext(null));
       expect(caller.auth.register).toBeDefined();
       expect(caller.auth.loginLocal).toBeDefined();
       expect(caller.auth.logout).toBeDefined();
+    });
+
+    it("registers a new trainee as pending and notifies the administrator", async () => {
+      const fakeDb = makeDbForRegister();
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      const caller = appRouter.createCaller(createMockContext(null));
+
+      const result = await caller.auth.register({
+        name: "New Trainee",
+        email: "new.trainee@example.com",
+        phone: "0552222222",
+        password: "Password123!",
+      });
+
+      expect(result.success).toBe(true);
+      expect(fakeDb.insertValues).toHaveBeenCalledWith(expect.objectContaining({
+        name: "New Trainee",
+        email: "new.trainee@example.com",
+        phone: "0552222222",
+        accountStatus: "pending",
+        loginMethod: "local",
+      }));
+      const values = fakeDb.insertValues.mock.calls[0]?.[0] as { passwordHash?: string };
+      expect(values.passwordHash).toBeTruthy();
+      expect(await bcrypt.compare("Password123!", values.passwordHash ?? "")).toBe(true);
+    });
+
+    it("rejects invalid registration passwords before reaching the database", async () => {
+      const fakeDb = makeDbForRegister();
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      const caller = appRouter.createCaller(createMockContext(null));
+
+      await expect(caller.auth.register({
+        name: "New Trainee",
+        email: "new.trainee@example.com",
+        phone: "0552222222",
+        password: "short",
+      })).rejects.toThrow();
+      expect(fakeDb.insert).not.toHaveBeenCalled();
     });
   });
 
@@ -152,7 +255,7 @@ describe("Custom Authentication System", () => {
       })).rejects.toThrow("PAUSED:");
     });
 
-    it("allows an approved trainee to log in and creates a session cookie", async () => {
+    it("allows an approved trainee to log in by phone and creates a session cookie", async () => {
       const passwordHash = await bcrypt.hash("Password123!", 4);
       const fakeDb = makeDbForLogin(makeUser("approved", passwordHash));
       vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
@@ -170,6 +273,53 @@ describe("Custom Authentication System", () => {
       expect(result.success).toBe(true);
       expect(cookies).toHaveLength(1);
       expect(fakeDb.update).toHaveBeenCalled();
+    });
+
+    it("allows an approved trainee to log in by email", async () => {
+      const passwordHash = await bcrypt.hash("Password123!", 4);
+      const fakeDb = makeDbForLogin(makeUser("approved", passwordHash));
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      const caller = appRouter.createCaller(createMockContext(null));
+
+      const result = await caller.auth.loginLocal({
+        identifier: "trainee@example.com",
+        password: "Password123!",
+        loginType: "email",
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it("allows login after an administrator approves the trainee", async () => {
+      const passwordHash = await bcrypt.hash("Password123!", 4);
+      const fakeDb = makeDbForUserLifecycle(makeUser("pending", passwordHash));
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      const adminCaller = appRouter.createCaller(createMockContext({ id: 999, role: "admin" }));
+
+      await adminCaller.userManagement.approve({ userId: 42 });
+      const traineeCaller = appRouter.createCaller(createMockContext(null));
+      const result = await traineeCaller.auth.loginLocal({
+        identifier: "trainee@example.com",
+        password: "Password123!",
+        loginType: "email",
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it("blocks login after an administrator rejects the trainee", async () => {
+      const passwordHash = await bcrypt.hash("Password123!", 4);
+      const fakeDb = makeDbForUserLifecycle(makeUser("approved", passwordHash));
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      const adminCaller = appRouter.createCaller(createMockContext({ id: 999, role: "admin" }));
+
+      await adminCaller.userManagement.reject({ userId: 42 });
+      const traineeCaller = appRouter.createCaller(createMockContext(null));
+      await expect(traineeCaller.auth.loginLocal({
+        identifier: "trainee@example.com",
+        password: "Password123!",
+        loginType: "email",
+      })).rejects.toThrow("REJECTED:");
     });
 
     it("blocks a paused user even when an old session cookie is still present", async () => {
@@ -222,6 +372,16 @@ describe("Custom Authentication System", () => {
       expect(fakeDb.set).toHaveBeenCalledWith({ accountStatus: "paused" });
     });
 
+    it("rejects a trainee account", async () => {
+      const fakeDb = makeDbForAdmin();
+      vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
+      const caller = appRouter.createCaller(adminContext());
+
+      await caller.userManagement.reject({ userId: 42 });
+
+      expect(fakeDb.set).toHaveBeenCalledWith({ accountStatus: "rejected" });
+    });
+
     it("prevents an administrator from pausing their own account", async () => {
       const fakeDb = makeDbForAdmin();
       vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
@@ -240,13 +400,29 @@ describe("Custom Authentication System", () => {
       expect(fakeDb.delete).not.toHaveBeenCalled();
     });
 
-    it("deletes a trainee and their related learning records", async () => {
-      const fakeDb = makeDbForAdmin();
+    it("deletes a trainee, blocks the deleted account, and allows re-registration", async () => {
+      const passwordHash = await bcrypt.hash("Password123!", 4);
+      const fakeDb = makeDbForUserLifecycle(makeUser("approved", passwordHash));
       vi.mocked(db.getDb).mockResolvedValue(fakeDb as any);
       const caller = appRouter.createCaller(adminContext());
 
       await caller.userManagement.delete({ userId: 42 });
+      const traineeCaller = appRouter.createCaller(createMockContext(null));
+      await expect(traineeCaller.auth.loginLocal({
+        identifier: "trainee@example.com",
+        password: "Password123!",
+        loginType: "email",
+      })).rejects.toThrow("بيانات الدخول غير صحيحة");
 
+      const registration = await traineeCaller.auth.register({
+        name: "Test Trainee Again",
+        email: "trainee@example.com",
+        phone: "0551111111",
+        password: "Password123!",
+      });
+
+      expect(registration.success).toBe(true);
+      expect(fakeDb.insertValues).toHaveBeenCalled();
       expect(fakeDb.delete).toHaveBeenCalledTimes(8);
       expect(fakeDb.deleteWhere).toHaveBeenCalledTimes(8);
     });
