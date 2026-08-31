@@ -13,7 +13,7 @@ export const users = mysqlTable("users", {
   profileCompleted: boolean("profile_completed").default(false).notNull(),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  accountStatus: mysqlEnum("account_status", ["pending", "approved", "rejected"]).default("pending").notNull(),
+  accountStatus: mysqlEnum("account_status", ["pending", "approved", "paused", "rejected"]).default("pending").notNull(),
   approvedAt: timestamp("approved_at"),
   approvedBy: int("approved_by"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

@@ -33,6 +33,9 @@ import {
   Eye,
   CheckCircle,
   XCircle,
+  Pause,
+  Play,
+  Trash2,
   TrendingUp,
   FileText,
   Calendar,
@@ -195,7 +198,7 @@ export default function AdminPanel() {
   const [searchQuiz, setSearchQuiz] = useState("");
   const [searchCerts, setSearchCerts] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [userStatusFilter, setUserStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [userStatusFilter, setUserStatusFilter] = useState<'all' | 'pending' | 'approved' | 'paused' | 'rejected'>('all');
 
   const { data: stats, isLoading: statsLoading } = trpc.admin.getStats.useQuery(undefined, {
     enabled: user?.role === "admin",
@@ -237,6 +240,15 @@ export default function AdminPanel() {
       toast.success("تم رفض الحساب");
     },
     onError: () => toast.error("فشل رفض الحساب"),
+  });
+
+  const pauseMutation = trpc.userManagement.pause.useMutation({
+    onSuccess: () => {
+      utils.userManagement.getAll.invalidate();
+      utils.admin.getUsers.invalidate();
+      toast.success("تم إيقاف حساب المتدرب");
+    },
+    onError: (err) => toast.error(err.message || "فشل إيقاف الحساب"),
   });
 
   const deleteUserMutation = trpc.userManagement.delete.useMutation({
@@ -391,7 +403,7 @@ export default function AdminPanel() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="users">
+        <Tabs defaultValue="accounts">
           <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="users" className="gap-2">
               <Users className="h-4 w-4" />
@@ -399,7 +411,7 @@ export default function AdminPanel() {
             </TabsTrigger>
             <TabsTrigger value="accounts" className="gap-2">
               <Shield className="h-4 w-4" />
-              الحسابات ({pendingUsers?.length ?? 0})
+              إدارة الحسابات ({pendingUsers?.length ?? 0})
             </TabsTrigger>
             <TabsTrigger value="quiz" className="gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -415,6 +427,10 @@ export default function AdminPanel() {
           <TabsContent value="accounts">
             <Card className="border-0 shadow-sm">
               <CardHeader className="pb-4">
+                <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 mb-4 text-sm text-blue-950">
+                  <p className="font-bold mb-1">تحكم دخول المتدربين</p>
+                  <p>الحساب الجديد يبقى <strong>قيد المراجعة</strong> ولا يستطيع الدخول حتى تضغط «قبول». استخدم «إيقاف» لمنع الدخول مؤقتاً، و«إعادة تفعيل» للسماح له بالدخول مرة أخرى. الحذف نهائي ويطلب من المتدرب التسجيل من جديد.</p>
+                </div>
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <CardTitle className="text-lg">إدارة الحسابات</CardTitle>
                   <div className="flex items-center gap-3">
@@ -426,6 +442,7 @@ export default function AdminPanel() {
                       <option value="all">جميع الحسابات</option>
                       <option value="pending">قيد المراجعة</option>
                       <option value="approved">موافق عليها</option>
+                      <option value="paused">متوقفة</option>
                       <option value="rejected">مرفوضة</option>
                     </select>
                   </div>
@@ -482,6 +499,8 @@ export default function AdminPanel() {
                                     ? "bg-amber-50 text-amber-700 border-amber-300"
                                     : u.accountStatus === "approved"
                                     ? "bg-green-50 text-green-700 border-green-300"
+                                    : u.accountStatus === "paused"
+                                    ? "bg-slate-100 text-slate-700 border-slate-300"
                                     : "bg-red-50 text-red-700 border-red-300"
                                 }`}
                               >
@@ -489,6 +508,8 @@ export default function AdminPanel() {
                                   ? "قيد المراجعة"
                                   : u.accountStatus === "approved"
                                   ? "موافق عليه"
+                                  : u.accountStatus === "paused"
+                                  ? "موقوف مؤقتاً"
                                   : "مرفوض"}
                               </Badge>
                             </TableCell>
@@ -497,29 +518,47 @@ export default function AdminPanel() {
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
+                                {(u.accountStatus === "pending" || u.accountStatus === "paused" || u.accountStatus === "rejected") && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => approveMutation.mutate({ userId: u.id })}
+                                    disabled={approveMutation.isPending}
+                                    className="gap-1 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    title={u.accountStatus === "paused" ? "إعادة تفعيل الحساب" : "قبول الحساب"}
+                                  >
+                                    {u.accountStatus === "paused" ? <Play className="h-3 w-3" /> : <CheckCircle className="h-3 w-3" />}
+                                    {u.accountStatus === "paused" ? "إعادة تفعيل" : "قبول"}
+                                  </Button>
+                                )}
                                 {u.accountStatus === "pending" && (
-                                  <>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => approveMutation.mutate({ userId: u.id })}
-                                      disabled={approveMutation.isPending}
-                                      className="gap-1 text-green-600 hover:text-green-700 hover:bg-green-50"
-                                    >
-                                      <CheckCircle className="h-3 w-3" />
-                                      قبول
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => rejectMutation.mutate({ userId: u.id })}
-                                      disabled={rejectMutation.isPending}
-                                      className="gap-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    >
-                                      <XCircle className="h-3 w-3" />
-                                      رفض
-                                    </Button>
-                                  </>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => rejectMutation.mutate({ userId: u.id })}
+                                    disabled={rejectMutation.isPending}
+                                    className="gap-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    <XCircle className="h-3 w-3" />
+                                    رفض
+                                  </Button>
+                                )}
+                                {u.accountStatus === "approved" && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      if (confirm(`هل أنت متأكد من إيقاف حساب ${u.name}؟`)) {
+                                        pauseMutation.mutate({ userId: u.id });
+                                      }
+                                    }}
+                                    disabled={pauseMutation.isPending}
+                                    className="gap-1 text-slate-600 hover:text-slate-800 hover:bg-slate-100"
+                                    title="إيقاف دخول المتدرب مؤقتاً"
+                                  >
+                                    <Pause className="h-3 w-3" />
+                                    إيقاف
+                                  </Button>
                                 )}
                                 <Button
                                   variant="ghost"
@@ -532,9 +571,7 @@ export default function AdminPanel() {
                                   disabled={deleteUserMutation.isPending}
                                   className="gap-1 text-red-500 hover:text-red-600 hover:bg-red-50"
                                 >
-                                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
+                                  <Trash2 className="h-3 w-3" />
                                   حذف
                                 </Button>
                               </div>

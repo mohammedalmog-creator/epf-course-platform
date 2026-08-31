@@ -292,6 +292,13 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
+    // Enforce account approval on every authenticated request. This prevents a
+    // trainee with an old session cookie from continuing to use the platform
+    // after an administrator pauses or rejects the account.
+    if (user.accountStatus !== "approved") {
+      throw ForbiddenError("Account is not approved");
+    }
+
     await db.upsertUser({
       openId: user.openId,
       lastSignedIn: signedInAt,

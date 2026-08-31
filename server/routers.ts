@@ -97,6 +97,9 @@ export const appRouter = router({
         if (user.accountStatus === 'pending') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'PENDING: حسابك قيد المراجعة. يرجى الانتظار حتى يتم قبولك من قبل المسؤول.' });
         }
+        if (user.accountStatus === 'paused') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'PAUSED: تم إيقاف حسابك مؤقتاً من قبل المسؤول. يرجى التواصل مع الإدارة.' });
+        }
         if (user.accountStatus === 'rejected') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'REJECTED: تم رفض حسابك. يرجى التواصل مع المسؤول.' });
         }
@@ -125,7 +128,7 @@ export const appRouter = router({
   userManagement: router({
     // List all users with filters
     getAll: protectedProcedure
-      .input(z.object({ status: z.enum(['all', 'pending', 'approved', 'rejected']).optional() }))
+      .input(z.object({ status: z.enum(['all', 'pending', 'approved', 'paused', 'rejected']).optional() }))
       .query(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
         const dbConn = await db.getDb();
@@ -168,6 +171,20 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Pause an approved user (or any non-admin user)
+    pause: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+        if (ctx.user.id === input.userId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'لا يمكن إيقاف حسابك الخاص' });
+        const dbConn = await db.getDb();
+        if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const { users } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        await dbConn.update(users).set({ accountStatus: 'paused' }).where(eq(users.id, input.userId));
+        return { success: true };
+      }),
+
     // Reject a user
     reject: protectedProcedure
       .input(z.object({ userId: z.number() }))
@@ -189,13 +206,16 @@ export const appRouter = router({
         if (ctx.user.id === input.userId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'لا يمكن حذف حسابك الخاص' });
         const dbConn = await db.getDb();
         if (!dbConn) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
-        const { users, lessonProgress, moduleProgress, quizAttempts, certificates } = await import('../drizzle/schema');
+        const { users, lessonProgress, moduleProgress, quizAttempts, certificates, courseExamAttempts, courseCertificates, projectSubmissions } = await import('../drizzle/schema');
         const { eq } = await import('drizzle-orm');
         // Delete related data first
         await dbConn.delete(lessonProgress).where(eq(lessonProgress.userId, input.userId));
         await dbConn.delete(moduleProgress).where(eq(moduleProgress.userId, input.userId));
         await dbConn.delete(quizAttempts).where(eq(quizAttempts.userId, input.userId));
         await dbConn.delete(certificates).where(eq(certificates.userId, input.userId));
+        await dbConn.delete(courseCertificates).where(eq(courseCertificates.userId, input.userId));
+        await dbConn.delete(courseExamAttempts).where(eq(courseExamAttempts.userId, input.userId));
+        await dbConn.delete(projectSubmissions).where(eq(projectSubmissions.userId, input.userId));
         await dbConn.delete(users).where(eq(users.id, input.userId));
         return { success: true };
       }),

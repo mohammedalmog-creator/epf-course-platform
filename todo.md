@@ -222,3 +222,13 @@
 - [x] Add PageHeader to Courses page
 - [x] Add PageHeader to Dashboard page
 - [x] Add PageHeader to Modules page
+
+
+## Trainee Account Controls
+- [x] Add paused account status and database support
+- [x] Enforce pending, approved, paused, and deleted account access rules
+- [x] Add visible approve, pause, resume, and delete actions in the admin trainee table
+- [x] Verify the registration and account-control flows with tests
+- [x] Save a checkpoint after validation
+
+ولا يتم حذف سجل هذه البنود؛ تُستخدم هذه القائمة لتتبع تاريخ تنفيذ الطلب.
