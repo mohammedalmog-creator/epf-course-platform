@@ -312,3 +312,13 @@
 ## HSSE End-to-End Route Verification
 - [x] Exercise the actual public `/verify/:code` page using a temporary issued HSSE certificate
 - [x] Add database-backed protected HSSE route/procedure coverage for anonymous, pending, paused, and approved users
+
+
+## HSSE Visual Coverage Audit
+- [x] Audit image and diagram coverage for all 18 HSSE modules and 91 lessons
+- [x] Identify generic, duplicated, missing, broken, or mismatched visual references
+- [x] Create or replace module- and lesson-specific technical visuals where needed
+- [x] Attach and verify durable visual URLs for every HSSE module and lesson
+- [x] Add Express storage proxy so project-managed visual assets render correctly
+- [x] Verify browser rendering and run regression tests
+- [x] Save a checkpoint after completing the visual audit

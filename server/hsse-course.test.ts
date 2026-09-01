@@ -26,6 +26,18 @@ describe("HSSE independent course", () => {
     expect(seedScript).toContain("MODULE_ID_BASE = 40000");
   });
 
+  it("wires every HSSE module and lesson to verified visual assets", () => {
+    expect(countMatches(seedScript, /verifiedVisuals\./g)).toBeGreaterThanOrEqual(18);
+    expect(seedScript).toContain("lessonMarkdown(module, lesson)");
+    expect(seedScript).toContain("imageUrl: moduleImageUrls[index]");
+    expect(seedScript).toContain("module.imageUrl]");
+    expect(seedScript).toContain("image_url) VALUES");
+    const storageProxy = readFileSync(resolve(projectRoot, "server/_core/storageProxy.ts"), "utf8");
+    const serverIndex = readFileSync(resolve(projectRoot, "server/_core/index.ts"), "utf8");
+    expect(storageProxy).toContain('app.get("/manus-storage/*"');
+    expect(serverIndex).toContain("registerStorageProxy(app)");
+  });
+
   it("keeps the HSSE course reachable from all course-level UI surfaces", () => {
     const coursesPage = readFileSync(resolve(projectRoot, "client/src/pages/Courses.tsx"), "utf8");
     const homePage = readFileSync(resolve(projectRoot, "client/src/pages/Home.tsx"), "utf8");
