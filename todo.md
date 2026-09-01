@@ -245,12 +245,12 @@
 
 
 ## Email Copies for Trainee Notifications
-- [ ] Select and configure a transactional email provider
-- [ ] Add secure server-side email delivery for account-status notifications
-- [ ] Add branded Arabic email templates for approval, pause, resume, and rejection
-- [ ] Preserve in-platform notifications when email delivery fails
-- [ ] Test email configuration and notification triggers
-- [ ] Save a checkpoint after validation
+- [x] Select and configure a transactional email provider — ملغى بناءً على طلب المستخدم
+- [x] Add secure server-side email delivery for account-status notifications — ملغى بناءً على طلب المستخدم
+- [x] Add branded Arabic email templates for approval, pause, resume, and rejection — ملغى بناءً على طلب المستخدم
+- [x] Preserve in-platform notifications when email delivery fails — ملغى بناءً على طلب المستخدم
+- [x] Test email configuration and notification triggers — ملغى بناءً على طلب المستخدم
+- [x] Save a checkpoint after validation — ملغى بناءً على طلب المستخدم
 
 
 ## Oilfield Security and Safety Curriculum Expansion
