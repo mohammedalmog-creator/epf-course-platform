@@ -2,13 +2,13 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getLoginUrl } from "@/const";
 import {
   BookOpen, Award, TrendingUp, Users, ArrowLeft,
-  Wrench, ChevronLeft, Shield, Clock, CheckCircle2,
+  Wrench, ChevronLeft, Shield, ShieldCheck, Clock, CheckCircle2,
   GraduationCap, BarChart3, Star, LogIn, UserPlus
 } from "lucide-react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 
 const courses = [
   {
@@ -49,6 +49,25 @@ const courses = [
     href: "/modules/2",
     topics: ["مكونات رأس البئر", "إجراءات الصيانة", "أنظمة التحكم", "السلامة والطوارئ"],
   },
+  {
+    id: 3,
+    titleAr: "الأمن والسلامة في الحقول النفطية",
+    titleEn: "Oilfield HSSE and Security Fundamentals",
+    descriptionAr: "منهج مهني متدرج في HSSE، تحديد المخاطر، سلامة العمليات، الطوارئ، البيئة، الأمن، وإدارة المقاولين.",
+    modules: 18,
+    lessons: "91+",
+    questions: "180+",
+    level: "تمهيدي - مهني",
+    duration: "18 أسبوعاً",
+    icon: ShieldCheck,
+    color: "text-emerald-600",
+    bgColor: "bg-emerald-50",
+    borderColor: "border-emerald-200",
+    gradientFrom: "from-emerald-600",
+    gradientTo: "to-teal-800",
+    href: "/modules/3",
+    topics: ["تحديد المخاطر", "سلامة العمليات", "الطوارئ", "البيئة والأمن"],
+  },
 ];
 
 const features = [
@@ -74,15 +93,15 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "21", label: "وحدة تعليمية", icon: BookOpen },
-  { value: "96+", label: "درس تفاعلي", icon: TrendingUp },
-  { value: "139+", label: "سؤال اختبار", icon: CheckCircle2 },
-  { value: "2", label: "كورس متخصص", icon: Users },
-];
-
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
+  const { data: platformStats } = trpc.course.getPlatformStats.useQuery();
+  const stats = [
+    { value: `${platformStats?.moduleCount ?? 0}`, label: "وحدة تعليمية", icon: BookOpen },
+    { value: `${platformStats?.lessonCount ?? 0}+`, label: "درس تفاعلي", icon: TrendingUp },
+    { value: `${platformStats?.questionCount ?? 0}+`, label: "سؤال اختبار", icon: CheckCircle2 },
+    { value: `${platformStats?.courseCount ?? 0}`, label: "كورسات متخصصة", icon: Users },
+  ];
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
@@ -174,7 +193,7 @@ export default function Home() {
                   </Button>
                 </Link>
               ) : (
-                <a href={getLoginUrl()}>
+                <a href="/login">
                   <Button size="lg" className="text-base px-8 bg-blue-600 hover:bg-blue-700 gap-2">
                     ابدأ التعلم مجاناً
                     <ArrowLeft className="h-5 w-5" />
@@ -222,7 +241,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 max-w-6xl mx-auto">
           {courses.map((course) => {
             const Icon = course.icon;
             return (
@@ -295,7 +314,7 @@ export default function Home() {
                       </Button>
                     </Link>
                   ) : (
-                    <a href={getLoginUrl()}>
+                    <a href="/login">
                       <Button className="w-full gap-2" size="lg">
                         سجل للوصول
                         <ChevronLeft className="h-4 w-4" />
@@ -355,7 +374,7 @@ export default function Home() {
               </Button>
             </Link>
           ) : (
-            <a href={getLoginUrl()}>
+            <a href="/login">
               <Button size="lg" className="text-base px-10 bg-blue-600 hover:bg-blue-700 gap-2">
                 سجل الآن مجاناً
                 <ArrowLeft className="h-5 w-5" />

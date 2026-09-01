@@ -30,7 +30,12 @@ function VerificationResult({ data }: { data: NonNullable<ReturnType<typeof useV
     day: "numeric",
   });
 
-  const courseLabel = data.courseId === 1 ? "منشآت الإنتاج المبكر (EPF)" : "صيانة رأس البئر (Wellhead)";
+  const courseLabel = {
+    1: "منشآت الإنتاج المبكر (EPF)",
+    2: "صيانة رأس البئر (Wellhead)",
+    3: "الأمن والسلامة في الحقول النفطية (Oilfield HSSE)",
+  }[data.courseId ?? 0] ?? `الكورس ${data.courseId ?? "غير محدد"}`;
+  const isCourseCertificate = data.certificateType === "course";
 
   return (
     <div className="space-y-6">
@@ -62,7 +67,7 @@ function VerificationResult({ data }: { data: NonNullable<ReturnType<typeof useV
             <BookOpen className="h-5 w-5 text-blue-600" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">الوحدة التدريبية</p>
+            <p className="text-xs text-muted-foreground">{isCourseCertificate ? "نوع الشهادة" : "الوحدة التدريبية"}</p>
             <p className="font-bold">{data.moduleTitleAr}</p>
             <p className="text-xs text-muted-foreground">{data.moduleTitleEn}</p>
           </div>

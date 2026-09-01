@@ -2,15 +2,15 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { BookOpen, CheckCircle2, Clock, ArrowRight, Wrench } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, ArrowRight, Wrench, ShieldCheck } from "lucide-react";
 import { Link, useLocation, useParams } from "wouter";
-import { getLoginUrl } from "@/const";
 import { useMemo } from "react";
 import PageHeader from "@/components/PageHeader";
 
 const COURSE_INFO: Record<number, { titleAr: string; titleEn: string; icon: React.ElementType; color: string }> = {
   1: { titleAr: "منشآت الإنتاج المبكر", titleEn: "Early Production Facilities (EPF)", icon: BookOpen, color: "text-blue-600" },
   2: { titleAr: "صيانة رأس البئر", titleEn: "Wellhead Maintenance", icon: Wrench, color: "text-orange-600" },
+  3: { titleAr: "الأمن والسلامة في الحقول النفطية", titleEn: "Oilfield HSSE and Security Fundamentals", icon: ShieldCheck, color: "text-emerald-600" },
 };
 
 export default function Modules() {
@@ -38,7 +38,7 @@ export default function Modules() {
   }
 
   if (!isAuthenticated) {
-    window.location.href = getLoginUrl();
+    setLocation("/login");
     return null;
   }
 

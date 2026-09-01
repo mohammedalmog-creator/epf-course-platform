@@ -275,3 +275,40 @@
 - [x] Review and deliver the audited course without UI design changes
 
 - [x] Add an explicit company-client stop-work escalation and restart-authority subsection
+
+
+## Independent Oilfield Security and Safety Course
+- [x] Add HSSE course record as an independent course alongside EPF and Wellhead Maintenance
+- [x] Add 18 HSSE modules and 91 lessons from the approved curriculum
+- [x] Add course-specific lesson content, mixed visuals, and technical diagrams
+- [x] Add exactly 10 quiz questions per HSSE module with 90% passing threshold
+- [x] Add 100-question comprehensive HSSE exam with 90% passing threshold and lockout policy
+- [x] Add course-level HSSE certificate and verification flow
+- [x] Add independent course navigation and dynamic statistics
+- [x] Add Vitest coverage for HSSE course data, counts, quizzes, and access flow
+- [x] Verify the course in the browser and save a checkpoint
+
+
+## HSSE Course Gap Resolution
+- [x] Replace generic lesson boilerplate with lesson-specific content, tables, cases, and module-focused visuals
+- [x] Extend and verify public course-certificate verification for HSSE certificates
+- [x] Make Home and course statistics data-driven for the HSSE course
+- [x] Add real database-backed tests for HSSE modules, quizzes, final exam, and access policy
+- [x] Verify HSSE modules, lesson, quiz, exam, and certificate routes in the browser
+- [x] Save a new checkpoint after resolving all HSSE integration gaps
+
+
+## HSSE Verification Hardening
+- [x] Exercise a real issued HSSE course certificate through public `/verify/:code`
+- [x] Add database-backed HSSE access-policy tests for anonymous, pending, paused, and approved users
+
+
+## HSSE Certificate Verification Fix
+- [x] Expand course certificate verification-code storage to support generated HSSE codes
+- [x] Add and apply the non-destructive schema migration
+- [x] Re-run real certificate issuance and public verification tests
+
+
+## HSSE End-to-End Route Verification
+- [x] Exercise the actual public `/verify/:code` page using a temporary issued HSSE certificate
+- [x] Add database-backed protected HSSE route/procedure coverage for anonymous, pending, paused, and approved users

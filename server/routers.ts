@@ -300,6 +300,9 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await db.getCourseStats(input.courseId);
       }),
+    getPlatformStats: publicProcedure.query(async () => {
+      return await db.getPlatformStats();
+    }),
     // Get all modules (optionally filtered by courseId)
     getModules: publicProcedure
       .input(z.object({ courseId: z.number().optional() }).optional())
@@ -449,7 +452,9 @@ export const appRouter = router({
         // Determine course name
         const courseName = (module as any).courseId === 2
           ? 'Oil & Gas Wellhead Maintenance — Onshore & Offshore'
-          : 'Early Production Facilities (EPF) Course';
+          : (module as any).courseId === 3
+            ? 'Oilfield HSSE and Security Fundamentals'
+            : 'Early Production Facilities (EPF) Course';
         
         // Create PDF
         const doc = new PDFDocument({

@@ -523,7 +523,7 @@ export async function verifyCertificate(verificationCode: string) {
   const db = await getDb();
   if (!db) return null;
 
-  const rows = await db.select({
+  const moduleRows = await db.select({
     certId: certificates.id,
     issuedAt: certificates.issuedAt,
     attemptCount: certificates.attemptCount,
@@ -533,6 +533,7 @@ export async function verifyCertificate(verificationCode: string) {
     moduleTitleAr: modules.titleAr,
     moduleTitleEn: modules.titleEn,
     courseId: modules.courseId,
+    certificateType: sql<string>`'module'`,
   })
   .from(certificates)
   .leftJoin(users, eq(certificates.userId, users.id))
@@ -540,7 +541,27 @@ export async function verifyCertificate(verificationCode: string) {
   .where(eq(certificates.verificationCode, verificationCode))
   .limit(1);
 
-  return rows[0] ?? null;
+  if (moduleRows[0]) return moduleRows[0];
+
+  const { courseCertificates } = await import("../drizzle/schema");
+  const courseRows = await db.select({
+    certId: courseCertificates.id,
+    issuedAt: courseCertificates.issuedAt,
+    attemptCount: sql<number>`1`,
+    scorePercent: courseCertificates.scorePercent,
+    verificationCode: courseCertificates.verificationCode,
+    userName: users.name,
+    moduleTitleAr: sql<string>`'الشهادة الشاملة للكورس'`,
+    moduleTitleEn: sql<string>`'Comprehensive Course Certificate'`,
+    courseId: courseCertificates.courseId,
+    certificateType: sql<string>`'course'`,
+  })
+  .from(courseCertificates)
+  .leftJoin(users, eq(courseCertificates.userId, users.id))
+  .where(eq(courseCertificates.verificationCode, verificationCode))
+  .limit(1);
+
+  return courseRows[0] ?? null;
 }
 
 export async function getCourseStats(courseId: number) {
@@ -556,6 +577,21 @@ export async function getCourseStats(courseId: number) {
     .where(eq(modules.courseId, courseId));
   return {
     moduleCount: Number(modRow?.count ?? 0),
+    lessonCount: Number(lessonRow?.count ?? 0),
+    questionCount: Number(questionRow?.count ?? 0),
+  };
+}
+
+export async function getPlatformStats() {
+  const db = await getDb();
+  if (!db) return { courseCount: 0, moduleCount: 0, lessonCount: 0, questionCount: 0 };
+  const [courseRow] = await db.select({ count: sql<number>`COUNT(DISTINCT ${modules.courseId})` }).from(modules);
+  const [moduleRow] = await db.select({ count: sql<number>`COUNT(*)` }).from(modules);
+  const [lessonRow] = await db.select({ count: sql<number>`COUNT(*)` }).from(lessons);
+  const [questionRow] = await db.select({ count: sql<number>`COUNT(*)` }).from(quizQuestions);
+  return {
+    courseCount: Number(courseRow?.count ?? 0),
+    moduleCount: Number(moduleRow?.count ?? 0),
     lessonCount: Number(lessonRow?.count ?? 0),
     questionCount: Number(questionRow?.count ?? 0),
   };

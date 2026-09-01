@@ -46,7 +46,7 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
 
 /**
- * Course modules (9 units)
+ * Course modules across EPF, Wellhead Maintenance, and Oilfield HSSE courses
  */
 export const modules = mysqlTable("modules", {
   id: int("id").autoincrement().primaryKey(),
@@ -109,7 +109,7 @@ export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
  */
 export const courseExamQuestions = mysqlTable("course_exam_questions", {
   id: int("id").autoincrement().primaryKey(),
-  courseId: int("course_id").notNull(), // 1=EPF, 2=Wellhead
+  courseId: int("course_id").notNull(), // 1=EPF, 2=Wellhead, 3=Oilfield HSSE
   questionType: mysqlEnum("question_type", ["mcq", "true_false"]).notNull().default("mcq"),
   questionTextAr: text("question_text_ar").notNull(),
   questionTextEn: text("question_text_en"),
@@ -154,7 +154,7 @@ export const courseCertificates = mysqlTable("course_certificates", {
   courseId: int("course_id").notNull(),
   attemptId: int("attempt_id").notNull().default(0),
   scorePercent: varchar("score_percent", { length: 10 }).notNull().default("0"),
-  verificationCode: varchar("verification_code", { length: 20 }).notNull().default(""),
+  verificationCode: varchar("verification_code", { length: 100 }).notNull().default(""),
   issuedAt: timestamp("issued_at").defaultNow().notNull(),
 });
 

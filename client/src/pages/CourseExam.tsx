@@ -114,6 +114,7 @@ export default function CourseExam() {
   const courseNames: Record<number, string> = {
     1: "منشآت الإنتاج المبكر (EPF)",
     2: "صيانة رأس البئر (Wellhead Maintenance)",
+    3: "الأمن والسلامة في الحقول النفطية (Oilfield HSSE)",
   };
   const courseName = courseNames[courseId] ?? `الكورس ${courseId}`;
 

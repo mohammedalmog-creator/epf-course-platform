@@ -8,7 +8,6 @@ import {
   PlayCircle, Award, ChevronRight, Layers, Timer, BarChart3, Lock
 } from "lucide-react";
 import { Link, useLocation, useParams } from "wouter";
-import { getLoginUrl } from "@/const";
 
 // Map lesson number to an icon for visual variety
 function getLessonIcon(lessonNumber: number) {
@@ -44,7 +43,7 @@ export default function ModuleDetail() {
   }
 
   if (!isAuthenticated) {
-    window.location.href = getLoginUrl();
+    setLocation("/login");
     return null;
   }
 
@@ -74,7 +73,7 @@ export default function ModuleDetail() {
   const allLessonsCompleted = completedLessons === totalLessons && totalLessons > 0;
 
   const latestQuizAttempt = quizAttempts?.[0];
-  const quizPassed = latestQuizAttempt && (latestQuizAttempt.score / latestQuizAttempt.totalQuestions) >= 0.7;
+  const quizPassed = latestQuizAttempt && (latestQuizAttempt.score / latestQuizAttempt.totalQuestions) >= 0.9;
   const quizScore = latestQuizAttempt
     ? Math.round((latestQuizAttempt.score / latestQuizAttempt.totalQuestions) * 100)
     : null;
@@ -87,6 +86,12 @@ export default function ModuleDetail() {
   const durationText = totalHours > 0
     ? `${totalHours} ساعة${remainingMinutes > 0 ? ` و${remainingMinutes} دقيقة` : ''}`
     : `${totalMinutes} دقيقة`;
+
+  const courseLabel = (module as any).courseId === 2
+    ? "صيانة رأس البئر"
+    : (module as any).courseId === 3
+      ? "الأمن والسلامة في الحقول النفطية"
+      : "دورة EPF";
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,7 +127,7 @@ export default function ModuleDetail() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <Badge variant="secondary" className="text-xs">
-                  {(module as any).courseId === 2 ? 'صيانة رأس البئر' : 'دورة EPF'}
+                  {courseLabel}
                 </Badge>
                 {allLessonsCompleted && (
                   <Badge className="text-xs bg-green-600">
@@ -335,7 +340,7 @@ export default function ModuleDetail() {
                 <CardContent className="pt-5 pb-4 text-center">
                   <Lock className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                   <p className="text-sm text-muted-foreground">
-                    أكمل الاختبار بنجاح (70%+) للحصول على شهادة الوحدة
+                    أكمل الاختبار بنجاح (90%+) للحصول على شهادة الوحدة
                   </p>
                 </CardContent>
               </Card>
