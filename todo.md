@@ -242,3 +242,36 @@
 - [x] Test notification creation, visibility, and read-state flows
 - [x] Add PageHeader UI/integration coverage for unread count, notification content, mark-read, and mark-all-read interactions
 - [x] Save a checkpoint after validation
+
+
+## Email Copies for Trainee Notifications
+- [ ] Select and configure a transactional email provider
+- [ ] Add secure server-side email delivery for account-status notifications
+- [ ] Add branded Arabic email templates for approval, pause, resume, and rejection
+- [ ] Preserve in-platform notifications when email delivery fails
+- [ ] Test email configuration and notification triggers
+- [ ] Save a checkpoint after validation
+
+
+## Oilfield Security and Safety Curriculum Expansion
+- [x] Compare the existing course with the attached curriculum
+- [x] Add missing HSSE and process-safety foundations
+- [x] Add IOGP life-saving rules and major-incident lessons
+- [x] Add HAZID, Bowtie, Toolbox Talk, and Heinrich topics
+- [x] Add hazardous-area classification and expanded emergency-response topics
+- [x] Add wellsite HSE plan, career certificates, and interview preparation
+- [x] Review and deliver the expanded content without UI design changes
+
+- [x] Add an explicit major-incident analysis lesson to the expanded curriculum table and content
+
+
+## Company-Focused HSSE Curriculum Audit
+- [x] Audit the latest course for oilfield-services employee responsibilities
+- [x] Add company and client-site induction requirements
+- [x] Add competency, authorization, contractor, and subcontractor controls
+- [x] Add service-equipment, workshop, logistics, and journey-management safety
+- [x] Add fatigue, stop-work escalation, emergency coordination, and business continuity
+- [x] Add company-ready records, KPIs, activities, and implementation checklist
+- [x] Review and deliver the audited course without UI design changes
+
+- [x] Add an explicit company-client stop-work escalation and restart-authority subsection
