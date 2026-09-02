@@ -7,7 +7,6 @@ import { Award, Download, Share2, CheckCircle2, ArrowRight, BookOpen } from "luc
 const courseNames: Record<number, { ar: string; en: string }> = {
   1: { ar: "منشآت الإنتاج المبكر", en: "Early Production Facilities (EPF)" },
   2: { ar: "صيانة رأس البئر", en: "Wellhead Maintenance (Onshore & Offshore)" },
-  3: { ar: "الأمن والسلامة في الحقول النفطية", en: "Oilfield HSSE and Security Fundamentals" },
 };
 
 export default function CourseCertificate() {

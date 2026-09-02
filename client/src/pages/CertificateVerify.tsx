@@ -33,7 +33,6 @@ function VerificationResult({ data }: { data: NonNullable<ReturnType<typeof useV
   const courseLabel = {
     1: "منشآت الإنتاج المبكر (EPF)",
     2: "صيانة رأس البئر (Wellhead)",
-    3: "الأمن والسلامة في الحقول النفطية (Oilfield HSSE)",
   }[data.courseId ?? 0] ?? `الكورس ${data.courseId ?? "غير محدد"}`;
   const isCourseCertificate = data.certificateType === "course";
 

@@ -452,9 +452,7 @@ export const appRouter = router({
         // Determine course name
         const courseName = (module as any).courseId === 2
           ? 'Oil & Gas Wellhead Maintenance — Onshore & Offshore'
-          : (module as any).courseId === 3
-            ? 'Oilfield HSSE and Security Fundamentals'
-            : 'Early Production Facilities (EPF) Course';
+          : 'Early Production Facilities (EPF) Course';
         
         // Create PDF
         const doc = new PDFDocument({

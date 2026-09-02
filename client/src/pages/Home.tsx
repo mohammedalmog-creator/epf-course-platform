@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   BookOpen, Award, TrendingUp, Users, ArrowLeft,
-  Wrench, ChevronLeft, Shield, ShieldCheck, Clock, CheckCircle2,
+  Wrench, ChevronLeft, Shield, Clock, CheckCircle2,
   GraduationCap, BarChart3, Star, LogIn, UserPlus
 } from "lucide-react";
 import { Link } from "wouter";
@@ -48,25 +48,6 @@ const courses = [
     gradientTo: "to-orange-700",
     href: "/modules/2",
     topics: ["مكونات رأس البئر", "إجراءات الصيانة", "أنظمة التحكم", "السلامة والطوارئ"],
-  },
-  {
-    id: 3,
-    titleAr: "الأمن والسلامة في الحقول النفطية",
-    titleEn: "Oilfield HSSE and Security Fundamentals",
-    descriptionAr: "منهج مهني متدرج في HSSE، تحديد المخاطر، سلامة العمليات، الطوارئ، البيئة، الأمن، وإدارة المقاولين.",
-    modules: 18,
-    lessons: "91+",
-    questions: "180+",
-    level: "تمهيدي - مهني",
-    duration: "18 أسبوعاً",
-    icon: ShieldCheck,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50",
-    borderColor: "border-emerald-200",
-    gradientFrom: "from-emerald-600",
-    gradientTo: "to-teal-800",
-    href: "/modules/3",
-    topics: ["تحديد المخاطر", "سلامة العمليات", "الطوارئ", "البيئة والأمن"],
   },
 ];
 
@@ -241,7 +222,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 max-w-6xl mx-auto">
+        <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
           {courses.map((course) => {
             const Icon = course.icon;
             return (

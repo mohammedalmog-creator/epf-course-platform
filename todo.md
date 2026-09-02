@@ -331,3 +331,11 @@
 - [x] Re-seed corrected lessons and verify content uniqueness in the database
 - [x] Inspect representative lessons from every module in the LMS
 - [x] Run regression tests and save a checkpoint
+
+## Permanent HSSE Course Removal
+- [x] Inventory all HSSE course data and foreign-key dependencies before deletion
+- [x] Delete HSSE progress, attempts, certificates, questions, lessons, and modules in safe dependency order
+- [x] Remove HSSE course cards, labels, mappings, routes, and statistics assumptions from the UI and server
+- [x] Remove HSSE seed scripts, curriculum content, verification reports, tests, and unused generated assets
+- [x] Verify EPF and Wellhead course data and learner records remain intact
+- [x] Run the full test suite, inspect the two-course UI, and save a post-deletion checkpoint

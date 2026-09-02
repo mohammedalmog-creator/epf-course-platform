@@ -3,7 +3,7 @@ import { useProfileGuard } from "@/hooks/useProfileGuard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpen, ArrowRight, Wrench, ShieldCheck } from "lucide-react";
+import { BookOpen, ArrowRight, Wrench } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import PageHeader from "@/components/PageHeader";
@@ -28,16 +28,6 @@ const COURSE_META = [
     color: "text-orange-600",
     bgColor: "bg-orange-50",
     href: "/modules/2",
-  },
-  {
-    id: 3,
-    titleAr: "الأمن والسلامة في الحقول النفطية",
-    titleEn: "Oilfield HSSE and Security Fundamentals",
-    descriptionAr: "منهج مهني متدرج يغطي HSSE، تحديد المخاطر، سلامة العمليات، الطوارئ، البيئة، الأمن، وإدارة المقاولين.",
-    icon: ShieldCheck,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50",
-    href: "/modules/3",
   },
 ];
 
@@ -131,7 +121,7 @@ export default function Courses() {
 
       {/* Courses Grid */}
       <section className="container py-8 pb-16">
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 max-w-6xl mx-auto">
+        <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
           {COURSE_META.map((course) => (
             <CourseCard key={course.id} course={course} isAuthenticated={isAuthenticated} />
           ))}

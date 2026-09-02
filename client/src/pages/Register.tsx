@@ -74,7 +74,6 @@ export default function Register() {
         <div className="flex gap-2 mt-4 flex-wrap justify-center">
           <span className="bg-white/15 text-white text-xs px-3 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">Early Production Facilities</span>
           <span className="bg-white/15 text-white text-xs px-3 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">Wellhead Maintenance</span>
-          <span className="bg-white/15 text-white text-xs px-3 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">Oilfield HSSE</span>
         </div>
       </div>
 

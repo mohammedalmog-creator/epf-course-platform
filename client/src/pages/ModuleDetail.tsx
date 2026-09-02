@@ -89,9 +89,7 @@ export default function ModuleDetail() {
 
   const courseLabel = (module as any).courseId === 2
     ? "صيانة رأس البئر"
-    : (module as any).courseId === 3
-      ? "الأمن والسلامة في الحقول النفطية"
-      : "دورة EPF";
+    : "دورة EPF";
 
   return (
     <div className="min-h-screen bg-background">

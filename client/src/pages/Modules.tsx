@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { BookOpen, CheckCircle2, Clock, ArrowRight, Wrench, ShieldCheck } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, ArrowRight, Wrench } from "lucide-react";
 import { Link, useLocation, useParams } from "wouter";
 import { useMemo } from "react";
 import PageHeader from "@/components/PageHeader";
@@ -10,7 +10,6 @@ import PageHeader from "@/components/PageHeader";
 const COURSE_INFO: Record<number, { titleAr: string; titleEn: string; icon: React.ElementType; color: string }> = {
   1: { titleAr: "منشآت الإنتاج المبكر", titleEn: "Early Production Facilities (EPF)", icon: BookOpen, color: "text-blue-600" },
   2: { titleAr: "صيانة رأس البئر", titleEn: "Wellhead Maintenance", icon: Wrench, color: "text-orange-600" },
-  3: { titleAr: "الأمن والسلامة في الحقول النفطية", titleEn: "Oilfield HSSE and Security Fundamentals", icon: ShieldCheck, color: "text-emerald-600" },
 };
 
 export default function Modules() {
@@ -18,8 +17,8 @@ export default function Modules() {
   const [, setLocation] = useLocation();
   const params = useParams<{ courseId: string }>();
   const courseId = useMemo(() => parseInt(params.courseId || "1") || 1, [params.courseId]);
-  const courseInfo = COURSE_INFO[courseId] || COURSE_INFO[1];
-  const CourseIcon = courseInfo.icon;
+  const courseInfo = COURSE_INFO[courseId];
+  const CourseIcon = courseInfo?.icon ?? BookOpen;
 
   const { data: modules, isLoading: modulesLoading } = trpc.course.getModules.useQuery({ courseId });
   const { data: progress } = trpc.progress.getUserProgress.useQuery(undefined, {
@@ -40,6 +39,19 @@ export default function Modules() {
   if (!isAuthenticated) {
     setLocation("/login");
     return null;
+  }
+
+  if (!courseInfo) {
+    return (
+      <div className="min-h-screen bg-background">
+        <PageHeader />
+        <main className="container py-20 text-center">
+          <h2 className="text-2xl font-bold mb-3">الكورس غير موجود</h2>
+          <p className="text-muted-foreground mb-6">هذا الكورس غير متاح على المنصة.</p>
+          <Link href="/courses"><Button>العودة إلى الكورسات</Button></Link>
+        </main>
+      </div>
+    );
   }
 
   const getModuleProgress = (moduleId: number) => {

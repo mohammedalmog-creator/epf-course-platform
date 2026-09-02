@@ -74,9 +74,6 @@ export default function Login() {
           <span className="bg-white/15 text-white text-xs px-3 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">
             Wellhead Maintenance
           </span>
-          <span className="bg-white/15 text-white text-xs px-3 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">
-            Oilfield HSSE
-          </span>
         </div>
       </div>
 

@@ -266,9 +266,7 @@ export default function Certificate() {
                     <p className="text-[10px] text-gray-500 mt-0.5">
                       {(module as any).courseId === 2
                         ? 'Oil & Gas Wellhead Maintenance — Onshore & Offshore'
-                        : (module as any).courseId === 3
-                          ? 'Oilfield HSSE and Security Fundamentals'
-                          : 'Early Production Facilities (EPF) Course'}
+                        : 'Early Production Facilities (EPF) Course'}
                     </p>
                   </div>
 

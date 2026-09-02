@@ -46,7 +46,7 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
 
 /**
- * Course modules across EPF, Wellhead Maintenance, and Oilfield HSSE courses
+ * Course modules across EPF and Wellhead Maintenance courses
  */
 export const modules = mysqlTable("modules", {
   id: int("id").autoincrement().primaryKey(),
@@ -109,7 +109,7 @@ export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
  */
 export const courseExamQuestions = mysqlTable("course_exam_questions", {
   id: int("id").autoincrement().primaryKey(),
-  courseId: int("course_id").notNull(), // 1=EPF, 2=Wellhead, 3=Oilfield HSSE
+  courseId: int("course_id").notNull(), // 1=EPF, 2=Wellhead
   questionType: mysqlEnum("question_type", ["mcq", "true_false"]).notNull().default("mcq"),
   questionTextAr: text("question_text_ar").notNull(),
   questionTextEn: text("question_text_en"),
