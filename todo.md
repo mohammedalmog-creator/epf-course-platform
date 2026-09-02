@@ -322,3 +322,12 @@
 - [x] Add Express storage proxy so project-managed visual assets render correctly
 - [x] Verify browser rendering and run regression tests
 - [x] Save a checkpoint after completing the visual audit
+
+## HSSE Lesson Duplication Audit
+- [x] Audit the six lessons in HSSE module one for repeated content
+- [x] Measure exact and high-similarity duplication across all 91 HSSE lessons
+- [x] Rewrite repeated lesson content with lesson-specific objectives, explanations, controls, tables, and field cases
+- [x] Preserve the approved 18-module and 91-lesson sequence while correcting content
+- [x] Re-seed corrected lessons and verify content uniqueness in the database
+- [x] Inspect representative lessons from every module in the LMS
+- [x] Run regression tests and save a checkpoint

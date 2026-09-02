@@ -7,6 +7,12 @@ const LESSON_ID_BASE = 41000;
 const QUIZ_ID_BASE = 420000;
 const EXAM_ID_BASE = 430000;
 const source = readFileSync(new URL("../content/oilfield-security-safety-course-company-ready.md", import.meta.url), "utf8");
+const lessonProfiles = JSON.parse(
+  readFileSync(new URL("../content/hsse-lesson-profiles.json", import.meta.url), "utf8"),
+);
+const lessonProfilesByKey = new Map(
+  lessonProfiles.map((profile) => [`${profile.moduleNumber}.${profile.lessonNumber}`, profile]),
+);
 
 const moduleHeadings = [...source.matchAll(/^# الوحدة[^\n]+/gm)].map((match) => match[0].replace(/^# /, "").trim());
 const moduleSections = source.split(/^# الوحدة[^\n]+/gm).slice(1);
@@ -107,22 +113,48 @@ function parseModules() {
     const rows = [...moduleSections[index].matchAll(lessonPattern)];
     const number = index + 1;
     const titleAr = moduleHeadings[index].replace(/^الوحدة\s+[^:]+:\s*/, "");
-    const lessons = rows.map((row, lessonIndex) => ({
-      number: Number(row[2]),
-      titleAr: row[3].trim(),
-      outcome: row[4].trim(),
-      order: lessonIndex + 1,
-    }));
+    const lessons = rows.map((row, lessonIndex) => {
+      const lessonNumber = Number(row[2]);
+      const titleAr = row[3].trim();
+      const profile = lessonProfilesByKey.get(`${number}.${lessonNumber}`);
+      if (!profile) throw new Error(`Missing lesson profile for ${number}.${lessonNumber}`);
+      if (profile.titleAr !== titleAr) {
+        throw new Error(`Lesson profile title mismatch for ${number}.${lessonNumber}`);
+      }
+      return {
+        number: lessonNumber,
+        titleAr,
+        outcome: profile.outcome || row[4].trim(),
+        order: lessonIndex + 1,
+        profile,
+      };
+    });
     modules.push({ number, titleAr, titleEn: arabicToEnglish[index], description: moduleDescriptions[index], detail: moduleDetails[index], imageUrl: moduleImageUrls[index], lessons });
   }
   return modules;
 }
 
+function escapeTableCell(value) {
+  return String(value).replaceAll("|", "\\|").replaceAll("\n", " ");
+}
+
+function bulletList(items) {
+  return items.map((item) => `- ${item}`).join("\n");
+}
+
+function numberedList(items) {
+  return items.map((item, index) => `${index + 1}. ${item}`).join("\n");
+}
+
 function lessonMarkdown(module, lesson) {
-  const detail = module.detail;
-  const evidence = lesson.number % 2 === 0 ? "قائمة تحقق موقعة وسجل توعية" : "ملاحظة ميدانية وتوثيق إغلاق";
-  const decision = lesson.number % 3 === 0 ? "أوقف المهمة، احمِ الأشخاص، واطلب مراجعة المشرف قبل الاستمرار" : "تحقق من الضابط، ناقش التغيير مع الفريق، وسجل القرار في نموذج المهمة";
-  return `# ${lesson.titleAr}\n\n![رسم توضيحي لموضوع الدرس](${module.imageUrl})\n\n**الزمن التقديري:** 30 دقيقة\n\n## الهدف التعليمي\n\n${lesson.outcome}\n\n## سياق الدرس\n\nيركز هذا الدرس على **${detail.focus}** داخل عمل شركة الخدمات النفطية، وعلى ما يجب أن يراه الموظف ويتحقق منه قبل وأثناء وبعد المهمة. يجب تطبيق المحتوى مع إجراء الشركة وتصريح العمل وتعليمات العميل وتقييم المخاطر الخاص بالمهمة.\n\n## المخاطر والضوابط\n\n| العنصر | التطبيق في هذا الدرس |\n|---|---|\n| الخطر النموذجي | ${detail.hazards} |\n| الضوابط الأساسية | ${detail.controls} |\n| دليل التحقق المطلوب | ${evidence}، إضافة إلى ${detail.evidence} |\n\n## حالة تطبيقية\n\n**السيناريو:** ${detail.scenario}.\n\n**قرار الموظف:** ${decision}.\n\n**سؤال التحقق:** ما الحاجز الذي يجب التأكد من فعاليته أولاً عند تنفيذ «${lesson.titleAr}»؟ اذكر الخطر، والضابط، ومن يملك صلاحية إعادة بدء العمل.\n\n## تطبيق ميداني\n\nقبل بدء المهمة، يراجع المتدرب نطاق العمل، الأشخاص المشاركين، المعدات، مصادر الطاقة، التداخلات، وسيناريو الطوارئ. إذا تغيرت الظروف أو فُقد حاجز حرج، يوقف العمل ويصعّد الأمر وفق سلسلة المسؤوليات المعتمدة.\n\n## الخلاصة\n\nالممارسة الآمنة تبدأ بفهم المهمة، ثم تحديد المخاطر، ثم اختيار الضوابط الأقوى، ثم التحقق من فعاليتها، ثم الإبلاغ والتعلم من النتائج.\n\n> **تنبيه:** المرجع الملزم هو قانون الدولة وإجراء الشركة وإجراء العميل وخطة الطوارئ الخاصة بالموقع. هذا الدرس لا يمنح تفويضاً للعمل الحرج دون تدريب عملي وتقييم كفاءة.`;
+  const profile = lesson.profile;
+  const comparisonRows = profile.comparisonTable
+    .map((row) => `| ${escapeTableCell(row.item)} | ${escapeTableCell(row.correctPractice)} | ${escapeTableCell(row.commonError)} |`)
+    .join("\n");
+  const knowledgeCheck = profile.knowledgeCheck
+    .map((question, index) => `${index + 1}. ${question}`)
+    .join("\n");
+  return `# ${lesson.titleAr}\n\n![رسم توضيحي لموضوع الدرس](${module.imageUrl})\n\n**الزمن التقديري:** 30 دقيقة\n\n## الهدف التعليمي\n\n${profile.outcome}\n\n## المفاهيم الأساسية\n\n${profile.overview}\n\n### مصطلحات الدرس\n\n${bulletList(profile.keyTerms)}\n\n## المخاطر الخاصة بالموضوع\n\n${bulletList(profile.hazards)}\n\n## الضوابط الوقائية\n\n${numberedList(profile.controls)}\n\n## دليل التحقق والتوثيق\n\n${bulletList(profile.verificationEvidence)}\n\n## حالة تطبيقية\n\n${profile.fieldScenario}\n\n### خطوات القرار المهني\n\n${numberedList(profile.decisionSteps)}\n\n## مقارنة الممارسة الصحيحة بالخطأ الشائع\n\n| نقطة المقارنة | الممارسة الصحيحة | الخطأ الشائع |\n|---|---|---|\n${comparisonRows}\n\n## نشاط تطبيقي\n\n${profile.practicalActivity}\n\n## تحقق من فهمك\n\n${knowledgeCheck}\n\n## الخلاصة المهنية\n\n**${profile.takeaway}**\n\n> **حدود التدريب:** يطبق هذا الدرس ضمن قوانين الدولة وإجراءات الشركة والعميل وتصريح العمل وتقييم المخاطر وخطة الطوارئ المعتمدة. المحتوى النظري لا يمنح تفويضاً مستقلاً لتنفيذ الأعمال الحرجة.`;
 }
 
 function moduleQuizQuestions(module, moduleIndex) {

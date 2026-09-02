@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-09-02T16:12:41.888Z",
+  "lessonCount": 91,
+  "exactDuplicateGroups": [],
+  "highSimilarityPairCount": 0,
+  "sameModuleHighSimilarityPairCount": 0,
+  "moduleOneLessonCount": 6,
+  "moduleOneHighSimilarityPairs": [],
+  "topHighSimilarityPairs": []
+}
